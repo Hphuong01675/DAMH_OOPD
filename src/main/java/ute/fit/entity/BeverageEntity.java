@@ -13,6 +13,12 @@ public class BeverageEntity {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productID;
+    
+    @Column(nullable = false)
     private String name;
+    
+    @Column(nullable = false)
     private double basePrice; // Giá gốc size S
+    
+    private String imgUrl;
 }
