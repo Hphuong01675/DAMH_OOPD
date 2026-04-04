@@ -42,7 +42,7 @@ public class ProductController extends HttpServlet {
         req.setAttribute("list", beverageService.getAllBeverages(keyword));
         req.setAttribute("toppings", toppingService.getAllToppings());
 
-        req.getRequestDispatcher("/views/admin/product-list.jsp")
+        req.getRequestDispatcher("/WEB-INF/views/admin/product-list.jsp")
                 .forward(req, resp);
     }
 
