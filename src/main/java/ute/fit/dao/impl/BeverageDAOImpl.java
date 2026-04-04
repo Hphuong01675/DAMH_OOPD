@@ -61,19 +61,20 @@ public class BeverageDAOImpl implements IBeverageDAO {
 	}
 
 	@Override
-	public void delete(int id) {
-		EntityManager em = JPAUtil.getEntityManager();
-		try {
-			em.getTransaction().begin();
-			BeverageEntity b = em.find(BeverageEntity.class, id);
-			if (b != null)
-				em.remove(b);
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw e;
-		} finally {
-			em.close();
-		}
+	public void toggleSellable(int id) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    try {
+	        em.getTransaction().begin();
+	        BeverageEntity beverage = em.find(BeverageEntity.class, id);
+	        if (beverage != null) {
+	            beverage.setSellable(!beverage.isSellable());
+	        }
+	        em.getTransaction().commit();
+	    } catch (Exception e) {
+	        em.getTransaction().rollback();
+	        throw e;
+	    } finally {
+	        em.close();
+	    }
 	}
 }

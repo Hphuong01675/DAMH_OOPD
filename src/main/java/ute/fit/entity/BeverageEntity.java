@@ -21,4 +21,7 @@ public class BeverageEntity {
     private double basePrice; // Giá gốc size S
     
     private String imgUrl;
+    
+    @Column(name = "isSellable", nullable = false, columnDefinition = "BIT DEFAULT 1")
+    private boolean isSellable = true;
 }

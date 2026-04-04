@@ -9,5 +9,5 @@ public interface IBeverageDAO {
     List<BeverageEntity> searchByName(String keyword);
     void insert(BeverageEntity beverage);
     void update(BeverageEntity beverage);
-    void delete(int id);
+    void toggleSellable(int id);
 }
