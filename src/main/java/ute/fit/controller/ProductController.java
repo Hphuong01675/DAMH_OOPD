@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {
-    "/admin/products", 
+   "/admin/products", 
     "/admin/product/save", 
     "/admin/product/delete", 
-    "/admin/product/edit"
+   "/admin/product/edit"
 })
-@MultipartConfig
+//@MultipartConfig
 public class ProductController extends HttpServlet {
     private IBeverageService serviceBeverage = new BeverageServiceImpl();
     private IToppingService serviceTopping = new ToppingServiceImpl();
