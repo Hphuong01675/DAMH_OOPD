@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 template.html
 CLAUDE.md
+application.properties
 
 ### STS ###
 .apt_generated

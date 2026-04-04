@@ -6,6 +6,7 @@ import java.util.List;
 public interface IBeverageDAO {
     List<BeverageEntity> findAll();
     BeverageEntity findById(int id);
+    List<BeverageEntity> searchByName(String keyword);
     void insert(BeverageEntity beverage);
     void update(BeverageEntity beverage);
     void delete(int id);

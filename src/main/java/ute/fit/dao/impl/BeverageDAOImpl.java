@@ -20,6 +20,15 @@ public class BeverageDAOImpl implements IBeverageDAO {
 			return em.find(BeverageEntity.class, id);
 		}
 	}
+	
+	@Override
+    public List<BeverageEntity> searchByName(String keyword) {
+        EntityManager em = JPAUtil.getEntityManager();
+        String jpql = "SELECT b FROM BeverageEntity b WHERE b.name LIKE :name";
+        return em.createQuery(jpql, BeverageEntity.class)
+                 .setParameter("name", "%" + keyword + "%")
+                 .getResultList();
+    }
 
 	@Override
 	public void insert(BeverageEntity beverage) {

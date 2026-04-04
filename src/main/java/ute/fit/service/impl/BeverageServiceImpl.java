@@ -18,6 +18,14 @@ import java.util.Map;
 public class BeverageServiceImpl implements IBeverageService {
 	private IBeverageDAO dao = new BeverageDAOImpl();
 	private Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+	
+	@Override
+    public List<BeverageEntity> getAllBeverages(String keyword) {
+        if (keyword != null && !keyword.isEmpty()) {
+            return dao.searchByName(keyword);
+        }
+        return dao.findAll();
+    }
 
 	@Override
 	public List<BeverageEntity> getAll() {
