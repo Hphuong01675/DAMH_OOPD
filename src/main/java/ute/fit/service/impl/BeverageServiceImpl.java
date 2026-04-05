@@ -57,6 +57,14 @@ public class BeverageServiceImpl implements IBeverageService {
 
         return list.stream().map(this::toDTO).collect(Collectors.toList());
     }
+    
+    @Override
+    public List<BeverageDTO> findAll() {
+    	return dao.findAll()
+    			.stream()
+    			.map(this::toDTO)
+    			.collect(Collectors.toList());
+    }
 
 	@Override
     public BeverageDTO getById(int id) {
