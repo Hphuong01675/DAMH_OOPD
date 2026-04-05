@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -17,6 +20,7 @@ public class AdminDashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
+    	EntityManagerFactory emf = Persistence.createEntityManagerFactory("LTWebPU");
+    	EntityManager em = emf.createEntityManager();
     }
 }
