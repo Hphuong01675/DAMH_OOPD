@@ -42,7 +42,7 @@ public class BaristaOrderController extends HttpServlet {
     	}).collect(Collectors.toList());
 
         request.setAttribute("pendingOrders", uiOrders);
-        request.getRequestDispatcher("/views/barista/barista-orders.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/barista/barista-orders.jsp").forward(request, response);
     }
 
     @Override
@@ -56,14 +56,14 @@ public class BaristaOrderController extends HttpServlet {
 
             if (idRaw != null && "COMPLETE".equals(action)) {
                 Long orderId = Long.parseLong(idRaw);
-                orderService.updateState(orderId, "COMPLETE", null);
-                session.setAttribute("message", "Đơn hàng #" + orderId + " đã được pha chế xong!");
+                
+                // CHUẨN: Gọi phương thức xử lý đơn hàng thay vì update chuỗi
+                orderService.processOrder(orderId); 
+                
+                session.setAttribute("message", "Đơn hàng #" + orderId + " đã pha chế xong và ghi nhận doanh thu!");
             }
-        } catch (NumberFormatException e) {
-            session.setAttribute("error", "Định dạng mã đơn hàng không hợp lệ.");
         } catch (Exception e) {
-            e.printStackTrace();
-            session.setAttribute("error", "Lỗi hệ thống: Không thể cập nhật trạng thái đơn hàng.");
+            session.setAttribute("error", "Lỗi xử lý đơn hàng.");
         }
         response.sendRedirect(request.getContextPath() + "/barista/orders");
     }

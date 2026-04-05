@@ -15,10 +15,10 @@
 </head>
 <body class="bg-[#faf7f2] text-[#35322d] flex min-h-screen">
 
-    <%@ include file="/views/admin/layout/sidebar.jsp" %>
+    <%@ include file="/WEB-INF/views/admin/layout/sidebar.jsp" %>
 
     <div class="flex-1 ml-64 flex flex-col">
-        <%@ include file="/views/admin/layout/header.jsp" %>
+        <%@ include file="/WEB-INF/views/admin/layout/header.jsp" %>
 
         <main class="px-10 pb-8 flex-1">
             
@@ -125,7 +125,7 @@
                 </div>
             </div>
 
-            <%@ include file="/views/admin/layout/footer.jsp" %>
+            <%@ include file="/WEB-INF/views/admin/layout/footer.jsp" %>
             
         </main>
     </div>

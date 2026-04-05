@@ -107,6 +107,7 @@ import jakarta.persistence.EntityTransaction;
 import ute.fit.config.JPAUtil;
 import ute.fit.dao.IOrderDAO;
 import ute.fit.entity.OrderEntity;
+import ute.fit.model.PendingState;
 import ute.fit.model.StatusPayment;
 
 public class OrderDAOImpl implements IOrderDAO {
@@ -233,21 +234,20 @@ public class OrderDAOImpl implements IOrderDAO {
             LocalDate today = LocalDate.now();
             LocalDateTime start = today.atStartOfDay();
             LocalDateTime end = today.plusDays(1).atStartOfDay();
-
-            // Chỉ lọc theo thời gian và trạng thái PENDING
             return em.createQuery("""
-                SELECT o.orderID, o.orderDate, c.name, o.totalAmount
-                FROM OrderEntity o
-                LEFT JOIN o.customer c
-                WHERE o.orderDate >= :start 
-                AND o.orderDate < :end
-                AND o.stateName = 'PENDING'
-            """) 
-            .setParameter("start", start)
-            .setParameter("end", end)
-            .getResultList();
-        } finally {
-            em.close();
-        }
+                    SELECT o.orderID, o.orderDate, c.name, o.totalAmount
+                    FROM OrderEntity o
+                    LEFT JOIN o.customer c
+                    WHERE o.orderDate >= :start 
+                    AND o.orderDate < :end
+                    AND o.stateName = :pendingState
+                """) 
+                .setParameter("start", start)
+                .setParameter("end", end)
+                .setParameter("pendingState", new PendingState().getStateName()) // Dùng động thay vì 'PENDING'
+                .getResultList();
+            } finally {
+                em.close();
+            }
     }
 }

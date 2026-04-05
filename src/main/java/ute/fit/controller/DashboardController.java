@@ -51,12 +51,12 @@ public class DashboardController extends HttpServlet {
             request.setAttribute("days", gson.toJson(revenueByWeek.keySet()));
             request.setAttribute("revenues", gson.toJson(revenueByWeek.values()));
 
-            request.getRequestDispatcher("/views/admin/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi khi tải dashboard!");
-            request.getRequestDispatcher("/views/admin/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request, response);
         }
     }
 }

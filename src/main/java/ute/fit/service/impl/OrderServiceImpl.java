@@ -45,21 +45,22 @@ public class OrderServiceImpl implements IOrderService {
             order.setState(OrderStateFactory.getState(currentStateName));
 
             // Thực thi logic State Pattern
+         // ĐOẠN CẬP NHẬT (Rất sạch)
             if ("COMPLETE".equalsIgnoreCase(action)) {
-                order.proceed();
-                // Cập nhật trạng thái thanh toán SUCCESS
-                Field paymentField = OrderEntity.class.getDeclaredField("statusPayment");
-                paymentField.setAccessible(true);
-                paymentField.set(entity, StatusPayment.SUCCESS);
+                order.proceed(); 
             } else if ("CANCEL".equalsIgnoreCase(action)) {
                 order.cancel(reason);
             }
 
-            // Lưu lại trạng thái mới vào Entity thông qua Reflection
+            // Đồng bộ trạng thái xử lý
             stateField.set(entity, order.getCurrentState().getStateName());
-            
-            orderDAO.update(entity);
 
+            // Đồng bộ trạng thái thanh toán (Lấy từ Model sau khi đã proceed/cancel)
+            Field paymentField = OrderEntity.class.getDeclaredField("statusPayment");
+            paymentField.setAccessible(true);
+            paymentField.set(entity, order.getPaymentStatus()); 
+
+            orderDAO.update(entity);
         } catch (Exception e) {
             e.printStackTrace();
         }

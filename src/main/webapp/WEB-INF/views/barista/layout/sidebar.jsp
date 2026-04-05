@@ -13,13 +13,6 @@
             <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
             <span class="font-body">Live Queue</span>
         </a>
-        
-        <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface/70 hover:bg-surface-container-highest transition-colors duration-200" 
-           href="#">
-            <span class="material-symbols-outlined">history</span>
-            <span class="font-body">Order History</span>
-        </a>
-        
         <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface/70 hover:bg-surface-container-highest transition-colors duration-200" 
            href="#">
             <span class="material-symbols-outlined">chat_bubble</span>
