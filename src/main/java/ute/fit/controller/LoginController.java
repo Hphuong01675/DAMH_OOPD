@@ -21,6 +21,12 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        disableCache(resp);
         req.setAttribute("selectedRole", defaultRole(req.getParameter("role")));
         req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
     }
@@ -28,6 +34,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        disableCache(resp);
 
         String phone = trim(req.getParameter("phone"));
         String password = trim(req.getParameter("password"));
@@ -40,6 +47,11 @@ public class LoginController extends HttpServlet {
             req.setAttribute("phone", phone);
             req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
             return;
+        }
+
+        HttpSession currentSession = req.getSession(false);
+        if (currentSession != null) {
+            currentSession.invalidate();
         }
 
         HttpSession session = req.getSession(true);
@@ -72,5 +84,11 @@ public class LoginController extends HttpServlet {
 
     private String trim(String value) {
         return value == null ? null : value.trim();
+    }
+
+    private void disableCache(HttpServletResponse resp) {
+        resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setDateHeader("Expires", 0);
     }
 }
