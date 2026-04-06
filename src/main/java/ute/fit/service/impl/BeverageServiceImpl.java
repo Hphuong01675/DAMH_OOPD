@@ -1,13 +1,21 @@
 package ute.fit.service.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import ute.fit.entity.BeverageEntity;
+import ute.fit.service.IBeverageService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.Part;
 import ute.fit.config.CloudinaryConfig;
+import ute.fit.config.JPAUtil;
 import ute.fit.dao.IBeverageDAO;
 import ute.fit.dao.impl.BeverageDAOImpl;
 import ute.fit.entity.BeverageEntity;
 import ute.fit.model.BeverageDTO;
+//import ute.fit.model.OrderItemDTO;
 import ute.fit.service.IBeverageService;
 
 import java.io.File;
@@ -44,7 +52,7 @@ public class BeverageServiceImpl implements IBeverageService {
         e.setName(dto.getName());
         e.setBasePrice(dto.getBasePrice());
         e.setImgUrl(dto.getImgUrl());
-        e.setSellable(dto.isSellable());
+        e.setSellable(dto.getSellable());
         return e;
     }
 	
@@ -109,4 +117,19 @@ public class BeverageServiceImpl implements IBeverageService {
     public void toggleStatus(int id) {
         dao.toggleSellable(id);
     }
+	
+	@Override
+    public BeverageEntity findById(int id) {
+
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.find(BeverageEntity.class, id);
+        } finally {
+            em.close();
+        }
+    }
+	
+	
+	
 }

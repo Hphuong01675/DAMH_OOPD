@@ -1,240 +1,3 @@
-<%-- <%@ page import="java.util.List" %>
-<%@ page import="vn.iotstar.entity.Beverage" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Order</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            display: flex;
-            background: #f6f6f6;
-        }
-		:root {
-		    --sidebar-width: 280px;      /* Sidebar rộng để chứa icon và chữ đẹp hơn */
-		    --primary-color: #a74880;
-		    --bg-light: #f8f9fa;
-		    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		}
-
-		.container {
-		    display: flex;
-		    min-height: 100vh;
-		}
-
-		/* SIDEBAR: Cố định bên trái */
-		.sidebar {
-		    width: var(--sidebar-width) !important;
-		    height: 100vh;
-		    position: fixed;
-		    left: 0;
-		    top: 0;
-		    background: white;
-		    z-index: 1000;
-		    border-right: 1px solid #eee;
-		    display: flex;
-		    flex-direction: column;
-		    padding: 2.5rem 1.5rem;
-		}
-
-		/* MAIN-WRAPPER: Đẩy nội dung sang phải đúng bằng chiều rộng Sidebar */
-		.main-wrapper {
-		    margin-left: var(--sidebar-width); 
-		    flex: 1;
-		    display: flex;
-		    flex-direction: column;
-		    min-width: 0;
-		    background-color: var(--bg-light);
-		}
-
-		/* HEADER: Cần khớp với lề của wrapper */
-		.header {
-		    width: 100%;
-		    position: sticky;
-		    top: 0;
-		    z-index: 900;
-		    padding: 0 3rem;
-		}
-
-		/* CONTENT: Căn giữa để trông vừa vặn */
-		.content {
-		    padding: 2rem 3rem;
-		    max-width: 1400px; /* Giới hạn độ rộng để không bị loãng trên màn hình lớn */
-		    margin: 0 auto;
-		    width: 100%;
-		}
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 220px;
-            height: 100vh;
-            background: #fff;
-            padding: 20px;
-            border-right: 1px solid #eee;
-            position: fixed;
-        }
-
-        .sidebar h3 {
-            margin-bottom: 20px;
-            color: #999;
-        }
-
-        .sidebar ul {
-            list-style: none;
-        }
-
-        .sidebar li {
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .sidebar li.active {
-            background: #9c3d73;
-            color: white;
-        }
-
-        /* HEADER */
-        .header {
-            position: fixed;
-            left: 220px;
-            right: 0;
-            top: 0;
-            height: 70px;
-            background: linear-gradient(90deg, #9c3d73, #c94f8a);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-            color: white;
-        }
-
-        .search-box {
-            padding: 10px;
-            border-radius: 20px;
-            border: none;
-            width: 300px;
-        }
-
-        /* MAIN */
-        .main {
-            margin-left: 220px;
-            margin-top: 80px;
-            padding: 25px;
-            width: 100%;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        /* CARD */
-        .card {
-            background: #f2e3d3;
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card img {
-            width: 70px;
-            margin: 20px auto;
-        }
-
-        .card h4 {
-            margin: 10px 0;
-        }
-
-        .card p {
-            color: #9c3d73;
-            font-weight: bold;
-        }
-
-        .card button {
-            margin-top: 10px;
-            padding: 10px;
-            width: 100%;
-            border: none;
-            background: #9c3d73;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .card button:hover {
-            background: #7a2e58;
-        }
-    </style>
-
-</head>
-
-<body>
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h3>ATELIER</h3>
-    <ul>
-        <li class="active">Dashboard</li>
-        <li>Menu</li>
-        <li>Orders</li>
-        <li>Communications</li>
-    </ul>
-</div>
-
-<!-- HEADER -->
-<div class="header">
-    <h2>🍹 Chip3Chip</h2>
-    <input type="text" placeholder="Search menu..." class="search-box"/>
-    <div>🔔 ⚙ 👤</div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-    <h2>All Items</h2>
-
-    <div class="menu-grid">
-        <%
-            List<Beverage> list = (List<Beverage>) request.getAttribute("beverages");
-            if(list != null){
-                for(Beverage b : list){
-        %>
-
-        <div class="card">
-            <img src="<%=b.getImgUrl()%>" />
-            <h4><%=b.getName()%></h4>
-            <p>$<%=b.getBasePrice()%></p>
-            <button>Add</button>
-        </div>
-
-        <% 
-                }
-            }
-        %>
-    </div>
-
-</div>
-
-</body>
-</html> --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -1175,10 +938,11 @@
 					                    </div>
 					                    
 					                    <div class="product-actions">
-					                        <button class="btn-add" 
-					                                onclick="event.stopPropagation(); selectProduct('${b.productID}', '${b.name}', ${b.basePrice}, '${b.imgUrl}', 'DRINK')">
-					                            Add
-					                        </button>
+											<a href="${pageContext.request.contextPath}/topping?productID=${b.productID}"
+											   class="btn-add"
+											   onclick="event.stopPropagation();">
+											    Add
+											</a>
 					                    </div>
 					                </div>
 					            </div>
@@ -1186,166 +950,81 @@
 					    </c:forEach>
 					</div>
 
-                    <!-- Cart Sidebar -->
-                    <div class="cart-sidebar">
-                        <div class="cart-header">
-                            <div class="cart-title">Cart Summary</div>
-                            <div class="cart-order-id">Order #88392 • Takeaway</div>
-                        </div>
+                    
+				<div class="cart-sidebar">
 
-                        <div class="cart-items">
-                            <div class="cart-item">
-                                <div class="cart-item-name">3x Signature Taro Milk Tea</div>
-                                <div class="cart-item-price">$18.75</div>
-                            </div>
-                        </div>
+				    <div class="cart-header">
+				        <div class="cart-title">🛒 Current Order</div>
+				        <div class="cart-order-id">Session Cart</div>
+				    </div>
 
-                        <div class="cart-summary">
-                            <div class="summary-row">
-                                <span>Subtotal</span>
-                                <span>$18.75</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Customizations</span>
-                                <span>$4.50</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Tax (8%)</span>
-                                <span>$1.86</span>
-                            </div>
-                            <div class="summary-row total">
-                                <span>Total</span>
-                                <span class="amount">$25.11</span>
-                            </div>
-                        </div>
+				    <!-- CART ITEMS -->
+				    <div class="cart-items">
 
-                        <div class="payment-methods">
-                            <div class="payment-option selected" onclick="selectPaymentMethod(this)">
-                                <span class="payment-label">💳 Cash</span>
-                            </div>
-                            <div class="payment-option" onclick="selectPaymentMethod(this)">
-                                <span class="payment-label">📱 VnPay</span>
-                            </div>
-                            <div class="payment-option" onclick="selectPaymentMethod(this)">
-                                <span class="payment-label">💳 Card</span>
-                            </div>
-                        </div>
+				        <c:if test="${empty sessionScope.order}">
+				            <p>Chưa có sản phẩm</p>
+				        </c:if>
 
-                        <button class="btn-primary" onclick="addToCart()">🛒 Add to Cart</button>
-                        <button class="btn-secondary" onclick="this.disabled=true; setTimeout(()=>this.disabled=false, 2000)">✅ Complete Order</button>
-                        <button class="btn-clear" onclick="clearCart()">Clear All</button>
-                    </div>
-                </div>
+				        <c:if test="${not empty sessionScope.order}">
+				            <c:forEach var="item" items="${sessionScope.order.items}">
+
+				                <div class="cart-item">
+				                    <div class="cart-item-name">
+				                        ${item.product.description}
+				                        <br>
+				                        <small>x${item.quantity}</small>
+				                    </div>
+
+				                    <div class="cart-item-price">
+				                        <fmt:formatNumber value="${item.subTotal}" pattern="#,###"/>đ
+				                    </div>
+				                </div>
+
+				            </c:forEach>
+				        </c:if>
+
+				    </div>
+
+				    <!-- SUMMARY -->
+				    <div class="cart-summary">
+				        <div class="summary-row total">
+				            <span>Total</span>
+				            <span class="amount">
+				                <c:if test="${not empty sessionScope.order}">
+				                    <fmt:formatNumber value="${sessionScope.order.calculateTotal()}" pattern="#,###"/>đ
+				                </c:if>
+				                <c:if test="${empty sessionScope.order}">
+				                    0đ
+				                </c:if>
+				            </span>
+				        </div>
+				    </div>
+
+				    <!-- PAYMENT -->
+				    <div class="payment-methods">
+				        <div class="payment-option selected" onclick="selectPaymentMethod(this)">
+				            <span class="payment-label">💳 Cash</span>
+				        </div>
+				        <div class="payment-option" onclick="selectPaymentMethod(this)">
+				            <span class="payment-label">📱 VnPay</span>
+				        </div>
+				        <div class="payment-option" onclick="selectPaymentMethod(this)">
+				            <span class="payment-label">💳 Card</span>
+				        </div>
+				    </div>
+
+				    <!-- BUTTON -->
+				    <button class="btn-primary">🛒 Checkout</button>
+				    <button class="btn-secondary">✅ Complete Order</button>
+
+				    <form action="clear-cart" method="post">
+				        <button class="btn-clear">Clear All</button>
+				    </form>
+
+				</div>
 
                 <!-- Product Detail Modal (Hidden by default) -->
-                <div id="productDetailModal">
-                    <div class="product-detail">
-                        <div style="padding: 1rem; text-align: right;">
-                            <button class="close-btn" onclick="closeProductModal()">✕</button>
-                        </div>
-                        
-                        <div class="product-detail-header" id="modalProductIcon">🧋</div>
-                        
-                        <div class="product-detail-body">
-                            <div class="detail-tag" id="modalProductCategory">SIGNATURE COLLECTION</div>
-                            <h2 class="detail-title" id="modalProductName">Signature Taro Milk Tea</h2>
-                            <p class="detail-description" id="modalProductDesc">Velvety slow-cooked taro root blended with premium Assam black tea and creamy milk.</p>
-
-                            <!-- QUANTITY SELECTION -->
-                            <div class="customize-section">
-                                <div class="customize-label">QUANTITY</div>
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity(-1)">−</button>
-                                    <div class="qty-display" id="quantityDisplay">1</div>
-                                    <button class="qty-btn" onclick="updateQuantity(1)">+</button>
-                                </div>
-                            </div>
-
-                            <!-- SIZE SELECTION -->
-                            <div class="customize-section">
-                                <div class="customize-label">SIZE SELECTION</div>
-                                <div class="size-options">
-                                    <div class="size-option" onclick="selectSize(this)">S</div>
-                                    <div class="size-option selected" onclick="selectSize(this)">M</div>
-                                    <div class="size-option" onclick="selectSize(this)">L</div>
-                                </div>
-                            </div>
-
-                            <!-- SUGAR LEVEL -->
-                            <div class="customize-section">
-                                <div class="customize-label">SUGAR LEVEL</div>
-                                <div class="level-labels">
-                                    <span>0%</span>
-                                    <span id="sugarLevel">38% Selected</span>
-                                    <span>100%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="38" class="slider" id="sugarSlider" onchange="updateSugarLevel(this.value)">
-                            </div>
-
-                            <!-- ICE LEVEL -->
-                            <div class="customize-section">
-                                <div class="customize-label">ICE LEVEL</div>
-                                <div class="level-labels">
-                                    <span>NO ICE</span>
-                                    <span id="iceLevel">58% Selected</span>
-                                    <span>EXTRA</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="58" class="slider" id="iceSlider" onchange="updateIceLevel(this.value)">
-                            </div>
-
-                            <!-- TOPPINGS/ADD-ONS -->
-                            <div class="customize-section">
-                                <div class="customize-label">ADD TOPPINGS</div>
-                                <div class="toppings-grid">
-                                    <div class="topping-item" data-topping="Pearls" data-price="0.50" onclick="toggleTopping(this)">
-                                        <div class="topping-icon">🫧</div>
-                                        <div class="topping-name">Pearls</div>
-                                        <div class="topping-price">+$0.50</div>
-                                        <div class="topping-qty-controls">
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, -1)">−</button>
-                                            <div class="topping-qty-display">1</div>
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, 1)">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="topping-item" data-topping="Cheese Foam" data-price="1.00" onclick="toggleTopping(this)">
-                                        <div class="topping-icon">🧀</div>
-                                        <div class="topping-name">Cheese Foam</div>
-                                        <div class="topping-price">+$1.00</div>
-                                        <div class="topping-qty-controls">
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, -1)">−</button>
-                                            <div class="topping-qty-display">1</div>
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, 1)">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="topping-item" data-topping="Caramel" data-price="0.50" onclick="toggleTopping(this)">
-                                        <div class="topping-icon">🍮</div>
-                                        <div class="topping-name">Caramel</div>
-                                        <div class="topping-price">+$0.50</div>
-                                        <div class="topping-qty-controls">
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, -1)">−</button>
-                                            <div class="topping-qty-display">1</div>
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, 1)">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="topping-item" data-topping="Aloe Vera" data-price="0.75" onclick="toggleTopping(this)">
-                                        <div class="topping-icon">🌿</div>
-                                        <div class="topping-name">Aloe Vera</div>
-                                        <div class="topping-price">+$0.75</div>
-                                        <div class="topping-qty-controls">
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, -1)">−</button>
-                                            <div class="topping-qty-display">1</div>
-                                            <button class="topping-qty-btn" onclick="event.stopPropagation(); changeToppingQty(this, 1)">+</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ACTION BUTTONS -->
-                            <button class="btn-primary" onclick="addToCart(); closeProductModal();">🛒 Add to Cart</button>
-                            <button class="btn-secondary" onclick="closeProductModal();">Continue Browsing</button>
-                        </div>
-                    </div>
-                </div>
+                
 
                 <!-- Custom Brew Section -->
                 <div style="background: white; border-radius: 10px; padding: 2rem; margin-top: 2rem; box-shadow: var(--shadow);">

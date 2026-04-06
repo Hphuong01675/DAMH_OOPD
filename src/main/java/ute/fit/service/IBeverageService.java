@@ -1,7 +1,9 @@
 package ute.fit.service;
 
 import jakarta.servlet.http.Part;
+import ute.fit.entity.BeverageEntity;
 import ute.fit.model.BeverageDTO;
+//import ute.fit.model.OrderItemDTO;
 
 import java.util.List;
 
@@ -11,4 +13,7 @@ public interface IBeverageService {
     BeverageDTO getById(int id);
     void save(BeverageDTO dto, Part filePart) throws Exception;
     void toggleStatus(int id);
+    BeverageEntity findById(int id);
+    
+    
 }
