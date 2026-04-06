@@ -5,7 +5,7 @@ import ute.fit.dao.impl.DiscountDAOImpl;
 import ute.fit.entity.DiscountEntity;
 import ute.fit.service.IDiscountService;
 import ute.fit.service.factory.DiscountStrategyFactory;
-import ute.fit.service.strategy.DiscountStrategy;
+import ute.fit.model.stragety.DiscountStrategy;
 
 import java.util.ArrayList;
 import java.util.List;

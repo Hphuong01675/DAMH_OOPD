@@ -1,4 +1,7 @@
-package ute.fit.model;
+package ute.fit.model.state;
+
+import ute.fit.model.Order;
+import ute.fit.model.StatusPayment;
 
 public class CompletedState implements OrderState {
     @Override public void handlePayment(Order context, StatusPayment status) {}

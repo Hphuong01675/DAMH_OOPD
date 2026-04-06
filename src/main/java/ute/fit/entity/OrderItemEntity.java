@@ -8,6 +8,7 @@ import ute.fit.model.Size;
 import ute.fit.model.SugarLevel;
 
 @Entity
+@Table(name = "OrderItems")
 public class OrderItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

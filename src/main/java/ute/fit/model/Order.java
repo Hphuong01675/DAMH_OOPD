@@ -3,6 +3,9 @@ package ute.fit.model;
 import java.util.ArrayList;
 import java.util.List;
 import ute.fit.entity.CustomerEntity;
+import ute.fit.model.state.CancelledState;
+import ute.fit.model.state.OrderState;
+import ute.fit.model.state.PendingState;
 
 /**
  * Lớp Order đóng vai trò là Context trong State Pattern.

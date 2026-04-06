@@ -1,10 +1,11 @@
 package ute.fit.service.factory;
 
 import ute.fit.entity.DiscountEntity;
-import ute.fit.service.strategy.DiscountStrategy;
-import ute.fit.service.strategy.FixedDiscountStrategy;
-import ute.fit.service.strategy.PercentDiscountStrategy;
-import ute.fit.service.strategy.PointRedeemDiscountStrategy;
+import ute.fit.model.stragety.DiscountStrategy;
+import ute.fit.model.stragety.FixedDiscountStrategy;
+import ute.fit.model.stragety.PercentDiscountStrategy;
+import ute.fit.model.stragety.PointRedeemDiscountStrategy;
+
 
 public class DiscountStrategyFactory {
 

@@ -9,10 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ute.fit.config.JPAUtil;
 import ute.fit.entity.CustomerEntity;
-import ute.fit.model.CancelledState;
+import ute.fit.model.state.CancelledState;
 import ute.fit.model.Order;
 import ute.fit.model.Payment;
-import ute.fit.model.PendingState;
+import ute.fit.model.state.PendingState;
 import ute.fit.model.StatusPayment;
 import ute.fit.service.IDiscountService;
 import ute.fit.service.impl.DiscountServiceImpl;
@@ -121,6 +121,6 @@ public class PaymentController extends HttpServlet {
         // Lấy tên trạng thái từ State object (PENDING hoặc CANCELLED)
         req.setAttribute("orderState", order.getCurrentState().getStateName());
 
-        req.getRequestDispatcher("/META-INF/views/staff/success.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/staff/success.jsp").forward(req, resp);
     }
 }

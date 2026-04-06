@@ -1,4 +1,4 @@
-package ute.fit.model;
+package ute.fit.model.state;
 
 public class OrderStateFactory {
     public static OrderState getState(String stateName) {

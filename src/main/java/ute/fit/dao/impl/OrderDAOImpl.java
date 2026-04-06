@@ -104,10 +104,11 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import ute.fit.config.JPAUtil;
 import ute.fit.dao.IOrderDAO;
 import ute.fit.entity.OrderEntity;
-import ute.fit.model.PendingState;
+import ute.fit.model.state.PendingState;
 import ute.fit.model.StatusPayment;
 
 public class OrderDAOImpl implements IOrderDAO {
@@ -249,5 +250,110 @@ public class OrderDAOImpl implements IOrderDAO {
             } finally {
                 em.close();
             }
+    }
+    @Override
+    public Object[] getBaristaStatsToday(String username) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            LocalDate today = LocalDate.now();
+            LocalDateTime start = today.atStartOfDay();
+            LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+            String jpql = "SELECT " +
+                          "SUM(CASE WHEN o.stateName = 'COMPLETED' THEN o.totalAmount ELSE 0.0 END), " +
+                          "COUNT(o.orderID), " +
+                          "SUM(CASE WHEN o.stateName = 'PENDING' THEN 1 ELSE 0 END) " +
+                          "FROM OrderEntity o " +
+                          "WHERE o.barista.account.username = :username " +
+                          "AND o.orderDate >= :start AND o.orderDate < :end";
+            
+            Object[] result = em.createQuery(jpql, Object[].class)
+                              .setParameter("username", username)
+                              .setParameter("start", start)
+                              .setParameter("end", end)
+                              .getSingleResult();
+            return result != null ? result : new Object[]{0.0, 0L, 0L};
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Object[]{0.0, 0L, 0L};
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Object[]> getOrdersByBaristaUsernameToday(String username) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            LocalDate today = LocalDate.now();
+            LocalDateTime start = today.atStartOfDay();
+            LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+            String jpql = "SELECT o.orderID, c.name, o.stateName, o.statusPayment " +
+                          "FROM OrderEntity o LEFT JOIN o.customer c " +
+                          "WHERE o.barista.account.username = :username " +
+                          "AND o.orderDate >= :start AND o.orderDate < :end " +
+                          "ORDER BY o.orderDate DESC";
+            
+            return em.createQuery(jpql, Object[].class)
+                     .setParameter("username", username)
+                     .setParameter("start", start)
+                     .setParameter("end", end)
+                     .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    // --- HÀM MỚI CHO TOP DRINKS ---
+    @Override
+    public List<Object[]> getTopDrinksByBaristaToday(String username) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            LocalDate today = LocalDate.now();
+            LocalDateTime start = today.atStartOfDay();
+            LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+            String jpql = "SELECT b.name, SUM(i.quantity) " +
+                          "FROM OrderItemEntity i " +
+                          "JOIN i.order o " +
+                          "JOIN i.beverage b " +
+                          "WHERE o.barista.account.username = :username " +
+                          "AND o.orderDate >= :start AND o.orderDate < :end " +
+                          "GROUP BY b.name " +
+                          "ORDER BY SUM(i.quantity) DESC";
+            
+            return em.createQuery(jpql, Object[].class)
+                     .setParameter("username", username)
+                     .setParameter("start", start)
+                     .setParameter("end", end)
+                     .setMaxResults(3) // Lấy Top 3
+                     .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    // --- HÀM MỚI CHO CHART (Lấy mốc thời gian của đơn hàng) ---
+    @Override
+    public List<LocalDateTime> getOrderDatesByBaristaToday(String username) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            LocalDate today = LocalDate.now();
+            LocalDateTime start = today.atStartOfDay();
+            LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+            String jpql = "SELECT o.orderDate FROM OrderEntity o " +
+                          "WHERE o.barista.account.username = :username " +
+                          "AND o.orderDate >= :start AND o.orderDate < :end";
+            
+            return em.createQuery(jpql, LocalDateTime.class)
+                     .setParameter("username", username)
+                     .setParameter("start", start)
+                     .setParameter("end", end)
+                     .getResultList();
+        } finally {
+            em.close();
+        }
     }
 }

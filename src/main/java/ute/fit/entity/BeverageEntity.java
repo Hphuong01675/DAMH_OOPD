@@ -9,16 +9,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "Beverages")
 public class BeverageEntity {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productID;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String name;
     
     @Column(nullable = false)
     private double basePrice; // Giá gốc size S
     
     private String imgUrl;
+    
+    @Column(name = "isSellable", nullable = false, columnDefinition = "BIT DEFAULT 1")
+    private boolean isSellable = true;
 }
