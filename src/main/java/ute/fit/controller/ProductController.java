@@ -55,7 +55,7 @@ public class ProductController extends HttpServlet {
         // Nạp danh sách Topping từ DB cho phần cuối trang
         req.setAttribute("toppings", serviceTopping.getAllToppings());
 
-        req.getRequestDispatcher("/views/admin/product-list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/admin/product-list.jsp").forward(req, resp);
     }
 
     @Override
