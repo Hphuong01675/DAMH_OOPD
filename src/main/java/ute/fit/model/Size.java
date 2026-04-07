@@ -2,8 +2,8 @@ package ute.fit.model;
 
 public enum Size {
 	S(0.0),
-	M(5.0),
-	L(8.0);
+	M(5000.0),
+	L(8000.0);
 	
 	private final double extraPrice;
 

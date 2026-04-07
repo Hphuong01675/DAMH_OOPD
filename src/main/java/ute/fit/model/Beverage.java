@@ -8,7 +8,8 @@ public class Beverage implements Product {
     private IceLevel ice;
 
     // Constructor để Builder gọi
-    public Beverage(BeverageBuilder builder) {
+    // package-private: chi class cung package moi duoc phep new
+    Beverage(BeverageBuilder builder) {
         this.name = builder.getName();
         this.basePrice = builder.getBasePrice();
         this.size = builder.getSize();

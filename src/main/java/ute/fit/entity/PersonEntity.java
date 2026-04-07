@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "Persons")
 public abstract class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String phoneNumber;
+    protected Long id;
+    
+    protected String phoneNumber;
+    protected String name;
 }
 
 

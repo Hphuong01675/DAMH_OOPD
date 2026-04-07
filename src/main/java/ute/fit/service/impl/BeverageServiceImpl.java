@@ -7,6 +7,7 @@ import ute.fit.config.CloudinaryConfig;
 import ute.fit.dao.IBeverageDAO;
 import ute.fit.dao.impl.BeverageDAOImpl;
 import ute.fit.entity.BeverageEntity;
+import ute.fit.model.BeverageBuilder;
 import ute.fit.model.BeverageDTO;
 import ute.fit.service.IBeverageService;
 
@@ -109,4 +110,11 @@ public class BeverageServiceImpl implements IBeverageService {
     public void toggleStatus(int id) {
         dao.toggleSellable(id);
     }
+	
+	@Override
+	public BeverageBuilder getBeverageBuilder(int id) {
+	    BeverageEntity entity = dao.findById(id);
+	    if (entity == null) return null;
+	    return new BeverageBuilder(entity); // Builder đã có sẵn name và basePrice từ DB
+	}
 }

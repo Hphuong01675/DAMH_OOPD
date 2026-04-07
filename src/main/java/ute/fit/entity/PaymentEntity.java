@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import ute.fit.model.StatusPayment;
 
 @Entity
+@Table(name = "Payments")
 public class PaymentEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentID;
