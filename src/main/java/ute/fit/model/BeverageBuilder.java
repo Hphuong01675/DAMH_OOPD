@@ -6,7 +6,7 @@ public class BeverageBuilder {
 	private String name;
 	private double basePrice;
 	private Size size = Size.S; // Mặc định
-	private SugarLevel sugar = SugarLevel.S100;
+	private SugarLevel sugar = SugarLevel.S50;
 	private IceLevel ice = IceLevel.Normal;
 
 	// Truyền Entity vào để lấy thông tin gốc từ DB

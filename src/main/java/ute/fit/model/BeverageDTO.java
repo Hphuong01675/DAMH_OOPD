@@ -12,5 +12,5 @@ public class BeverageDTO {
     private String name;
     private double basePrice;
     private String imgUrl;
-    private boolean sellable;
+    private Boolean sellable;
 }

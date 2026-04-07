@@ -1,15 +1,17 @@
 package ute.fit.service.impl;
 
+import ute.fit.entity.BeverageEntity;
+import ute.fit.service.IBeverageService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+
 import jakarta.servlet.http.Part;
 import ute.fit.config.CloudinaryConfig;
 import ute.fit.dao.IBeverageDAO;
 import ute.fit.dao.impl.BeverageDAOImpl;
-import ute.fit.entity.BeverageEntity;
 import ute.fit.model.BeverageBuilder;
 import ute.fit.model.BeverageDTO;
-import ute.fit.service.IBeverageService;
+//import ute.fit.model.OrderItemDTO;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +47,7 @@ public class BeverageServiceImpl implements IBeverageService {
         e.setName(dto.getName());
         e.setBasePrice(dto.getBasePrice());
         e.setImgUrl(dto.getImgUrl());
-        e.setSellable(dto.isSellable());
+        e.setSellable(dto.getSellable());
         return e;
     }
 	

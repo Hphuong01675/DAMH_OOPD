@@ -1,39 +1,30 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<aside class="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-logo">🍹</div>
-        <div class="brand-text">
-            <h2>Chip3Chip</h2>
-            <span>Barista Station</span>
-        </div>
-    </div>
+<style>
+.sidebar {
+    width: 220px;
+    background: white;
+    padding: 20px;
+}
 
-    <nav class="sidebar-nav">
-        <ul>
-            <li class="nav-item active">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span>Dashboard</span>
-            </li>
-            <li class="nav-item">
-                <span class="material-symbols-outlined">restaurant_menu</span>
-                <span>Menu</span>
-            </li>
-            </ul>
-    </nav>
+.sidebar-menu li {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-    <div class="sidebar-footer">
-        <div class="user-card">
-            <div class="user-avatar">
-                ${sessionScope.account != null ? sessionScope.account.person.name.substring(0,1) : 'A'} [cite: 301]
-            </div>
-            <div class="user-details">
-                <p class="u-name">${sessionScope.account.person.name}</p> [cite: 301]
-                <p class="u-role">${sessionScope.account.role}</p> [cite: 302]
-            </div>
-        </div>
-        <a href="${pageContext.request.contextPath}/logout" class="btn-logout"> [cite: 302]
-            <span class="material-symbols-outlined">logout</span> [cite: 303]
-            <span>Đăng xuất</span>
-        </a>
-    </div>
-</aside>
+.sidebar-menu li.active {
+    background: #f5e6d3;
+    color: #a74880;
+}
+</style>
+
+<div class="sidebar">
+    <h2>📋 Menu</h2>
+    <ul>
+        <li class="active">Dashboard</li>
+        <li>Orders</li>
+        <li>Products</li>
+        <li>Customers</li>
+        <li>Reports</li>
+    </ul>
+</div>

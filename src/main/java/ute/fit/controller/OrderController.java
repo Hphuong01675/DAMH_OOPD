@@ -14,13 +14,18 @@ import java.util.List;
 @WebServlet(urlPatterns = {"/order"})
 public class OrderController extends HttpServlet {
     
-    private IBeverageService beverageService = new BeverageServiceImpl();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private IBeverageService beverageService = new BeverageServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
             throws ServletException, IOException {
         
-        List<BeverageDTO> list = beverageService.findAll();
+    	List<BeverageDTO> list = beverageService.findAll();
+    	System.out.println("SIZE = " + list.size());
         
         req.setAttribute("beverages", list);
         

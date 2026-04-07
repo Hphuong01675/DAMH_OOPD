@@ -16,10 +16,15 @@ public class BeverageDAOImpl implements IBeverageDAO {
 
 	@Override
 	public BeverageEntity findById(int id) {
-		try (EntityManager em = JPAUtil.getEntityManager()) {
-			return em.find(BeverageEntity.class, id);
-		}
-	}
+
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            return em.find(BeverageEntity.class, id);
+        } finally {
+            em.close();
+        }
+    }
 	
 	@Override
     public List<BeverageEntity> searchByName(String keyword) {
