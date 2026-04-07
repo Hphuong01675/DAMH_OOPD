@@ -45,7 +45,7 @@ public class BuildDrinkController extends HttpServlet {
 	         
 
 	        // ===== Build Beverage =====
-	        Product product = beverageService.getBeverageBuilder(beverageId)
+	        Product product = beverageService.getBeverageBuilder(beverageDTO)
                     .setSugar(SugarLevel.valueOf(request.getParameter("sugar")))
                     .setSize(Size.valueOf(request.getParameter("size")))
                     .setIce(IceLevel.valueOf(request.getParameter("ice")))

@@ -114,9 +114,7 @@ public class BeverageServiceImpl implements IBeverageService {
     }
 	
 	@Override
-	public BeverageBuilder getBeverageBuilder(int id) {
-	    BeverageEntity entity = dao.findById(id);
-	    if (entity == null) return null;
-	    return new BeverageBuilder(entity); // Builder đã có sẵn name và basePrice từ DB
+	public BeverageBuilder getBeverageBuilder(BeverageDTO beverageDTO) {
+	    return new BeverageBuilder(beverageDTO); // Builder đã có sẵn name và basePrice từ DB
 	}
 }

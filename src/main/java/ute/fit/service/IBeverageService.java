@@ -13,5 +13,5 @@ public interface IBeverageService {
     BeverageDTO getById(int id);
     void save(BeverageDTO dto, Part filePart) throws Exception;
     void toggleStatus(int id);
-    BeverageBuilder getBeverageBuilder(int id);
+    BeverageBuilder getBeverageBuilder(BeverageDTO beverageDTO);
 }
