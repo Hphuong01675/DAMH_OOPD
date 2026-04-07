@@ -4,28 +4,31 @@ import ute.fit.dao.IAccountDAO;
 import ute.fit.dao.impl.AccountDAOImpl;
 import ute.fit.entity.AccountEntity;
 import ute.fit.model.Roles;
+import ute.fit.model.UserDTO;
 import ute.fit.service.IAuthService;
 
 public class AuthServiceImpl implements IAuthService {
     private final IAccountDAO accountDAO = new AccountDAOImpl();
 
     @Override
-    public AccountEntity login(String identifier, String password, String role) {
-        if (isBlank(identifier) || isBlank(password) || isBlank(role)) {
-            return null;
-        }
+    public UserDTO login(String identifier, String password, String roleStr) {
+        Roles role = Roles.valueOf(roleStr.substring(0, 1).toUpperCase() + roleStr.substring(1).toLowerCase());
+        
+        // Nhận Entity từ DAO
+        AccountEntity account = accountDAO.findActiveAccountForLogin(identifier, role);
 
-        Roles mappedRole = mapRole(role);
-        if (mappedRole == null) {
-            return null;
+        // Kiểm tra tài khoản và mật khẩu
+        if (account != null && account.getPassword().equals(password)) {
+            // Mapping sang DTO ngay tại Service
+            UserDTO dto = new UserDTO();
+            dto.setId(account.getPerson() != null ? account.getPerson().getId() : null);
+            dto.setFullName(account.getPerson() != null ? account.getPerson().getName() : account.getUsername());
+            dto.setEmail(null); // Bạn có thể bổ sung logic lấy email từ StaffEntity/BaristaEntity nếu cần
+            dto.setRole(account.getRole().name());
+            dto.setPhone(account.getPerson() != null ? account.getPerson().getPhoneNumber() : null);
+            return dto;
         }
-
-        AccountEntity account = accountDAO.findActiveAccountForLogin(identifier, mappedRole);
-        if (account == null) {
-            return null;
-        }
-
-        return password.equals(account.getPassword()) ? account : null;
+        return null;
     }
 
     private Roles mapRole(String role) {

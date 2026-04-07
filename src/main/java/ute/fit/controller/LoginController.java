@@ -6,8 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ute.fit.entity.AccountEntity;
-import ute.fit.model.Roles;
+import ute.fit.model.UserDTO;
 import ute.fit.service.IAuthService;
 import ute.fit.service.impl.AuthServiceImpl;
 
@@ -33,40 +32,33 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        disableCache(resp);
-
+    	req.setCharacterEncoding("UTF-8");
         String phone = trim(req.getParameter("phone"));
         String password = trim(req.getParameter("password"));
         String selectedRole = defaultRole(req.getParameter("role"));
 
-        AccountEntity account = authService.login(phone, password, selectedRole);
-        if (account == null) {
-            req.setAttribute("error", "Invalid username, password, or role.");
+        // Gọi Service và nhận về DTO
+        UserDTO user = authService.login(phone, password, selectedRole);
+
+        if (user == null) {
+            req.setAttribute("error", "Số điện thoại hoặc mật khẩu không đúng.");
             req.setAttribute("selectedRole", selectedRole);
-            req.setAttribute("phone", phone);
             req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
             return;
         }
 
-        HttpSession currentSession = req.getSession(false);
-        if (currentSession != null) {
-            currentSession.invalidate();
-        }
-
         HttpSession session = req.getSession(true);
-        session.setAttribute("loggedInUser", account);
-        session.setAttribute("role", account.getRole());
-        session.setAttribute("displayName", account.getPerson() != null ? account.getPerson().getName() : account.getUsername());
+        session.setAttribute("user", user); // Lưu DTO vào session
 
-        resp.sendRedirect(req.getContextPath() + resolveTarget(account.getRole()));
+        // Sử dụng đúng tên phương thức resolveTarget và truyền vào String role từ DTO
+        resp.sendRedirect(req.getContextPath() + resolveTarget(user.getRole()));
     }
 
-    private String resolveTarget(Roles role) {
-        if (role == Roles.Admin) {
+    private String resolveTarget(String role) {
+        if ("Admin".equalsIgnoreCase(role)) {
             return "/admin/dashboard";
         }
-        if (role == Roles.Barista) {
+        if ("Barista".equalsIgnoreCase(role)) {
             return "/barista/dashboard";
         }
         return "/staff/dashboard";

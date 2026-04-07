@@ -14,19 +14,22 @@ public class OrderDAOImpl implements IOrderDAO {
     public double calculateDailyRevenueByStaff(Long staffId, LocalDate date) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            LocalDateTime start = date.atStartOfDay();
-            LocalDateTime end = date.atTime(LocalTime.MAX);
+            LocalDateTime startOfDay = date.atStartOfDay();
+            LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
-            // Chỉ tính doanh thu từ đơn hàng đã hoàn thành thanh toán
+            // Sử dụng tham số :status và hằng số SUCCESS từ Enum của bạn
             String jpql = "SELECT SUM(o.totalAmount) FROM OrderEntity o " +
                           "WHERE o.staff.id = :staffId " +
                           "AND o.orderDate BETWEEN :start AND :end " +
-                          "AND o.statusPayment = ute.fit.model.StatusPayment.COMPLETED";
+                          "AND o.statusPayment = :status";
             
             TypedQuery<Double> query = em.createQuery(jpql, Double.class);
             query.setParameter("staffId", staffId);
-            query.setParameter("start", start);
-            query.setParameter("end", end);
+            query.setParameter("start", startOfDay);
+            query.setParameter("end", endOfDay);
+            
+            // Sửa tại đây: dùng StatusPayment.SUCCESS
+            query.setParameter("status", ute.fit.model.StatusPayment.SUCCESS); 
             
             Double result = query.getSingleResult();
             return result != null ? result : 0.0;
