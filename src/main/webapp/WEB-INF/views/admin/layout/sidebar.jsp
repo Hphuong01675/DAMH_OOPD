@@ -11,7 +11,7 @@
     </div>
 
     <nav class="flex flex-col gap-2 px-4 mt-4">
-        <a href="#" class="py-3.5 px-5 rounded-full flex items-center gap-4 text-sm font-semibold opacity-60 hover:opacity-100 hover:bg-white/50 transition-all">
+        <a href="${pageContext.request.contextPath}/admin/dashboard" class="py-3.5 px-5 rounded-full flex items-center gap-4 text-sm font-semibold opacity-60 hover:opacity-100 hover:bg-white/50 transition-all">
             <span class="material-symbols-outlined text-[22px]">dashboard</span> Dashboard
         </a>
         

@@ -6,7 +6,7 @@
             <span class="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-[#faf7f2]"></span>
         </button>
         <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-105 transition-transform">
-            <img src="https://ui-avatars.com/api/?name=Admin&background=974362&color=fff" class="w-full h-full object-cover">
+            <img src="https://ui-avatars.com/api/?name=${not empty sessionScope.displayName ? sessionScope.displayName : 'User'}&background=974362&color=fff" class="w-full h-full object-cover">
         </div>
     </div>
 </header>
