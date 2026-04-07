@@ -1,7 +1,8 @@
 package ute.fit.service;
 
-import ute.fit.entity.AccountEntity;
+import ute.fit.model.UserDTO;
 
 public interface IAuthService {
-    AccountEntity login(String identifier, String password, String role);
+    // Thay đổi kiểu trả về thành UserDTO
+    UserDTO login(String identifier, String password, String roleStr);
 }

@@ -10,62 +10,67 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ute.fit.entity.AccountEntity;
 import ute.fit.model.Roles;
+import ute.fit.model.UserDTO;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/admin/*", "/staff/*", "/barista/*"})
+@WebFilter(urlPatterns = { "/admin/*", "/staff/*", "/barista/*" })
 public class AuthenticationFilter extends HttpFilter implements Filter {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse resp = (HttpServletResponse) response;
+		HttpSession session = req.getSession(false);
 
-        HttpSession session = req.getSession(false);
-        AccountEntity account = session == null ? null : (AccountEntity) session.getAttribute("loggedInUser");
+		UserDTO user = (session != null) ? (UserDTO) session.getAttribute("user") : null;
 
-        resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        resp.setHeader("Pragma", "no-cache");
-        resp.setDateHeader("Expires", 0);
+		if (user == null) {
+			resp.sendRedirect(req.getContextPath() + "/login");
+			return;
+		}
 
-        if (account == null) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
+		String path = req.getServletPath();
+		String role = user.getRole();
 
-        if (!isAuthorized(req.getServletPath(), account.getRole())) {
-            resp.sendRedirect(req.getContextPath() + resolveTarget(account.getRole()));
-            return;
-        }
+		// Kiểm tra quyền an toàn hơn bằng chuỗi
+		boolean authorized = false;
+		if (path.startsWith("/admin") && "Admin".equalsIgnoreCase(role))
+			authorized = true;
+		else if (path.startsWith("/barista") && "Barista".equalsIgnoreCase(role))
+			authorized = true;
+		else if (path.startsWith("/staff") && "Staff".equalsIgnoreCase(role))
+			authorized = true;
 
-        chain.doFilter(request, response);
-    }
+		if (authorized) {
+			chain.doFilter(request, response);
+		} else {
+			// Gọi resolveTarget thay vì resolveTargetByRole
+			resp.sendRedirect(req.getContextPath() + resolveTarget(role));
+		}
+	}
 
-    private boolean isAuthorized(String servletPath, Roles role) {
-        if (servletPath.startsWith("/admin/")) {
-            return role == Roles.Admin;
-        }
-        if (servletPath.startsWith("/barista/")) {
-            return role == Roles.Barista;
-        }
-        if (servletPath.startsWith("/staff/")) {
-            return role == Roles.Staff;
-        }
-        return false;
-    }
+	private boolean isAuthorized(String path, String role) {
+		if (path.startsWith("/admin") && "Admin".equalsIgnoreCase(role))
+			return true;
+		if (path.startsWith("/barista") && "Barista".equalsIgnoreCase(role))
+			return true;
+		if (path.startsWith("/staff") && "Staff".equalsIgnoreCase(role))
+			return true;
+		return false;
+	}
 
-    private String resolveTarget(Roles role) {
-        if (role == Roles.Admin) {
-            return "/admin/dashboard";
-        }
-        if (role == Roles.Barista) {
-            return "/barista/dashboard";
-        }
-        return "/staff/dashboard";
-    }
+	private String resolveTarget(String role) {
+		if ("Admin".equalsIgnoreCase(role)) {
+			return "/admin/dashboard";
+		}
+		if ("Barista".equalsIgnoreCase(role)) {
+			return "/barista/dashboard";
+		}
+		return "/staff/dashboard";
+	}
 }
