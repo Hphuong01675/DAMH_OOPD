@@ -12,12 +12,12 @@ import ute.fit.service.impl.ToppingServiceImpl;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
-    "/admin/products", 
+   "/admin/products", 
     "/admin/product/save", 
     "/admin/product/toggle", 
     "/admin/product/edit"
 })
-@MultipartConfig
+//@MultipartConfig
 public class ProductController extends HttpServlet {
     private IBeverageService beverageService = new BeverageServiceImpl();
     private IToppingService toppingService = new ToppingServiceImpl();

@@ -1,160 +1,165 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
-<html class="light" lang="vi">
+<html lang="vi">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Fulfillment Station | Chip3Chip</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barista Dashboard | Chip3Chip</title>
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-    <script id="tailwind-config">
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#974362",
-                        "tertiary": "#853bb5",
-                        "surface": "#fef8f3",
-                        "surface-container-low": "#f9f3ed",
-                        "surface-container-lowest": "#ffffff",
-                        "on-surface": "#35322d",
-                        "secondary": "#3c6942",
-                        "secondary-container": "#cbfecc"
-                    },
-                    borderRadius: {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "full": "9999px"
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .editorial-shadow { box-shadow: 0 8px 32px rgba(53, 50, 45, 0.06); }
-        .glass-header { background: rgba(254, 248, 243, 0.8); backdrop-filter: blur(16px); }
-    </style>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        /* Bảng màu thiết kế mới của Dashboard */
+        primary: "#9C3D54",
+        soft: "#F6F2EF",
+        card: "#FFFFFF",
+        accent: "#EADDE0",
+        green: "#C8F2D0",
+        purple: "#B57EDC",
+        
+        /* Bảng màu cũ bắt buộc phải giữ lại để file Sidebar.jsp không bị vỡ giao diện */
+        "tertiary": "#853bb5",
+        "surface-container-low": "#f9f3ed",
+        "surface-container-lowest": "#ffffff",
+        "on-surface": "#35322d",
+        "on-surface-variant": "#6B645E"
+      }
+    }
+  }
+}
+</script>
+<style>
+  .editorial-shadow { box-shadow: 0 8px 32px rgba(53, 50, 45, 0.06); }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+</style>
 </head>
 
-<body class="bg-surface font-body text-on-surface antialiased">
+<body class="bg-soft text-gray-800">
 
-    <header class="md:hidden glass-header fixed top-0 left-0 w-full flex justify-between items-center px-6 py-4 z-50 editorial-shadow">
-        <h1 class="font-headline font-black text-xl tracking-tight">Chip3Chip</h1>
-        <span class="material-symbols-outlined text-primary">account_circle</span>
-    </header>
+<%@ include file="/WEB-INF/views/barista/layout/sidebar.jsp" %>
 
-    <%@ include file="/WEB-INF/views/barista/layout/sidebar.jsp" %>
+<div class="p-8 md:ml-64 min-h-screen">
 
-    <main class="md:ml-64 min-h-screen pt-20 md:pt-0 pb-24 md:pb-12 px-6 md:px-12 bg-surface">
+  <div class="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
+    <div>
+      <h1 class="text-4xl font-bold text-primary">Welcome, ${sessionScope.account.name}</h1>
+      <p class="text-gray-500 mt-1">Crafting excellence ☕</p>
+    </div>
 
-        <section class="flex flex-col md:flex-row md:items-end justify-between pt-12 pb-8 gap-6 border-b border-outline-variant/10 mb-8">
-            <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    <p class="text-green-600 font-headline font-bold text-xs tracking-widest uppercase">Station Online</p>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-headline font-extrabold text-on-background tracking-tighter">Fulfillment Station</h2>
-            </div>
+    <div class="flex items-center gap-4">
+        <a href="${pageContext.request.contextPath}/barista/orders" class="bg-green px-5 py-2 rounded-full text-green-700 font-medium flex items-center gap-2 hover:bg-green/80 transition shadow-sm">
+            <span class="w-2 h-2 bg-green-700 rounded-full animate-pulse"></span>
+            Live Queue: ${pendingOrders}
+        </a>
+        <div class="w-10 h-10 bg-accent text-primary font-bold rounded-full flex items-center justify-center shadow-sm uppercase">
+            ${sessionScope.account.name.substring(0,1)}
+        </div>
+    </div>
+  </div>
 
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-        </section>
+    <div class="md:col-span-2 bg-card p-6 rounded-2xl shadow">
+      <p class="text-gray-400 text-sm mb-2 font-semibold">TODAY'S REVENUE</p>
+      <h2 class="text-4xl font-bold text-gray-800">$${totalRevenue}</h2>
+      <div class="mt-2 text-green-600 text-sm font-medium">+12%</div>
+      <p class="text-gray-400 text-sm mt-2 italic">
+        "Exceeding yesterday's average"
+      </p>
+    </div>
 
-        <div class="space-y-6">
-            <div class="flex items-center justify-between px-2">
-                <h3 class="font-headline font-bold text-lg flex items-center gap-2">
-                    <span class="material-symbols-outlined text-tertiary">pending_actions</span>
-                    Active Queue
-                </h3>
-                <span class="text-xs font-bold bg-tertiary/10 text-tertiary px-5 py-2 rounded-full border border-tertiary/20">
-                    <c:out value="${pendingOrders.size()}" /> Orders Remaining
-                </span>
-            </div>
+    <div class="bg-card p-6 rounded-2xl shadow flex flex-col justify-center">
+      <p class="text-gray-400 text-sm mb-2 font-semibold">ORDERS PROCESSED</p>
+      <h2 class="text-4xl font-bold text-gray-800">${totalOrders}</h2>
+      <div class="bg-gray-100 h-2 rounded-full mt-4 overflow-hidden">
+        <div class="bg-purple h-2 rounded-full" style="width:${(totalOrders / 200) * 100}%"></div>
+      </div>
+      <p class="text-xs text-gray-400 mt-2 font-medium">
+        Daily goal: 200 orders
+      </p>
+    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+  </div>
 
-                <c:forEach var="order" items="${pendingOrders}">
-                    <div class="bg-surface-container-lowest rounded-[2rem] p-8 editorial-shadow border border-outline-variant/10 hover:border-tertiary/30 transition-all group relative overflow-hidden">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <%-- Truy cập orderID qua Key của Map (Vượt lỗi thiếu Getter) --%>
-                                <p class="text-[10px] font-black text-on-surface/30 uppercase tracking-widest">Order #<c:out value="${order.orderID}" /></p>
-                                <h4 class="text-xl font-headline font-bold text-on-surface mt-1">
-                                    <c:out value="${order.customer != null ? order.customer.name : 'Guest'}" />
-                                </h4>
-                            </div>
-                            <span class="text-[10px] font-bold bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full uppercase">Paid</span>
-                        </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                        <div class="space-y-4 mb-8">
-                            <c:forEach var="item" items="${order.items}">
-                                <div class="flex items-start gap-4 p-3 rounded-2xl bg-surface-container-low/50 border border-outline-variant/5">
-                                    <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 font-bold text-tertiary shadow-sm">
-                                        ${item.quantity}x
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-on-surface">${item.beverage.name}</p>
-                                        <p class="text-[11px] text-on-surface-variant opacity-70 italic mt-0.5">
-                                            Size ${item.size} • ${item.sugar} Sugar • ${item.ice} Ice
-                                        </p>
-                                        <div class="mt-2 flex flex-wrap gap-1">
-                                            <c:forEach var="topping" items="${item.toppings}">
-                                                <span class="text-[9px] font-bold bg-tertiary/5 text-tertiary px-2 py-0.5 rounded-md border border-tertiary/10 uppercase tracking-tighter">
-                                                    + ${topping.name}
-                                                </span>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </div>
+    <div class="md:col-span-2 bg-card p-6 rounded-2xl shadow">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-gray-800">Performance Chart</h3>
+        <span class="text-xs bg-accent text-primary px-3 py-1 rounded-full font-semibold">
+          Last 8 Hours
+        </span>
+      </div>
 
-                        <form action="${pageContext.request.contextPath}/barista/orders" method="POST">
-                            <input type="hidden" name="orderId" value="${order.orderID}">
-                            <input type="hidden" name="action" value="COMPLETE">
-                            <button type="submit" class="w-full py-4 bg-tertiary text-white font-headline font-bold text-sm rounded-full shadow-lg shadow-tertiary/20 hover:bg-tertiary-dim active:scale-95 transition-all flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                                Mark Done
-                            </button>
-                        </form>
+      <div class="flex items-end gap-3 h-40">
+        <c:choose>
+            <c:when test="${not empty chartData}">
+                <c:forEach var="bar" items="${chartData}">
+                    <div class="w-10 rounded-t-xl transition-all duration-300 hover:opacity-80
+                                ${bar.isMax ? 'bg-primary shadow-lg' : 'bg-[#EE86A6]'}" 
+                         style="height: ${bar.percentage}%;">
+                        <span class="opacity-0 hover:opacity-100 text-[10px] text-center block -mt-5 font-bold text-gray-600">
+                            ${bar.value}
+                        </span>
                     </div>
                 </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm italic border-2 border-dashed border-gray-100 rounded-xl">
+                    Chưa có dữ liệu thống kê biểu đồ
+                </div>
+            </c:otherwise>
+        </c:choose>
+      </div>
+    </div> <div class="bg-card p-6 rounded-2xl shadow">
+      <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">local_cafe</span> Top Drinks
+      </h3>
 
-                <c:if test="${empty pendingOrders}">
-                    <div class="col-span-full py-24 flex flex-col items-center justify-center text-center opacity-40 bg-white/50 rounded-[2rem] border-2 border-dashed border-outline-variant/20">
-                        <span class="material-symbols-outlined text-6xl mb-4 text-on-surface/40">coffee_maker</span>
-						<h3 class="font-headline font-bold text-xl">Queue is empty</h3>
-						<p class="text-sm">All beverages have been successfully
-							prepared.</p>
-					</div>
-                </c:if>
+      <div class="space-y-5">
+        <c:forEach var="drink" items="${topDrinks}" varStatus="status">
+            <div class="flex items-center justify-between group">
+              <div class="flex items-center gap-4">
+                
+                <c:choose>
+                    <c:when test="${status.index == 0}">
+                        <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
+                            ${drink.beverageName.substring(0,1)}
+                        </div>
+                    </c:when>
+                    <c:when test="${status.index == 1}">
+                        <div class="w-12 h-12 bg-green font-bold text-green-700 rounded-full flex items-center justify-center text-lg shadow-sm">
+                            ${drink.beverageName.substring(0,1)}
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="w-12 h-12 bg-accent font-bold text-primary rounded-full flex items-center justify-center text-lg shadow-sm">
+                            ${drink.beverageName.substring(0,1)}
+                        </div>
+                    </c:otherwise>
+                </c:choose>
 
+                <div>
+                  <p class="font-bold text-gray-800 group-hover:text-primary transition-colors">${drink.beverageName}</p>
+                  <p class="text-xs text-gray-400 font-medium">${drink.totalQuantity} cups crafted</p>
+                </div>
+              </div>
             </div>
-        </div>
+        </c:forEach>
 
-        <div class="mt-20 relative h-64 rounded-lg overflow-hidden md:block hidden grayscale-[30%] hover:grayscale-0 transition-all duration-1000">
-            <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000&auto=format&fit=crop" />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"></div>
-            <div class="absolute bottom-8 left-8">
-                <span class="font-['Pinyon_Script'] text-5xl text-tertiary">Handcrafted with love</span>
-                <p class="font-headline font-bold text-on-surface/40 tracking-widest uppercase text-xs mt-2">The Chip3Chip Atelier Standard</p>
+        <c:if test="${empty topDrinks}">
+            <div class="flex flex-col items-center justify-center py-6 opacity-40">
+                <span class="material-symbols-outlined text-4xl mb-2">inventory_2</span>
+                <p class="text-sm font-medium">No drinks yet.</p>
             </div>
-        </div>
-    </main>
-
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-outline-variant/10 flex justify-around items-center py-4 px-6 z-50">
-        <button class="flex flex-col items-center gap-1 text-tertiary font-bold">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
-            <span class="text-[10px]">Queue</span>
-        </button>
-        <button class="flex flex-col items-center gap-1 text-on-surface/60">
-            <span class="material-symbols-outlined">history</span>
-            <span class="text-[10px]">History</span>
-        </button>
-    </nav>
-</body>
+        </c:if>
+      </div>
+    </div> </div> </div> </body>
 </html>

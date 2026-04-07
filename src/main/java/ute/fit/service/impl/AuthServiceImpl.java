@@ -3,6 +3,8 @@ package ute.fit.service.impl;
 import ute.fit.dao.IAccountDAO;
 import ute.fit.dao.impl.AccountDAOImpl;
 import ute.fit.entity.AccountEntity;
+import ute.fit.entity.BaristaEntity;
+import ute.fit.entity.StaffEntity;
 import ute.fit.model.Roles;
 import ute.fit.model.UserDTO;
 import ute.fit.service.IAuthService;
@@ -12,39 +14,54 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public UserDTO login(String identifier, String password, String roleStr) {
-        Roles role = Roles.valueOf(roleStr.substring(0, 1).toUpperCase() + roleStr.substring(1).toLowerCase());
+        Roles role = mapRole(roleStr);
+        if (role == null) return null;
+
+        // 1. Gọi DAO lấy Account
+        AccountEntity account = accountDAO.findActiveAccount(identifier, role);
         
-        // Nhận Entity từ DAO
-        AccountEntity account = accountDAO.findActiveAccountForLogin(identifier, role);
-
-        // Kiểm tra tài khoản và mật khẩu
-        if (account != null && account.getPassword().equals(password)) {
-            // Mapping sang DTO ngay tại Service
-            UserDTO dto = new UserDTO();
-            dto.setId(account.getPerson() != null ? account.getPerson().getId() : null);
-            dto.setFullName(account.getPerson() != null ? account.getPerson().getName() : account.getUsername());
-            dto.setEmail(null); // Bạn có thể bổ sung logic lấy email từ StaffEntity/BaristaEntity nếu cần
-            dto.setRole(account.getRole().name());
-            dto.setPhone(account.getPerson() != null ? account.getPerson().getPhoneNumber() : null);
-            return dto;
+        // 2. Kiểm tra mật khẩu
+        if (account == null || !account.getPassword().equals(password)) {
+            return null;
         }
-        return null;
+
+        // 3. Khởi tạo DTO và điền dữ liệu qua phương thức hỗ trợ
+        UserDTO dto = new UserDTO();
+        dto.setRole(account.getRole().name());
+
+        if (role == Roles.Admin) {
+            dto.setFullName("System Administrator");
+            dto.setId(0L);
+        } else {
+            fillUserData(dto, account.getUsername(), role);
+        }
+
+        return (dto.getId() != null) ? dto : null;
     }
 
+    private void fillUserData(UserDTO dto, String username, Roles role) {
+        if (role == Roles.Staff) {
+            StaffEntity staff = accountDAO.findStaffByUsername(username);
+            if (staff != null) {
+                dto.setId(staff.getId());
+                dto.setFullName(staff.getName());
+                dto.setPhone(staff.getPhoneNumber());
+            }
+        } else if (role == Roles.Barista) {
+            BaristaEntity barista = accountDAO.findBaristaByUsername(username);
+            if (barista != null) {
+                dto.setId(barista.getId());
+                dto.setFullName(barista.getName());
+                dto.setPhone(barista.getPhoneNumber());
+            }
+        }
+    }
+    
     private Roles mapRole(String role) {
-        if ("admin".equalsIgnoreCase(role)) {
-            return Roles.Admin;
+        try {
+            return Roles.valueOf(role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase());
+        } catch (Exception e) {
+            return null;
         }
-        if ("staff".equalsIgnoreCase(role)) {
-            return Roles.Staff;
-        }
-        if ("barista".equalsIgnoreCase(role)) {
-            return Roles.Barista;
-        }
-        return null;
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
     }
 }

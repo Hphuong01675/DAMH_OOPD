@@ -21,8 +21,4 @@ public class AccountEntity {
     
     @Enumerated(EnumType.STRING)
     private Roles role; 
-    
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
-    private PersonEntity person;
 }

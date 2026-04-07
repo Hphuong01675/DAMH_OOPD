@@ -61,7 +61,6 @@
                 <h2 class="text-4xl md:text-5xl font-headline font-extrabold text-on-background tracking-tighter">Fulfillment Station</h2>
             </div>
 
-
         </section>
 
         <div class="space-y-6">
