@@ -12,15 +12,17 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDF8F5; }
         .stat-card { transition: transform 0.2s; }
         .stat-card:hover { transform: translateY(-4px); }
+        /* Đảm bảo sidebar không bị co lại và chiếm toàn bộ chiều cao */
+        .sidebar-container { min-width: 260px; max-width: 260px; height: 100vh; sticky; top: 0; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-
-    <jsp:include page="layout/header.jsp" />
-
-    <div class="flex flex-1 overflow-hidden">
-        
+<body class="min-h-screen flex"> <aside class="sidebar-container border-r border-gray-100 bg-white">
         <jsp:include page="layout/sidebar.jsp" />
+    </aside>
+
+    <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
+        
+        <jsp:include page="layout/header.jsp" /> 
 
         <main class="flex-1 p-6 md:p-10 overflow-y-auto">
             
@@ -30,7 +32,6 @@
             </header>
 
             <div class="max-w-6xl mx-auto space-y-8">
-                
                 <div class="stat-card bg-white rounded-[2rem] p-10 shadow-sm border border-orange-50 flex flex-col items-center text-center">
                     <div class="bg-orange-100 p-4 rounded-2xl mb-4 text-[#9D3C4D]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -48,7 +49,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
                     <div class="stat-card bg-white rounded-3xl p-8 shadow-sm border border-gray-50 flex items-center space-x-6">
                         <div class="p-4 bg-emerald-50 rounded-2xl text-emerald-600">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,13 +72,12 @@
                             <p class="text-4xl font-black text-gray-800">${stats.cancelledCount}</p>
                         </div>
                     </div>
-
                 </div>
             </div>
+
+            <jsp:include page="layout/footer.jsp" />
         </main>
     </div>
-
-    <jsp:include page="layout/footer.jsp" />
 
 </body>
 </html>
