@@ -20,7 +20,7 @@ public class DiscountStrategyFactory {
             case "FIXED":
                 return new FixedDiscountStrategy(entity.getDiscountValue());
             case "POINT_REDEEM":
-                return new PointRedeemDiscountStrategy((int) entity.getDiscountValue());
+                return new PointRedeemDiscountStrategy();
             default:
                 throw new IllegalArgumentException("Loại giảm giá không hợp lệ!");
         }

@@ -8,7 +8,6 @@ import ute.fit.model.*;
 import ute.fit.model.state.PendingState;
 import ute.fit.service.IBeverageService;
 import ute.fit.service.IToppingService;
-import ute.fit.service.ProductService;
 import ute.fit.service.impl.BeverageServiceImpl;
 import ute.fit.service.impl.ToppingServiceImpl;
 
@@ -51,13 +50,6 @@ public class BuildDrinkController extends HttpServlet {
                     .setSize(Size.valueOf(request.getParameter("size")))
                     .setIce(IceLevel.valueOf(request.getParameter("ice")))
                     .build();
-	        System.out.println("===== DEBUG START =====");
-
-	        System.out.println("productID: " + request.getParameter("productID"));
-	        System.out.println("quantity: " + request.getParameter("quantity"));
-	        System.out.println("size: " + request.getParameter("size"));
-	        System.out.println("sugar: " + request.getParameter("sugar"));
-	        System.out.println("ice: " + request.getParameter("ice"));
 
 	        // ===== APPLY TOPPING =====
 	        String[] toppingNames = request.getParameterValues("toppingNames");

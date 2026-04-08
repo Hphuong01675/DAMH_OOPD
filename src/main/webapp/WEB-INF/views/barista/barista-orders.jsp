@@ -47,7 +47,7 @@
         <h1 class="font-headline font-black text-xl tracking-tight">Chip3Chip</h1>
         <span class="material-symbols-outlined text-primary">account_circle</span>
     </header>
-
+	<%@ include file="/WEB-INF/views/barista/layout/header.jsp" %>
     <%@ include file="/WEB-INF/views/barista/layout/sidebar.jsp" %>
 
     <main class="md:ml-64 min-h-screen pt-20 md:pt-0 pb-24 md:pb-12 px-6 md:px-12 bg-surface">

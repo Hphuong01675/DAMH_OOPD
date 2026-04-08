@@ -264,7 +264,6 @@
 
 												<input type="hidden" name="toppingNames" value="${t.name}" disabled>
 												<input type="hidden" name="toppingQtys" value="1" class="toppingQtyInput" disabled>
-
 												<div class="topping-qty">
 
 													<button type="button"

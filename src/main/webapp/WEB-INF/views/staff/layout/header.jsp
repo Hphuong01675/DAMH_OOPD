@@ -24,6 +24,8 @@
         </div>
         <div class="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden shadow-inner">
             <img src="https://ui-avatars.com/api/?name=${staffName}&background=ffffff&color=9D3C4D" alt="Avatar">
+
         </div>
+
     </div>
 </header>
