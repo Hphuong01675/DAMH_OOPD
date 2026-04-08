@@ -1,18 +1,17 @@
 package ute.fit.model.stragety;
 
 public class PointRedeemDiscountStrategy implements DiscountStrategy {
-    private int pointsPerThousandDong;
-
-    // Ví dụ: người dùng nhập bao nhiêu điểm, mỗi điểm tương ứng bao nhiêu đồng
-    public PointRedeemDiscountStrategy(int pointsPerThousandDong) {
-        this.pointsPerThousandDong = pointsPerThousandDong;
-    }
+    private static final int POINTS_TO_REDEEM = 30;
+    private static final double DISCOUNT_VALUE = 30000;
 
     @Override
     public double applyDiscount(double originalPrice) {
-        // Giả sử mỗi điểm trị giá 1000 đồng
-        double discountAmount = pointsPerThousandDong * 1000;
-        double discountedPrice = originalPrice - discountAmount;
-        return discountedPrice > 0 ? discountedPrice : 0;
+        // Trừ 30,000đ nhưng không được để giá âm
+        double discountedPrice = originalPrice - DISCOUNT_VALUE;
+        return Math.max(discountedPrice, 0);
+    }
+    
+    public int getPointsRequired() {
+        return POINTS_TO_REDEEM;
     }
 }

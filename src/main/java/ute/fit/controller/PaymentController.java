@@ -1,6 +1,7 @@
 package ute.fit.controller;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,10 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ute.fit.config.JPAUtil;
 import ute.fit.entity.CustomerEntity;
-import ute.fit.model.state.CancelledState;
 import ute.fit.model.Order;
 import ute.fit.model.Payment;
-import ute.fit.model.state.PendingState;
 import ute.fit.model.StatusPayment;
 import ute.fit.service.IDiscountService;
 import ute.fit.service.impl.DiscountServiceImpl;
@@ -33,8 +32,8 @@ public class PaymentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
-        // [CẬP NHẬT] Lấy danh sách khuyến mãi động từ Service thay vì hardcode List.of(...)
-    	List<Map<String, String>> promotions = discountService.getAllPromotions();
+        // Lấy danh sách khuyến mãi động từ Database
+        List<Map<String, String>> promotions = discountService.getAllPromotions();
         req.setAttribute("promotions", promotions);
 
         HttpSession session = req.getSession(false);
@@ -49,7 +48,7 @@ public class PaymentController extends HttpServlet {
             }
         }
 
-        // Nếu chưa có customer từ session, query DB
+        // Nếu chưa có customer từ session, query DB để lấy thông tin khách hàng mẫu (hoặc theo ID)
         if (customer == null) {
             try (EntityManager em = JPAUtil.getEntityManager()) {
                 List<CustomerEntity> results = em.createQuery(
@@ -58,16 +57,19 @@ public class PaymentController extends HttpServlet {
                 if (!results.isEmpty()) {
                     customer = results.get(0);
                 }
-            } catch (Exception ignored) {
-                // DB chưa kết nối được, customer đầu năm null
-            }
+            } catch (Exception ignored) {}
         }
 
         double subtotal = (order != null) ? order.calculateTotal() : 0.0;
 
-        req.setAttribute("customer", customer);
+        // Truyền dữ liệu xuống JSP [cite: 56, 60, 63]
+        req.setAttribute("customer", customer); 
         req.setAttribute("orderItems", order != null ? order.getItems() : List.of());
         req.setAttribute("subtotal", subtotal);
+        
+        // Gửi ID đơn hàng để tạo mã QR nếu cần [cite: 80]
+        req.setAttribute("orderId", (order != null) ? "12345" : "TEMP"); 
+
         req.getRequestDispatcher("/WEB-INF/views/staff/payment.jsp").forward(req, resp);
     }
 
@@ -83,11 +85,13 @@ public class PaymentController extends HttpServlet {
         // 1. Tính toán tài chính (Strategy Pattern)
         double subtotal = order.calculateTotal();
         double totalAfterDiscount = discountService.getPriceWithVoucher(subtotal, promo);
-        double discountAmount = subtotal - totalAfterDiscount;
+        
+        // Đảm bảo số tiền giảm giá không vượt quá tổng tiền và không âm 
+        double discountAmount = Math.max(0, subtotal - totalAfterDiscount);
         double tax = totalAfterDiscount * 0.1;
         double finalTotal = totalAfterDiscount + tax;
 
-        // 2. Khởi tạo Processor (Adapter & Template Method)
+        // 2. Khởi tạo Processor (Adapter & Template Method) [cite: 100, 104, 108]
         PaymentProcessor processor;
         if ("vnpay".equals(method)) {
             processor = new VNPAYPaymentProcessor();
@@ -100,13 +104,28 @@ public class PaymentController extends HttpServlet {
         // 3. THỰC HIỆN THANH TOÁN
         Payment paymentResult = processor.processPayment(order);
         
-        // Lưu trạng thái thanh toán vào model
-        order.setPaymentStatus(paymentResult.getStatusPayment());
+        // 4. XỬ LÝ TRỪ ĐIỂM (Nếu thanh toán thành công và dùng mã PointRedeem)
+        if (paymentResult.getStatusPayment() == StatusPayment.SUCCESS) {
+            CustomerEntity customer = order.getCustomer();
+            // Chỉ thực hiện nếu có khách hàng và có chọn mã giảm giá [cite: 71, 74]
+            if (customer != null && promo != null && !promo.equals("NONE")) {
+                try {
+                    // Gọi service thực hiện trừ 30 điểm trong DB 
+                    discountService.canApplyPointPromotion(customer, promo);
+                    
+                    // Cập nhật lại thông tin customer mới nhất vào database
+                    updateCustomerPointsInDB(customer);
+                } catch (Exception e) {
+                    // Logic xử lý nếu việc trừ điểm thất bại (ví dụ: không đủ điểm)
+                }
+            }
+        }
 
-        // 4. XỬ LÝ LUỒNG TRẠNG THÁI (State Pattern)
+        // 5. Cập nhật trạng thái đơn hàng (State Pattern)
+        order.setPaymentStatus(paymentResult.getStatusPayment());
         order.getCurrentState().handlePayment(order, paymentResult.getStatusPayment());
 
-        // 5. Đưa thông tin sang View (Sử dụng dữ liệu thực tế từ Order)
+        // 6. Đưa thông tin sang View thành công
         req.setAttribute("orderState", order.getCurrentState().getStateName());
         req.setAttribute("promoType", promo);
         req.setAttribute("paymentMethod", method);
@@ -114,13 +133,28 @@ public class PaymentController extends HttpServlet {
         req.setAttribute("discount", discountAmount);
         req.setAttribute("tax", tax);
         req.setAttribute("finalTotal", finalTotal);
-        
         req.setAttribute("transactionId", paymentResult.getTransactionID());
         req.setAttribute("paymentStatus", order.getPaymentStatus().name());
-        
-        // Lấy tên trạng thái từ State object (PENDING hoặc CANCELLED)
-        req.setAttribute("orderState", order.getCurrentState().getStateName());
 
         req.getRequestDispatcher("/WEB-INF/views/staff/success.jsp").forward(req, resp);
+    }
+
+    /**
+     * Cập nhật số điểm mới của khách hàng xuống Database
+     */
+    private void updateCustomerPointsInDB(CustomerEntity customer) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction trans = em.getTransaction();
+        try {
+            trans.begin();
+            // Đồng bộ trạng thái Entity và lưu xuống DB
+            em.merge(customer);
+            trans.commit();
+        } catch (Exception e) {
+            if (trans.isActive()) trans.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
 }

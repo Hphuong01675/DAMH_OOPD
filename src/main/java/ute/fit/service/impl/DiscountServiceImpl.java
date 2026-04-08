@@ -2,6 +2,7 @@ package ute.fit.service.impl;
 
 import ute.fit.dao.IDiscountDAO;
 import ute.fit.dao.impl.DiscountDAOImpl;
+import ute.fit.entity.CustomerEntity;
 import ute.fit.entity.DiscountEntity;
 import ute.fit.service.IDiscountService;
 import ute.fit.service.factory.DiscountStrategyFactory;
@@ -62,5 +63,17 @@ public class DiscountServiceImpl implements IDiscountService {
             ));
         }
         return promotionsList;
+    }
+    
+    @Override
+    public boolean canApplyPointPromotion(CustomerEntity customer, String promotionCode) {
+        if (customer == null || customer.getPhoneNumber() == null || promotionCode == null) return false;
+        
+        DiscountEntity voucher = discountDAO.findByCode(promotionCode);
+        if (voucher != null && "PointRedeem".equalsIgnoreCase(voucher.getStrategyName())) {
+            // Khách hàng phải có từ 30 điểm trở lên mới được tích 
+            return customer.getLoyaltyPoints() >= 30;
+        }
+        return true; // Các mã khác không cần xét điểm
     }
 }
