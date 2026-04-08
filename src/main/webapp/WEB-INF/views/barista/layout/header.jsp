@@ -5,15 +5,15 @@
         <form action="${pageContext.request.contextPath}/barista/shift" method="post">
             <button name="action" value="start"
                 class="px-5 py-2.5 rounded-xl bg-[#974362] text-white font-medium shadow-sm hover:bg-[#7a3550] transition-all flex items-center gap-2">
-                Vào ca
+                Clock In
             </button>
         </form>
 
         <form action="${pageContext.request.contextPath}/barista/shift" method="post">
             <button name="action" value="end"
                 class="px-5 py-2.5 rounded-xl bg-gray-200 text-gray-700 font-medium shadow-sm hover:bg-gray-300 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">logout</span>
-                Kết ca
+                
+                Clock Out
             </button>
         </form>
     </div>
