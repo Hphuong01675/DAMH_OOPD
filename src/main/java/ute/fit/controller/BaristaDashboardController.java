@@ -24,9 +24,9 @@ public class BaristaDashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
+    	
         HttpSession session = request.getSession(false);
-        Object accountObj = (session != null) ? session.getAttribute("account") : null;
+        Object accountObj = (session != null) ? session.getAttribute("user") : null;
 
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login");

@@ -17,7 +17,7 @@ import java.io.IOException;
     "/admin/product/toggle", 
     "/admin/product/edit"
 })
-//@MultipartConfig
+@MultipartConfig
 public class ProductController extends HttpServlet {
     private IBeverageService beverageService = new BeverageServiceImpl();
     private IToppingService toppingService = new ToppingServiceImpl();

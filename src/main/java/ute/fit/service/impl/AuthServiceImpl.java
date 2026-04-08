@@ -57,11 +57,16 @@ public class AuthServiceImpl implements IAuthService {
         }
     }
     
-    private Roles mapRole(String role) {
-        try {
-            return Roles.valueOf(role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase());
-        } catch (Exception e) {
+    private Roles mapRole(String roleStr) {
+        if (roleStr == null || roleStr.isBlank()) {
             return null;
         }
+        
+        for (Roles role : Roles.values()) {
+            if (role.name().equalsIgnoreCase(roleStr.trim())) {
+                return role;
+            }
+        }
+        return null; // Trả về null thay vì văng Exception để Service dễ xử lý
     }
 }
