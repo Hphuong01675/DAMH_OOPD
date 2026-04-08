@@ -1,18 +1,16 @@
 package ute.fit.model;
 
-import ute.fit.entity.BeverageEntity;
-
 public class BeverageBuilder {
 	private String name;
 	private double basePrice;
 	private Size size = Size.S; // Mặc định
-	private SugarLevel sugar = SugarLevel.S100;
+	private SugarLevel sugar = SugarLevel.S50;
 	private IceLevel ice = IceLevel.Normal;
 
 	// Truyền Entity vào để lấy thông tin gốc từ DB
-	public BeverageBuilder(BeverageEntity entity) {
-		this.name = entity.getName();
-		this.basePrice = entity.getBasePrice();
+	public BeverageBuilder(BeverageDTO beverageDTO) {
+		this.name = beverageDTO.getName();
+		this.basePrice = beverageDTO.getBasePrice();
 	}
 
 	public BeverageBuilder setSize(Size size) {

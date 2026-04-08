@@ -2,8 +2,8 @@ package ute.fit.service;
 
 import java.util.List;
 
-import ute.fit.entity.ToppingEntity;
+import ute.fit.model.ToppingDTO;
 
 public interface IToppingService {
-	List<ToppingEntity> getAllToppings();
+	List<ToppingDTO> getAllToppings();
 }

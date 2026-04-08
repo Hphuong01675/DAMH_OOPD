@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ute.fit.dao.impl.OrderDAOImpl;
 import ute.fit.service.IOrderService;
 import ute.fit.service.impl.OrderServiceImpl;
 
@@ -20,15 +19,15 @@ import java.util.Map;
 public class BaristaDashboardController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
-    private final IOrderService orderService = new OrderServiceImpl(new OrderDAOImpl());
+    private final IOrderService orderService = new OrderServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
+    	
         HttpSession session = request.getSession(false);
-        Object accountObj = (session != null) ? session.getAttribute("account") : null;
-
+        Object accountObj = (session != null) ? session.getAttribute("user") : null;
+        
         if (accountObj == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -80,3 +79,4 @@ public class BaristaDashboardController extends HttpServlet {
         }
     }
 }
+

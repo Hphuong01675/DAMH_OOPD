@@ -38,13 +38,13 @@
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold uppercase">
                     <%-- Đã sửa person.name thành name --%>
-                    ${sessionScope.account.name.substring(0,1)}
+                    ${sessionScope.user.fullName.substring(0,1)}
                 </div>
                 <div class="overflow-hidden">
                     <%-- Đã sửa person.name thành name --%>
-                    <p class="text-sm font-bold truncate">${sessionScope.account.name}</p>
+                    <p class="text-sm font-bold truncate">${sessionScope.user.fullName}</p>
                     <p class="text-[10px] text-on-surface-variant opacity-70 uppercase tracking-widest font-bold">
-                        ${sessionScope.account.role}
+                        ${sessionScope.user.role}
                     </p>
                 </div>
             </div>

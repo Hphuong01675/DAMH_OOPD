@@ -21,14 +21,12 @@ public class OrderEntity {
     
     @ManyToOne(optional = false) // Bắt buộc phải có Staff tạo đơn
     @JoinColumn(name = "staff_id", nullable = false)
-    private StaffEntity staff;
-    
+    private StaffEntity staff;   
     
     @ManyToOne
     @JoinColumn(name = "barista_id")
     private BaristaEntity barista;
-    
-    
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;

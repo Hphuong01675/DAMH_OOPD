@@ -6,14 +6,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ute.fit.dao.impl.OrderDAOImpl;
-import ute.fit.entity.OrderEntity;
 import ute.fit.service.IOrderService;
 import ute.fit.service.impl.OrderServiceImpl;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +19,7 @@ import java.util.stream.Collectors;
 public class BaristaOrderController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
-    private final IOrderService orderService = new OrderServiceImpl(new OrderDAOImpl());
+    private final IOrderService orderService = new OrderServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 

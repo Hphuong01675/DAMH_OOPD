@@ -42,25 +42,19 @@ tailwind.config = {
 </head>
 
 <body class="bg-soft text-gray-800">
-
+<%@ include file="/WEB-INF/views/barista/layout/header.jsp" %>
 <%@ include file="/WEB-INF/views/barista/layout/sidebar.jsp" %>
 
 <div class="p-8 md:ml-64 min-h-screen">
 
   <div class="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
     <div>
-      <h1 class="text-4xl font-bold text-primary">Welcome, ${sessionScope.account.name}</h1>
+      <h1 class="text-4xl font-bold text-primary">Welcome, ${sessionScope.user.fullName}</h1>
       <p class="text-gray-500 mt-1">Crafting excellence ☕</p>
     </div>
 
     <div class="flex items-center gap-4">
-        <a href="${pageContext.request.contextPath}/barista/orders" class="bg-green px-5 py-2 rounded-full text-green-700 font-medium flex items-center gap-2 hover:bg-green/80 transition shadow-sm">
-            <span class="w-2 h-2 bg-green-700 rounded-full animate-pulse"></span>
-            Live Queue: ${pendingOrders}
-        </a>
-        <div class="w-10 h-10 bg-accent text-primary font-bold rounded-full flex items-center justify-center shadow-sm uppercase">
-            ${sessionScope.account.name.substring(0,1)}
-        </div>
+        
     </div>
   </div>
 
@@ -69,7 +63,6 @@ tailwind.config = {
     <div class="md:col-span-2 bg-card p-6 rounded-2xl shadow">
       <p class="text-gray-400 text-sm mb-2 font-semibold">TODAY'S REVENUE</p>
       <h2 class="text-4xl font-bold text-gray-800">$${totalRevenue}</h2>
-      <div class="mt-2 text-green-600 text-sm font-medium">+12%</div>
       <p class="text-gray-400 text-sm mt-2 italic">
         "Exceeding yesterday's average"
       </p>

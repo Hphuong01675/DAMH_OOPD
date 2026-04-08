@@ -1,14 +1,17 @@
 package ute.fit.service;
 
 import jakarta.servlet.http.Part;
-import ute.fit.entity.BeverageEntity;
+import ute.fit.model.BeverageBuilder;
+import ute.fit.model.BeverageDTO;
+//import ute.fit.model.OrderItemDTO;
 
 import java.util.List;
 
 public interface IBeverageService {
-	List<BeverageEntity> getAllBeverages(String keyword);
-    List<BeverageEntity> getAll();
-    BeverageEntity getById(int id);
-    void save(BeverageEntity beverage, Part filePart) throws Exception;
-    void delete(int id);
+	List<BeverageDTO> getAllBeverages(String keyword);
+	List<BeverageDTO> findAll();
+    BeverageDTO getById(int id);
+    void save(BeverageDTO dto, Part filePart) throws Exception;
+    void toggleStatus(int id);
+    BeverageBuilder getBeverageBuilder(BeverageDTO beverageDTO);
 }

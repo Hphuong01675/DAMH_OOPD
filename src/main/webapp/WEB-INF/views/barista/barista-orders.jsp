@@ -47,11 +47,11 @@
         <h1 class="font-headline font-black text-xl tracking-tight">Chip3Chip</h1>
         <span class="material-symbols-outlined text-primary">account_circle</span>
     </header>
-
+	<%@ include file="/WEB-INF/views/barista/layout/header.jsp" %>
     <%@ include file="/WEB-INF/views/barista/layout/sidebar.jsp" %>
 
     <main class="md:ml-64 min-h-screen pt-20 md:pt-0 pb-24 md:pb-12 px-6 md:px-12 bg-surface">
-        
+
         <section class="flex flex-col md:flex-row md:items-end justify-between pt-12 pb-8 gap-6 border-b border-outline-variant/10 mb-8">
             <div class="space-y-1">
                 <div class="flex items-center gap-2">
@@ -60,8 +60,7 @@
                 </div>
                 <h2 class="text-4xl md:text-5xl font-headline font-extrabold text-on-background tracking-tighter">Fulfillment Station</h2>
             </div>
-            
-            
+
         </section>
 
         <div class="space-y-6">
@@ -76,7 +75,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                
+
                 <c:forEach var="order" items="${pendingOrders}">
                     <div class="bg-surface-container-lowest rounded-[2rem] p-8 editorial-shadow border border-outline-variant/10 hover:border-tertiary/30 transition-all group relative overflow-hidden">
                         <div class="flex justify-between items-start mb-6">
