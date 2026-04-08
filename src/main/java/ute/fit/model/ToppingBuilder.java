@@ -52,7 +52,7 @@ public class ToppingBuilder
                 result = ToppingFactory.createTopping(type, result);
             }
         }
-
+        //result.setToppings(new HashMap<>(toppings));
         return result;
     }
     

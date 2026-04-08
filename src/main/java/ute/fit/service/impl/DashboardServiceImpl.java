@@ -4,7 +4,6 @@ import ute.fit.dao.IOrderDAO;
 import ute.fit.dao.IOrderItemDAO;
 import ute.fit.dao.impl.OrderDAOImpl;
 import ute.fit.dao.impl.OrderItemDAOImpl;
-import ute.fit.entity.BeverageEntity;
 import ute.fit.service.IDashboardService;
 
 import java.time.LocalDateTime;
