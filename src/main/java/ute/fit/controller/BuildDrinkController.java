@@ -5,6 +5,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import ute.fit.model.*;
+import ute.fit.model.state.PendingState;
 import ute.fit.service.IBeverageService;
 import ute.fit.service.IToppingService;
 import ute.fit.service.ProductService;
@@ -26,7 +27,7 @@ public class BuildDrinkController extends HttpServlet {
 
 	    // ===== Lấy order =====
 	    Order order = (Order) session.getAttribute("order");
-	    if (order == null) {
+	    if (order == null || !(order.getCurrentState() instanceof PendingState)) {
 	        order = new Order();
 	    }
 
@@ -50,13 +51,26 @@ public class BuildDrinkController extends HttpServlet {
                     .setSize(Size.valueOf(request.getParameter("size")))
                     .setIce(IceLevel.valueOf(request.getParameter("ice")))
                     .build();
+	        System.out.println("===== DEBUG START =====");
+
+	        System.out.println("productID: " + request.getParameter("productID"));
+	        System.out.println("quantity: " + request.getParameter("quantity"));
+	        System.out.println("size: " + request.getParameter("size"));
+	        System.out.println("sugar: " + request.getParameter("sugar"));
+	        System.out.println("ice: " + request.getParameter("ice"));
 
 	        // ===== APPLY TOPPING =====
-	        String[] toppings = request.getParameterValues("toppingNames");
+	        String[] toppingNames = request.getParameterValues("toppingNames");
+	        String[] toppingQtys = request.getParameterValues("toppingQtys");
 
-	        if (toppings != null) {
-	            for (String t : toppings) {
-	                product = ToppingFactory.createTopping(t, product);
+	        if (toppingNames != null && toppingQtys != null) {
+	            for (int i = 0; i < toppingNames.length; i++) {
+
+	                int qty = Integer.parseInt(toppingQtys[i]);
+
+	                for (int j = 0; j < qty; j++) {
+	                    product = ToppingFactory.createTopping(toppingNames[i], product);
+	                }
 	            }
 	        }
 

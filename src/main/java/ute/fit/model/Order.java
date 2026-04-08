@@ -28,7 +28,7 @@ public class Order {
     public Order() {
         // Mặc định khi tạo mới là trạng thái Chờ (Pending)
         //this.currentState = new PendingState();
-    	this.currentState = null;
+    	this.currentState = new PendingState();
         this.paymentStatus = StatusPayment.PENDING;
     }
 
