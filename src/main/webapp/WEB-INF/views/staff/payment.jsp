@@ -1,13 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Thanh toán - Chip3Chip</title>
+    <title>Checkout - Chip3Chip</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet" />
@@ -30,74 +29,44 @@
     </script>
 
     <style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        background-color: #fef8f3;
-    }
-
-    /* 1. Header luôn nằm trên cùng, bao phủ toàn bộ chiều ngang */
-header {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important; /* Trải dài 100% */
-    z-index: 100 !important; /* Số lớn nhất để đè lên mọi thứ */
-}
-
-/* 2. Sidebar nằm dưới Header */
-aside {
-    position: fixed !important;
-    top: 0 !important; /* Bắt đầu từ đỉnh màn hình */
-    left: 0 !important;
-    height: 100vh !important;
-    width: 16rem !important; /* Độ rộng w-64 */
-    z-index: 50 !important;  /* Thấp hơn Header (100) */
-    padding-top: 5rem !important; /* Đẩy nội dung Sidebar xuống để không bị Header che mất chữ */
-}
-
-/* 3. Nội dung chính (Main) */
-.flex.min-h-screen {
-    margin-left: 16rem !important; /* Đẩy nội dung sang phải để né Sidebar */
-    padding-top: 5rem !important;  /* Đẩy nội dung xuống để né Header */
-}
-
-    .silk-gradient { background: linear-gradient(135deg, #6F4E37 0%, #A67B5B 100%); }
-    body { font-family: 'Be Vietnam Pro', sans-serif; }
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-    .modal-active { display: flex; }
-</style>
+        html, body { height: 100%; margin: 0; background-color: #fef8f3; }
+        header { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 100 !important; }
+        aside { position: fixed !important; top: 0 !important; left: 0 !important; height: 100vh !important; width: 16rem !important; z-index: 50 !important; padding-top: 5rem !important; }
+        .flex.min-h-screen { margin-left: 16rem !important; padding-top: 5rem !important; }
+        .silk-gradient { background: linear-gradient(135deg, #6F4E37 0%, #A67B5B 100%); }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-active { display: flex; }
+    </style>
 </head>
 
 <body class="bg-surface text-on-surface">
-	<%@ include file="/WEB-INF/views/staff/layout/header.jsp" %>
-	<%@ include file="/WEB-INF/views/staff/layout/sidebar.jsp" %>
-	
+    <%@ include file="/WEB-INF/views/staff/layout/header.jsp" %>
+    <%@ include file="/WEB-INF/views/staff/layout/sidebar.jsp" %>
+    
     <div id="registerModal" class="modal-overlay">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-primary-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="material-symbols-outlined text-3xl">person_add</span>
                 </div>
-                <h3 class="text-xl font-bold text-primary">Khách hàng mới</h3>
-                <p class="text-sm text-gray-500">SĐT này chưa có trong hệ thống. Vui lòng nhập tên để tạo thành viên mới.</p>
+                <h3 class="text-xl font-bold text-primary">New Customer</h3>
+                <p class="text-sm text-gray-500">This phone number is not in our system. Please enter a name to create a new member.</p>
             </div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Tên khách hàng</label>
-                    <input type="text" id="newNameInput" placeholder="Ví dụ: Anh Hoàng" 
+                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Customer Name</label>
+                    <input type="text" id="newNameInput" placeholder="e.g. John Doe" 
                            class="w-full border-gray-200 rounded-xl focus:ring-primary focus:border-primary px-4 py-3">
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button onclick="saveNewCustomer()" class="flex-1 silk-gradient text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all">Lưu & Chọn</button>
-                    <button onclick="closeModal('registerModal')" class="flex-1 bg-gray-100 text-gray-500 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">Hủy</button>
+                    <button onclick="saveNewCustomer()" class="flex-1 silk-gradient text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all">Save & Select</button>
+                    <button onclick="closeModal('registerModal')" class="flex-1 bg-gray-100 text-gray-500 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
-
-   
 
     <div class="flex min-h-screen">
         <main class="flex-1 pt-24 pb-12 px-8 ml-24 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -106,16 +75,16 @@ aside {
 
                 <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
                     <h3 class="text-xl font-bold text-primary flex items-center gap-2">
-                        <span class="material-symbols-outlined">person_search</span> Tìm khách hàng
+                        <span class="material-symbols-outlined">person_search</span> Find Customer
                     </h3>
 
                     <div class="relative">
                         <div class="flex gap-2">
-                            <input type="text" id="phoneInput" placeholder="Nhập số điện thoại khách..."
+                            <input type="text" id="phoneInput" placeholder="Enter phone number..."
                                 class="flex-1 border-gray-200 rounded-xl focus:ring-primary focus:border-primary px-4 py-3">
                             <button type="button" onclick="processCustomerLookup()"
                                 class="bg-primary text-white px-8 rounded-xl font-bold hover:bg-opacity-90 active:scale-95 transition-all flex items-center gap-2">
-                                <span class="material-symbols-outlined">search</span> Tìm
+                                <span class="material-symbols-outlined">search</span> Search
                             </button>
                         </div>
                         <p id="searchStatus" class="text-xs mt-2 ml-1 font-medium hidden"></p>
@@ -130,25 +99,25 @@ aside {
                             <p id="displayCustPhone" class="text-gray-500 font-medium"></p>
                             <div class="mt-2 inline-flex items-center gap-2 bg-green-100 px-4 py-1.5 rounded-full">
                                 <span class="material-symbols-outlined text-[16px] text-green-700">stars</span>
-                                <span class="text-sm font-bold text-green-700">Điểm tích lũy: <span id="displayCustPoints">0</span> pts</span>
+                                <span class="text-sm font-bold text-green-700">Loyalty Points: <span id="displayCustPoints">0</span> pts</span>
                             </div>
                         </div>
                     </div>
                     
                     <div id="noCustomerMsg" class="text-center py-6 text-gray-400 italic bg-gray-50 rounded-2xl border border-dashed">
-                        Chưa chọn khách hàng cho đơn hàng này.
+                        No customer selected for this order.
                     </div>
 
                     <input type="hidden" name="customerId" id="hiddenCustomerId" value="">
                 </section>
 
                 <section class="space-y-6">
-                    <h3 class="text-xl font-bold text-on-surface ml-2 italic underline decoration-primary/30">Chọn mã giảm giá</h3>
+                    <h3 class="text-xl font-bold text-on-surface ml-2 italic underline decoration-primary/30">Select Voucher</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="group relative bg-white p-6 rounded-2xl border-2 border-transparent peer-checked:border-primary cursor-pointer shadow-sm">
                             <input type="radio" name="promoStrategy" value="NONE" checked onclick="calculateFinalTotal(0)" class="peer hidden">
                             <div class="peer-checked:border-primary border-2 border-gray-100 rounded-2xl p-6 absolute inset-0 pointer-events-none"></div>
-                            <h4 class="font-bold text-lg mb-1">Không dùng mã</h4>
+                            <h4 class="font-bold text-lg mb-1">No Voucher</h4>
                         </label>
 
                         <c:forEach var="promo" items="${promotions}">
@@ -163,7 +132,7 @@ aside {
                                         class="w-5 h-5 text-primary focus:ring-primary">
                                 </div>
                                 <h4 class="font-bold text-lg mb-1">${promo.title}</h4>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Loại: ${promo.strategyName}</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Type: ${promo.strategyName}</p>
                             </label>
                         </c:forEach>
                     </div>
@@ -173,19 +142,19 @@ aside {
             <div class="lg:col-span-5">
                 <div class="bg-white rounded-3xl shadow-xl p-8 sticky top-28 border border-gray-50">
                     <h3 class="text-2xl font-bold mb-8 flex justify-between items-center">
-                        Hóa đơn <span class="text-xs font-normal text-gray-400 uppercase">#KOJI-ORDER</span>
+                        Invoice <span class="text-xs font-normal text-gray-400 uppercase">#KOJI-ORDER</span>
                     </h3>
 
                     <div class="space-y-4 pt-6 border-t mt-6">
                         <div class="flex justify-between text-gray-500 font-medium">
-                            <span>Tạm tính</span> 
+                            <span>Subtotal</span> 
                             <span class="font-bold text-on-surface"><fmt:formatNumber value="${subtotal}" type="number" />đ</span>
                         </div>
                         <div class="flex justify-between text-red-500 font-medium italic">
-                            <span>Giảm giá</span> <span id="discountLabel">- 0đ</span>
+                            <span>Discount</span> <span id="discountLabel">- 0đ</span>
                         </div>
                         <div class="flex justify-between items-center pt-8">
-                            <span class="text-xl font-bold">Tổng thanh toán</span> 
+                            <span class="text-xl font-bold">Grand Total</span> 
                             <span class="text-3xl font-black text-primary tracking-tighter" id="finalPriceLabel"> 
                                 <fmt:formatNumber value="${subtotal}" type="number" />đ
                             </span>
@@ -205,7 +174,7 @@ aside {
                     </div>
 
                     <button type="button" onclick="handleCheckout()" class="w-full silk-gradient text-white font-bold py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex justify-center items-center gap-2">
-                        XÁC NHẬN THANH TOÁN <span class="material-symbols-outlined">chevron_right</span>
+                        CONFIRM PAYMENT <span class="material-symbols-outlined">chevron_right</span>
                     </button>
                 </div>
             </div>
@@ -216,60 +185,52 @@ aside {
         const SUB_TOTAL = parseFloat("${subtotal}");
         let currentCustomer = { id: null, phone: "", points: 0 };
 
-        // 1. Logic tìm kiếm hoặc kích hoạt Modal đăng ký
         async function processCustomerLookup() {
             const phone = document.getElementById('phoneInput').value;
-            const statusEl = document.getElementById('searchStatus');
-            
             if (!phone) {
-                updateSmallStatus("⚠️ Vui lòng nhập số điện thoại", "red");
+                updateSmallStatus("⚠️ Please enter a phone number", "red");
                 return;
             }
 
             try {
-                // Gọi API tìm kiếm hiện tại của bạn
                 const response = await fetch(`${pageContext.request.contextPath}/api/customer/process?phone=` + phone);
                 const data = await response.json();
 
                 if (data.success) {
-                    updateSmallStatus("✅ Đã tìm thấy khách thành viên", "green");
+                    updateSmallStatus("✅ Member found", "green");
                     renderCustomerInfo(data.customer);
                 } else {
-                    // Nếu không tìm thấy, mở Modal nhập tên khách mới
-                    updateSmallStatus("🔍 Đang chuẩn bị tạo khách hàng mới...", "blue");
+                    updateSmallStatus("🔍 Preparing to create new customer...", "blue");
                     openRegisterModal();
                 }
             } catch (error) {
-                updateSmallStatus("❌ Lỗi kết nối hệ thống", "red");
+                updateSmallStatus("❌ Connection error", "red");
             }
         }
 
-        // 2. Hàm lưu khách mới (Sử dụng API xử lý chung hoặc API riêng tùy bạn)
         async function saveNewCustomer() {
             const phone = document.getElementById('phoneInput').value;
             const name = document.getElementById('newNameInput').value;
 
             if (!name) {
-                alert("Vui lòng nhập tên khách hàng");
+                alert("Please enter customer name");
                 return;
             }
 
             try {
-                // Gọi API xử lý khách mới (Bạn cần tạo thêm controller/service xử lý POST này)
                 const response = await fetch(`${pageContext.request.contextPath}/api/customer/process?phone=` + phone + "&name=" + encodeURIComponent(name));
                 const data = await response.json();
 
                 if (data.success) {
                     closeModal('registerModal');
-                    updateSmallStatus("✨ Đã tạo và chọn khách hàng mới thành công", "green");
+                    updateSmallStatus("✨ New customer created successfully", "green");
                     renderCustomerInfo(data.customer);
                 }
             } catch (error) {
-                alert("Lỗi khi lưu khách hàng");
+                alert("Error saving customer");
             }
         }
 
-        // 3. Cập nhật thông tin khách hàng lên UI
         function renderCustomerInfo(cust) {
             currentCustomer.id = cust.id;
             currentCustomer.phone = cust.phoneNumber;
@@ -284,12 +245,10 @@ aside {
             document.getElementById('customerCard').classList.remove('hidden');
             document.getElementById('noCustomerMsg').classList.add('hidden');
             
-            // Re-check promo if point redeem was selected
             const selectedPromo = document.querySelector('input[name="promoStrategy"]:checked');
             if (selectedPromo) handlePromoCheck(selectedPromo, selectedPromo.getAttribute('data-strategy'));
         }
 
-        // 4. Các hàm phụ trợ UI
         function updateSmallStatus(msg, color) {
             const el = document.getElementById('searchStatus');
             el.innerText = msg;
@@ -303,35 +262,27 @@ aside {
         }
 
         function handlePromoCheck(radioBtn, strategyName) {
-            // 1. Kiểm tra nếu là loại giảm giá bằng điểm (PointRedeem)
             if (strategyName === 'PointRedeem') {
-                
-                // Trường hợp chưa chọn khách hàng
                 if (!currentCustomer.id) {
-                    updateSmallStatus("⚠️ Vui lòng tìm và chọn khách hàng trước khi dùng điểm!", "red");
-                    resetPromo(); // Trả về trạng thái "Không dùng mã"
+                    updateSmallStatus("⚠️ Please find/select a customer before using points!", "red");
+                    resetPromo();
                     return;
                 }
 
-                // Trường hợp khách hàng không đủ 30 điểm
                 if (currentCustomer.points < 30) {
-                    updateSmallStatus("⚠️ Khách hàng hiện có " + currentCustomer.points + " điểm. Cần tối thiểu 30 điểm để dùng mã này!", "red");
-                    resetPromo(); // Trả về trạng thái "Không dùng mã"
+                    updateSmallStatus("⚠️ Customer has " + currentCustomer.points + " pts. Need min 30 pts to use this!", "red");
+                    resetPromo();
                     return;
                 }
 
-                // Nếu đủ điều kiện thì tính toán giảm giá (ví dụ giảm 30.000đ)
-                updateSmallStatus("✅ Đã áp dụng giảm giá bằng điểm thành công", "green");
+                updateSmallStatus("✅ Points applied successfully", "green");
                 calculateFinalTotal(30000); 
             } else {
-                // Đối với các loại mã giảm giá khác (Percent, Fixed...)
-                calculateFinalTotal(0); // Cần gọi API hoặc tính toán theo logic riêng của từng mã
-                hideSmallStatus();
+                calculateFinalTotal(0);
+                const el = document.getElementById('searchStatus');
+                el.classList.add('hidden');
             }
         }
-
-        // Hàm reset để đưa radio button về "Không dùng mã"
-        
 
         function calculateFinalTotal(discount) {
             const finalDiscount = Math.min(discount, SUB_TOTAL);
@@ -342,28 +293,19 @@ aside {
 
         function resetPromo() {
             const noneRadio = document.querySelector('input[name="promoStrategy"][value="NONE"]');
-            if (noneRadio) {
-                noneRadio.checked = true;
-            }
+            if (noneRadio) noneRadio.checked = true;
             calculateFinalTotal(0);
         }
 
         function openRegisterModal() { document.getElementById('registerModal').classList.add('modal-active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('modal-active'); }
 
-        function updateClock() {
-            const now = new Date();
-            const clockEl = document.getElementById('clock');
-            if (clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', { hour12: false });
-        }
-        setInterval(updateClock, 1000); updateClock();
-
         function handleCheckout() {
             const method = document.querySelector('input[name="paymentMethod"]:checked').value;
             const form = document.getElementById('checkout-form');
             if (method === 'vnpay') {
-                document.getElementById('vnpay-modal').classList.add('modal-active');
-                setTimeout(() => form.submit(), 2500);
+                // You can add a VNPAY modal or redirect here
+                form.submit();
             } else {
                 form.submit();
             }
