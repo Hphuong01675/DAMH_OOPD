@@ -11,4 +11,5 @@ public interface IDiscountService {
     List<Map<String, String>> getAllPromotions();
     
     boolean canApplyPointPromotion(CustomerEntity customer, String promotionCode);
+    double calculateDiscountAmount(double originalPrice, String promotionCode);
 }

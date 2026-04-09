@@ -234,9 +234,9 @@
 
 								<select name="ice" style="width:100%; padding:10px;">
 								    <option value="No">No Ice</option>
-								    <option value="Less">Less Ice</option>
+								    <option value="Les">Less Ice</option>
 								    <option value="Normal" selected>Normal</option>
-								    <option value="Extra">Extra</option>
+								    <option value="EXTRA">Extra</option>
 								</select>
 
 								</div>
@@ -263,7 +263,7 @@
 												</div>
 
 												<input type="hidden" name="toppingNames" value="${t.name}" disabled>
-
+												<input type="hidden" name="toppingQtys" value="1" class="toppingQtyInput" disabled>
 												<div class="topping-qty">
 
 													<button type="button"
@@ -338,14 +338,18 @@
 					}
 
 					function toggleTopping(el) {
+
 					    el.classList.toggle("selected");
 
-					    let input = el.querySelector("input");
+					    let nameInput = el.querySelector("input[name='toppingNames']");
+					    let qtyInput = el.querySelector(".toppingQtyInput");
 
 					    if (el.classList.contains("selected")) {
-					        input.disabled = false;
+					        nameInput.disabled = false;
+					        qtyInput.disabled = false; // ✅ thêm dòng này
 					    } else {
-					        input.disabled = true;
+					        nameInput.disabled = true;
+					        qtyInput.disabled = true;
 					    }
 
 					    updatePrice();
@@ -355,18 +359,22 @@
 
 					function changeToppingQty(btn, c) {
 
-						let qtyEl = btn.parentElement.querySelector(".qty");
+					    let container = btn.closest(".topping");
 
-						let qty = parseInt(qtyEl.innerText);
+					    let qtyEl = container.querySelector(".qty");
+					    let inputQty = container.querySelector(".toppingQtyInput");
 
-						qty += c;
+					    let qty = parseInt(qtyEl.innerText);
 
-						if (qty < 1) qty = 1;
+					    qty += c;
+					    if (qty < 1) qty = 1;
 
-						qtyEl.innerText = qty;
+					    qtyEl.innerText = qty;
+					    inputQty.value = qty; // ✅ cập nhật hidden input
 
-						updatePrice();
+					    updatePrice();
 					}
+					
 					function formatVND(number) {
 					    return number.toLocaleString('vi-VN') + " VND";
 					}

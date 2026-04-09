@@ -41,7 +41,7 @@ public class LoginController extends HttpServlet {
         UserDTO user = authService.login(phone, password, selectedRole);
 
         if (user == null) {
-            req.setAttribute("error", "Số điện thoại hoặc mật khẩu không đúng.");
+            req.setAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng.");
             req.setAttribute("selectedRole", selectedRole);
             req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
             return;

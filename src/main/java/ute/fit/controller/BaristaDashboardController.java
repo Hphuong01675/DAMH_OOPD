@@ -67,16 +67,19 @@ public class BaristaDashboardController extends HttpServlet {
     }
 
     private String getUsernameFromSession(Object accountObj) {
-        try {
-            // Hỗ trợ cả Entity hoặc Map
-            if (accountObj instanceof Map) {
-                return (String) ((Map<?, ?>) accountObj).get("username");
-            }
-            return (String) accountObj.getClass().getMethod("getUsername").invoke(accountObj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        if (accountObj == null) return null;
+
+        // 1. Nếu session lưu dưới dạng Map
+        if (accountObj instanceof Map) {
+            return (String) ((Map<?, ?>) accountObj).get("username");
         }
+
+        // 2. Ép kiểu trực tiếp về UserDTO (Thay thế cho Reflection lỗi)
+        if (accountObj instanceof ute.fit.model.UserDTO) {
+            return ((ute.fit.model.UserDTO) accountObj).getUsername();
+        }
+
+        return null;
     }
 }
 

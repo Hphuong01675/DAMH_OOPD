@@ -35,7 +35,7 @@ public class StaffDashboardController extends HttpServlet {
         req.setAttribute("stats", stats);
         req.setAttribute("user", user); 
 
-        req.getRequestDispatcher("/WEB-INF/views/staff/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/staff/staff-dashboard.jsp").forward(req, resp);
     }
 }
 

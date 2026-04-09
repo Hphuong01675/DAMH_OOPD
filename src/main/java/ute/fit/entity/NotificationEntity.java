@@ -3,7 +3,13 @@ package ute.fit.entity;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Notifications")
 public class NotificationEntity {
@@ -13,8 +19,4 @@ public class NotificationEntity {
     private LocalDateTime sentDate;
     @ManyToOne
     private AccountEntity receiver;
-
-    public void makeNewNotification() {
-        this.sentDate = LocalDateTime.now();
-    }
 }

@@ -5,9 +5,9 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import ute.fit.model.*;
+import ute.fit.model.state.PendingState;
 import ute.fit.service.IBeverageService;
 import ute.fit.service.IToppingService;
-import ute.fit.service.ProductService;
 import ute.fit.service.impl.BeverageServiceImpl;
 import ute.fit.service.impl.ToppingServiceImpl;
 
@@ -26,7 +26,7 @@ public class BuildDrinkController extends HttpServlet {
 
 	    // ===== Lấy order =====
 	    Order order = (Order) session.getAttribute("order");
-	    if (order == null) {
+	    if (order == null || !(order.getCurrentState() instanceof PendingState)) {
 	        order = new Order();
 	    }
 
@@ -52,11 +52,17 @@ public class BuildDrinkController extends HttpServlet {
                     .build();
 
 	        // ===== APPLY TOPPING =====
-	        String[] toppings = request.getParameterValues("toppingNames");
+	        String[] toppingNames = request.getParameterValues("toppingNames");
+	        String[] toppingQtys = request.getParameterValues("toppingQtys");
 
-	        if (toppings != null) {
-	            for (String t : toppings) {
-	                product = ToppingFactory.createTopping(t, product);
+	        if (toppingNames != null && toppingQtys != null) {
+	            for (int i = 0; i < toppingNames.length; i++) {
+
+	                int qty = Integer.parseInt(toppingQtys[i]);
+
+	                for (int j = 0; j < qty; j++) {
+	                    product = ToppingFactory.createTopping(toppingNames[i], product);
+	                }
 	            }
 	        }
 

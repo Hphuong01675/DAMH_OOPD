@@ -46,6 +46,7 @@ public class AuthServiceImpl implements IAuthService {
                 dto.setId(staff.getId());
                 dto.setFullName(staff.getName());
                 dto.setPhone(staff.getPhoneNumber());
+                dto.setUsername(username);
             }
         } else if (role == Roles.Barista) {
             BaristaEntity barista = accountDAO.findBaristaByUsername(username);
@@ -53,6 +54,7 @@ public class AuthServiceImpl implements IAuthService {
                 dto.setId(barista.getId());
                 dto.setFullName(barista.getName());
                 dto.setPhone(barista.getPhoneNumber());
+                dto.setUsername(username);
             }
         }
     }

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(urlPatterns = {"/payment", "/admin/order/confirm", "/staff/payment/confirm", "/staff/order/confirm"})
+@WebServlet({"/payment", "/admin/order/confirm", "/staff/payment/confirm", "/staff/order/confirm"})
 public class PaymentController extends HttpServlet {
     
     private final IDiscountService discountService = new DiscountServiceImpl();
@@ -32,10 +32,11 @@ public class PaymentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
-        // Lấy danh sách khuyến mãi động từ Database
+        // 1. Lấy danh sách khuyến mãi động từ Database
         List<Map<String, String>> promotions = discountService.getAllPromotions();
         req.setAttribute("promotions", promotions);
 
+        // 2. Lấy Session và đối tượng Order
         HttpSession session = req.getSession(false);
         Order order = null;
         CustomerEntity customer = null;
@@ -48,7 +49,7 @@ public class PaymentController extends HttpServlet {
             }
         }
 
-        // Nếu chưa có customer từ session, query DB để lấy thông tin khách hàng mẫu (hoặc theo ID)
+        // 3. Nếu chưa có customer từ session, lấy thông tin khách hàng mẫu từ DB
         if (customer == null) {
             try (EntityManager em = JPAUtil.getEntityManager()) {
                 List<CustomerEntity> results = em.createQuery(
@@ -60,16 +61,31 @@ public class PaymentController extends HttpServlet {
             } catch (Exception ignored) {}
         }
 
-        double subtotal = (order != null) ? order.calculateTotal() : 0.0;
+        // 4. Tính toán Subtotal [cite: 56]
+        double subtotal = 0.0;
+        if (order != null) {
+            // Gọi hàm tính tổng từ Stream của OrderItem
+            subtotal = order.calculateTotal(); 
+        }
 
-        // Truyền dữ liệu xuống JSP [cite: 56, 60, 63]
+        // --- QUAN TRỌNG: LOG DEBUG ---
+        System.out.println("========= PAYMENT_DEBUG =========");
+        System.out.println("Order Object: " + (order != null ? "Co du lieu" : "NULL"));
+        System.out.println("Subtotal: " + subtotal);
+        if (order != null) {
+            System.out.println("Number of Items: " + order.getItems().size());
+        }
+        System.out.println("=================================");
+
+        // 5. Truyền dữ liệu xuống JSP [cite: 56, 60, 63]
         req.setAttribute("customer", customer); 
         req.setAttribute("orderItems", order != null ? order.getItems() : List.of());
-        req.setAttribute("subtotal", subtotal);
+        req.setAttribute("subtotal", subtotal); // Key "subtotal" phai khop voi ${subtotal} trong JSP
         
-        // Gửi ID đơn hàng để tạo mã QR nếu cần [cite: 80]
+        // Gửi ID đơn hàng (giả định hoặc từ object) [cite: 80]
         req.setAttribute("orderId", (order != null) ? "12345" : "TEMP"); 
 
+        // 6. Chuyển hướng sang trang Payment
         req.getRequestDispatcher("/WEB-INF/views/staff/payment.jsp").forward(req, resp);
     }
 

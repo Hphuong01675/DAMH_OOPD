@@ -1,5 +1,6 @@
 package ute.fit.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ute.fit.dao.IToppingDAO;
@@ -26,4 +27,14 @@ public class ToppingServiceImpl implements IToppingService {
 	              .map(this::toDTO)
 	              .toList();
 	}
+	
+	@Override
+	public List<ToppingDTO> findAll() {
+        List<ToppingDTO> list = new ArrayList<>();
+        list.add(new ToppingDTO(1, "Pearl", 5000));
+        list.add(new ToppingDTO(2, "CheeseFoam", 9000));
+        list.add(new ToppingDTO(3, "Caramel", 9000));
+        list.add(new ToppingDTO(4, "Jelly", 4000));
+        return list;
+    }
 }
