@@ -26,7 +26,7 @@
                 <span>Orders</span>
             </a>
 
-            <a href="${pageContext.request.contextPath}/notifications" 
+            <a href="${pageContext.request.contextPath}/staff/notifications"
                class="flex items-center space-x-3 p-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#9D3C4D] transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -36,7 +36,18 @@
         </nav>
 
         <div class="mt-auto pt-6 border-t border-gray-50">
-            <p class="text-[10px] text-gray-400 text-center">Chip3Chip v1.0.4</p>
+            <form action="${pageContext.request.contextPath}/logout" method="post" class="mb-4">
+                <button type="submit" 
+                        class="w-full flex items-center space-x-3 p-3 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    <span class="font-bold text-sm">Logout</span>
+                </button>
+            </form>
+            <p class="text-[10px] text-gray-400 text-center uppercase tracking-widest font-semibold opacity-50">
+                Chip3Chip v1.0.4
+            </p>
         </div>
     </div>
 </aside>

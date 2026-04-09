@@ -1,9 +1,10 @@
 package ute.fit.service;
 
 import java.util.List;
-
-import ute.fit.model.NotificationDTO;
+import ute.fit.entity.NotificationEntity;
+import ute.fit.model.UserDTO;
 
 public interface INotificationService {
-	List<NotificationDTO> getByUser(String username);
+	int broadcastToRole(String content, String groupRole, UserDTO currentUser);
+    List<NotificationEntity> getNotificationsForUser(String username);
 }

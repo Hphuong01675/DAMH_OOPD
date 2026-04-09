@@ -1,4 +1,3 @@
-
 package ute.fit.dao.impl;
 
 import jakarta.persistence.EntityManager;
@@ -372,5 +371,4 @@ public class OrderDAOImpl implements IOrderDAO {
 			em.close();
 		}
 	}
-
 }

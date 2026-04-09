@@ -6,8 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import ute.fit.model.Account;
+import ute.fit.model.Roles;
 import ute.fit.model.UserDTO;
 import ute.fit.service.IAuthService;
+import ute.fit.service.NotificationManager;
 import ute.fit.service.impl.AuthServiceImpl;
 
 import java.io.IOException;
@@ -17,6 +20,7 @@ public class LoginController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final IAuthService authService = new AuthServiceImpl();
+    private final NotificationManager notificationManager = NotificationManager.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,9 +52,9 @@ public class LoginController extends HttpServlet {
         }
 
         HttpSession session = req.getSession(true);
-        session.setAttribute("user", user); // Lưu DTO vào session
+        session.setAttribute("user", user);
+        syncShiftState(session, user);
 
-        // Sử dụng đúng tên phương thức resolveTarget và truyền vào String role từ DTO
         resp.sendRedirect(req.getContextPath() + resolveTarget(user.getRole()));
     }
 
@@ -76,6 +80,23 @@ public class LoginController extends HttpServlet {
 
     private String trim(String value) {
         return value == null ? null : value.trim();
+    }
+
+    private void syncShiftState(HttpSession session, UserDTO user) {
+        if (user == null || user.getRole() == null || user.getUsername() == null) {
+            session.setAttribute("onShift", false);
+            return;
+        }
+
+        if (!"Staff".equalsIgnoreCase(user.getRole()) && !"Barista".equalsIgnoreCase(user.getRole())) {
+            session.setAttribute("onShift", false);
+            return;
+        }
+
+        Roles role = Roles.valueOf(user.getRole());
+        Account observer = new Account(user.getUsername(), null, true, role, null);
+        boolean onShift = notificationManager.hasObserver(observer);
+        session.setAttribute("onShift", onShift);
     }
 
     private void disableCache(HttpServletResponse resp) {

@@ -18,4 +18,3 @@ public interface IOrderService {
     List<Map<String, Object>> getBaristaChartDataToday(String username);
     List<Object[]> getTopDrinksByBaristaToday(String username);
 }
-

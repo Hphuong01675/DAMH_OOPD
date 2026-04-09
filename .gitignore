@@ -6,7 +6,11 @@ target/
 template.html
 CLAUDE.md
 application.properties
+<<<<<<< HEAD
 src/main/resources/META-INF/persistence.xml
+=======
+persistence.xml
+>>>>>>> origin/Receive_Notification
 
 ### STS ###
 .apt_generated

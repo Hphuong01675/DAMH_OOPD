@@ -38,4 +38,3 @@ public class StaffDashboardController extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/views/staff/staff-dashboard.jsp").forward(req, resp);
     }
 }
-

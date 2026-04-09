@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 
 <%-- Lấy đường dẫn URI hiện tại để xử lý trạng thái Active cho Menu --%>
 <c:set var="currentURI" value="${requestScope['jakarta.servlet.forward.request_uri'] != null ? requestScope['jakarta.servlet.forward.request_uri'] : pageContext.request.requestURI}" />
@@ -31,6 +31,12 @@
             <span class="material-symbols-outlined" ${currentURI.contains('/chat') ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>chat_bubble</span>
             <span class="font-body">Chat</span>
         </a>
+
+        <a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all duration-200 ${currentURI.contains('/notifications') ? 'bg-[#853bb5]/10 text-tertiary font-semibold active-nav-border' : 'text-on-surface/70 hover:bg-surface-container-highest'}"
+           href="${pageContext.request.contextPath}/barista/notifications">
+            <span class="material-symbols-outlined" ${currentURI.contains('/notifications') ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>notifications</span>
+            <span class="font-body">Notifications</span>
+        </a>
     </nav>
 
     <div class="px-6 mt-auto">
@@ -49,10 +55,12 @@
                 </div>
             </div>
             
-            <a href="${pageContext.request.contextPath}/logout" class="w-full py-2 bg-primary/10 text-primary rounded-full text-xs font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all">
-                <span class="material-symbols-outlined text-sm">logout</span> 
-                Đăng xuất
-            </a>
+            <form action="${pageContext.request.contextPath}/logout" method="post">
+                <button type="submit" class="w-full py-2 bg-primary/10 text-primary rounded-full text-xs font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-sm">logout</span>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 </aside>

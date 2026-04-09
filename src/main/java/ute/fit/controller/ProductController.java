@@ -12,7 +12,7 @@ import ute.fit.service.impl.ToppingServiceImpl;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
-   "/admin/products", 
+    "/admin/products", 
     "/admin/product/save", 
     "/admin/product/toggle", 
     "/admin/product/edit"
