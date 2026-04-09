@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/clear-cart")
+@WebServlet("/staff/clear-cart")
 public class CartController extends HttpServlet {
     /**
 	 * 
@@ -21,6 +21,6 @@ public class CartController extends HttpServlet {
         HttpSession session = request.getSession();
         session.removeAttribute("order");
 
-        response.sendRedirect(request.getContextPath() + "/order");
+        response.sendRedirect(request.getContextPath() + "/staff/order");
     }
 }

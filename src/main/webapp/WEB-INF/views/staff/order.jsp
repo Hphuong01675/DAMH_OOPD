@@ -165,23 +165,7 @@
 									</span>
 								</div>
 
-								<div class="grid grid-cols-3 gap-2">
-									<button
-										class="payment-option selected border-2 border-[#9D3C4D] bg-orange-50 text-[#9D3C4D] p-2 rounded-xl text-center transition-all"
-										onclick="selectPaymentMethod(this)">
-										<span class="text-[10px] font-bold block">TIỀN MẶT</span>
-									</button>
-									<button
-										class="payment-option border-2 border-gray-100 text-gray-400 p-2 rounded-xl text-center hover:border-[#9D3C4D] transition-all"
-										onclick="selectPaymentMethod(this)">
-										<span class="text-[10px] font-bold block">VNPAY</span>
-									</button>
-									<button
-										class="payment-option border-2 border-gray-100 text-gray-400 p-2 rounded-xl text-center hover:border-[#9D3C4D] transition-all"
-										onclick="selectPaymentMethod(this)">
-										<span class="text-[10px] font-bold block">THẺ</span>
-									</button>
-								</div>
+					
 
 								<div class="space-y-2">
 									<form action="${pageContext.request.contextPath}/payment"

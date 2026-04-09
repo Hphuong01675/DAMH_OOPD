@@ -39,7 +39,7 @@ public class BuildDrinkController extends HttpServlet {
 	        BeverageDTO beverageDTO = beverageService.getById(beverageId);
 
 	        if (beverageDTO == null) {
-	            response.sendRedirect("order");
+	            response.sendRedirect("staff/order");
 	            return;
 	        }
 	         
@@ -83,7 +83,7 @@ public class BuildDrinkController extends HttpServlet {
 	    }
 
 	    // ===== Redirect chuẩn MVC =====
-	    response.sendRedirect("order"); // ✅ FIX QUAN TRỌNG
+	    response.sendRedirect("staff/order"); // ✅ FIX QUAN TRỌNG
 	}
 	
 }

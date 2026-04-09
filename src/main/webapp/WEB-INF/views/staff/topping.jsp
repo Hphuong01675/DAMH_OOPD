@@ -263,11 +263,7 @@
 												</div>
 
 												<input type="hidden" name="toppingNames" value="${t.name}" disabled>
-<<<<<<< HEAD
 												<input type="hidden" name="toppingQtys" value="1" class="toppingQtyInput" disabled>
-=======
-
->>>>>>> origin/Receive_Notification
 												<div class="topping-qty">
 
 													<button type="button"
@@ -342,7 +338,6 @@
 					}
 
 					function toggleTopping(el) {
-<<<<<<< HEAD
 
 					    el.classList.toggle("selected");
 
@@ -355,16 +350,6 @@
 					    } else {
 					        nameInput.disabled = true;
 					        qtyInput.disabled = true;
-=======
-					    el.classList.toggle("selected");
-
-					    let input = el.querySelector("input");
-
-					    if (el.classList.contains("selected")) {
-					        input.disabled = false;
-					    } else {
-					        input.disabled = true;
->>>>>>> origin/Receive_Notification
 					    }
 
 					    updatePrice();
@@ -374,7 +359,6 @@
 
 					function changeToppingQty(btn, c) {
 
-<<<<<<< HEAD
 					    let container = btn.closest(".topping");
 
 					    let qtyEl = container.querySelector(".qty");
@@ -391,20 +375,6 @@
 					    updatePrice();
 					}
 					
-=======
-						let qtyEl = btn.parentElement.querySelector(".qty");
-
-						let qty = parseInt(qtyEl.innerText);
-
-						qty += c;
-
-						if (qty < 1) qty = 1;
-
-						qtyEl.innerText = qty;
-
-						updatePrice();
-					}
->>>>>>> origin/Receive_Notification
 					function formatVND(number) {
 					    return number.toLocaleString('vi-VN') + " VND";
 					}
