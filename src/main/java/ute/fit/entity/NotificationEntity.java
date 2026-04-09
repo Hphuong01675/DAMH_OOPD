@@ -17,6 +17,4 @@ public class NotificationEntity {
     private Integer notificationID;
     private String content;
     private LocalDateTime sentDate;
-    @ManyToOne
-    private AccountEntity receiver;
 }

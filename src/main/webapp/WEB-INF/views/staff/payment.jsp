@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,18 +147,20 @@
 
                     <div class="space-y-4 pt-6 border-t mt-6">
                         <div class="flex justify-between text-gray-500 font-medium">
-                            <span>Subtotal</span> 
-                            <span class="font-bold text-on-surface"><fmt:formatNumber value="${subtotal}" type="number" />đ</span>
-                        </div>
+    <span>Subtotal</span> 
+    <span class="font-bold text-on-surface">
+        <fmt:formatNumber value="${subtotal}" pattern="#,###" />đ
+    </span>
+</div>
                         <div class="flex justify-between text-red-500 font-medium italic">
                             <span>Discount</span> <span id="discountLabel">- 0đ</span>
                         </div>
                         <div class="flex justify-between items-center pt-8">
-                            <span class="text-xl font-bold">Grand Total</span> 
-                            <span class="text-3xl font-black text-primary tracking-tighter" id="finalPriceLabel"> 
-                                <fmt:formatNumber value="${subtotal}" type="number" />đ
-                            </span>
-                        </div>
+    <span class="text-xl font-bold">Grand Total</span> 
+    <span class="text-3xl font-black text-primary tracking-tighter" id="finalPriceLabel"> 
+        <fmt:formatNumber value="${subtotal}" pattern="#,###" />đ
+    </span>
+</div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-3 my-8">
@@ -182,7 +184,7 @@
     </div>
 
     <script>
-        const SUB_TOTAL = parseFloat("${subtotal}");
+    	const SUB_TOTAL = Number('${subtotal}') || 0;
         let currentCustomer = { id: null, phone: "", points: 0 };
 
         async function processCustomerLookup() {
@@ -261,34 +263,55 @@
             el.classList.remove('hidden');
         }
 
-        function handlePromoCheck(radioBtn, strategyName) {
-            if (strategyName === 'PointRedeem') {
-                if (!currentCustomer.id) {
-                    updateSmallStatus("⚠️ Please find/select a customer before using points!", "red");
-                    resetPromo();
-                    return;
-                }
+        async function handlePromoCheck(radioBtn, strategyName) {
+            const promoCode = radioBtn.value;
+            const subtotal = SUB_TOTAL;
 
-                if (currentCustomer.points < 30) {
-                    updateSmallStatus("⚠️ Customer has " + currentCustomer.points + " pts. Need min 30 pts to use this!", "red");
-                    resetPromo();
-                    return;
-                }
-
-                updateSmallStatus("✅ Points applied successfully", "green");
-                calculateFinalTotal(30000); 
-            } else {
+            if (promoCode === 'NONE') {
                 calculateFinalTotal(0);
-                const el = document.getElementById('searchStatus');
-                el.classList.add('hidden');
+                return;
+            }
+
+            try {
+                // Gửi yêu cầu đến API
+                const response = await fetch(`${pageContext.request.contextPath}/api/calculate-discount?code=` + promoCode + "&total=" + subtotal);
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error("Lỗi từ Server:", data.error);
+                    calculateFinalTotal(0);
+                    return;
+                }
+
+                // Ép kiểu số cho giá trị giảm giá nhận được
+                const discountAmount = parseFloat(data.discountAmount) || 0;
+                
+                // Gọi hàm cập nhật hiển thị ngay lập tức
+                calculateFinalTotal(discountAmount);
+
+            } catch (error) {
+                console.error("Lỗi kết nối API:", error);
+                calculateFinalTotal(0);
             }
         }
 
         function calculateFinalTotal(discount) {
-            const finalDiscount = Math.min(discount, SUB_TOTAL);
-            const finalTotal = Math.max(SUB_TOTAL - finalDiscount, 0);
-            document.getElementById('discountLabel').innerText = "- " + finalDiscount.toLocaleString() + "đ";
-            document.getElementById('finalPriceLabel').innerText = finalTotal.toLocaleString() + "đ";
+            const currentSubtotal = Number(SUB_TOTAL) || 0;
+            
+            // Tính toán số tiền giảm (không vượt quá tổng hóa đơn)
+            const finalDiscount = Math.min(discount, currentSubtotal);
+            const finalTotal = Math.max(currentSubtotal - finalDiscount, 0);
+
+            // Cập nhật lên giao diện
+            const labelDiscount = document.getElementById('discountLabel');
+            const labelTotal = document.getElementById('finalPriceLabel');
+
+            if (labelDiscount) {
+                labelDiscount.innerText = "- " + finalDiscount.toLocaleString('vi-VN') + "đ";
+            }
+            if (labelTotal) {
+                labelTotal.innerText = finalTotal.toLocaleString('vi-VN') + "đ";
+            }
         }
 
         function resetPromo() {

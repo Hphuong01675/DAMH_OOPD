@@ -76,4 +76,8 @@ public class DiscountServiceImpl implements IDiscountService {
         }
         return true; // Các mã khác không cần xét điểm
     }
+    public double calculateDiscountAmount(double originalPrice, String promotionCode) {
+        double priceAfterDiscount = getPriceWithVoucher(originalPrice, promotionCode);
+        return originalPrice - priceAfterDiscount;
+    }
 }
