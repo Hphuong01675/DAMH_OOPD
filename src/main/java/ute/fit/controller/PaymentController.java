@@ -13,8 +13,11 @@ import ute.fit.entity.CustomerEntity;
 import ute.fit.model.Order;
 import ute.fit.model.Payment;
 import ute.fit.model.StatusPayment;
+import ute.fit.model.UserDTO;
 import ute.fit.service.IDiscountService;
+import ute.fit.service.IOrderService;
 import ute.fit.service.impl.DiscountServiceImpl;
+import ute.fit.service.impl.OrderServiceImpl;
 import ute.fit.service.payment.PaymentProcessor;
 import ute.fit.service.payment.CardPaymentProcessor;
 import ute.fit.service.payment.CashPaymentProcessor;
@@ -28,16 +31,22 @@ import java.util.Map;
 public class PaymentController extends HttpServlet {
     
     private final IDiscountService discountService = new DiscountServiceImpl();
+    private final IOrderService orderService = new OrderServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
-        // 1. Lấy danh sách khuyến mãi động từ Database
-        List<Map<String, String>> promotions = discountService.getAllPromotions();
-        req.setAttribute("promotions", promotions);
-
-        // 2. Lấy Session và đối tượng Order
-        HttpSession session = req.getSession(false);
+    	HttpSession session = req.getSession(false);
+    	
+    	Object accountObj = (session != null) ? session.getAttribute("user") : null;
+        
+        if (accountObj == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+        
+        UserDTO user = (UserDTO) accountObj;
+    	
         Order order = null;
         CustomerEntity customer = null;
 
@@ -48,6 +57,16 @@ public class PaymentController extends HttpServlet {
                 customer = o.getCustomer();
             }
         }
+        
+        // 0. Lưu đơn hàng trạng thái PENDING
+        orderService.saveOrder(order, user);
+        
+        // 1. Lấy danh sách khuyến mãi động từ Database
+        List<Map<String, String>> promotions = discountService.getAllPromotions();
+        req.setAttribute("promotions", promotions);
+
+        // 2. Lấy Session và đối tượng Order
+        
 
         // 3. Nếu chưa có customer từ session, lấy thông tin khách hàng mẫu từ DB
         if (customer == null) {

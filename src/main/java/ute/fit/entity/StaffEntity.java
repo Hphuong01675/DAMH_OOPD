@@ -16,4 +16,8 @@ public class StaffEntity extends PersonEntity {
 
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL)
     private List<OrderEntity> orders; // Staff tạo nhiều Order
+    
+    public void setAccount(AccountEntity account) {
+    	this.account = account;
+    }
 }

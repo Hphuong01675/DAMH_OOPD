@@ -24,6 +24,8 @@ public interface IOrderDAO {
     // THÊM: 2 Hàm mới phục vụ Dashboard
     List<Object[]> getTopDrinksByBaristaToday(String username);
     List<LocalDateTime> getOrderDatesByBaristaToday(String username);
+    
+    void save(OrderEntity order);
 }
 //package ute.fit.dao;
 //

@@ -234,9 +234,9 @@
 
 								<select name="ice" style="width:100%; padding:10px;">
 								    <option value="No">No Ice</option>
-								    <option value="Les">Less Ice</option>
+								    <option value="Less">Less Ice</option>
 								    <option value="Normal" selected>Normal</option>
-								    <option value="EXTRA">Extra</option>
+								    <option value="Extra">Extra</option>
 								</select>
 
 								</div>

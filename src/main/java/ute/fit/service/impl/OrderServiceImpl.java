@@ -1,12 +1,24 @@
 package ute.fit.service.impl;
 
+import ute.fit.dao.IAccountDAO;
+import ute.fit.dao.IBeverageDAO;
 import ute.fit.dao.IOrderDAO;
+import ute.fit.dao.IToppingDAO;
+import ute.fit.dao.impl.AccountDAOImpl;
+import ute.fit.dao.impl.BeverageDAOImpl;
 import ute.fit.dao.impl.OrderDAOImpl;
+import ute.fit.dao.impl.ToppingDAOImpl;
 import ute.fit.service.IOrderService;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+
+import ute.fit.entity.AccountEntity;
+import ute.fit.entity.BeverageEntity;
 import ute.fit.entity.OrderEntity;
+import ute.fit.entity.OrderItemEntity;
+import ute.fit.entity.StaffEntity;
+import ute.fit.entity.ToppingEntity;
 import ute.fit.model.*;
 import ute.fit.model.state.OrderStateFactory;
 
@@ -19,6 +31,9 @@ import java.util.stream.Collectors;
 
 public class OrderServiceImpl implements IOrderService {
 	private final IOrderDAO orderDAO = new OrderDAOImpl();
+	private final IAccountDAO accountDAO = new AccountDAOImpl();
+	private final IToppingDAO toppingDAO = new ToppingDAOImpl();
+	private final IBeverageDAO beverageDAO = new BeverageDAOImpl();
 
 	@Override
 	public Map<String, Object> getStaffDailyStats(Long staffId) {
@@ -183,5 +198,94 @@ public class OrderServiceImpl implements IOrderService {
 		}
 
 		return chartData;
+	}
+	
+	@Override
+	public void saveOrder(Order order, UserDTO userDto) {
+	    // 1. Tìm Account từ DB
+	    Roles roleEnum = Roles.valueOf(userDto.getRole());
+	    AccountEntity account = accountDAO.findActiveAccountByUsernameAndRole(userDto.getUsername(), roleEnum);
+
+	    if (account == null) throw new RuntimeException("Tài khoản không hợp lệ");
+
+	    // 2. Khởi tạo OrderEntity với trạng thái PENDING
+	    OrderEntity orderEntity = new OrderEntity();
+	    orderEntity.setOrderID(order.getOrderId() != null ? order.getOrderId() : System.currentTimeMillis());
+	    orderEntity.setOrderDate(java.time.LocalDateTime.now());
+	    orderEntity.setTotalAmount(order.calculateTotal());
+	    
+	    // Gán trạng thái từ State Pattern và Enum StatusPayment
+	    orderEntity.setStateName("PENDING"); 
+	    orderEntity.setStatusPayment(StatusPayment.PENDING); 
+	    orderEntity.setStaff(toStaffEntity(userDto, account));
+
+	    // 3. Xử lý danh sách Item (Giải mã Decorator)
+	    List<OrderItemEntity> itemEntities = new ArrayList<>();
+	    for (OrderItem modelItem : order.getItems()) {
+	        OrderItemEntity itemEntity = new OrderItemEntity();
+	        itemEntity.setOrder(orderEntity);
+	        
+	        // Giải mã Product (Decorator) để lấy Beverage và Toppings
+	        List<ToppingEntity> collectedToppings = new ArrayList<>();
+	        Map<String, ToppingEntity> toppingCache = new HashMap<>();
+	        Beverage baseBeverage = unwrapProduct(modelItem.getProduct(), collectedToppings, toppingCache);
+	        
+	        if (baseBeverage != null) {
+	            // Lấy BeverageEntity từ DB dựa trên tên
+	            BeverageEntity bevEntity = beverageDAO.findByName(baseBeverage.getName());
+	            itemEntity.setBeverage(bevEntity);
+	            
+	            // Lấy thông tin Size, Sugar, Ice từ đối tượng Beverage gốc
+	            itemEntity.setSize(baseBeverage.getSize());
+	            itemEntity.setSugar(baseBeverage.getSugar());
+	            itemEntity.setIce(baseBeverage.getIce());
+	        }
+	        
+	        itemEntity.setToppings(collectedToppings);
+	        
+	        // Lấy thông tin lựa chọn và giá
+	        itemEntity.setQuantity(modelItem.getQuantity());
+	        itemEntity.setUnitPrice(modelItem.getUnitPrice()); // Giá đã bao gồm topping
+
+	        itemEntities.add(itemEntity);
+	    }
+	    
+	    orderEntity.setItems(itemEntities);
+	    orderDAO.save(orderEntity); // Lưu toàn bộ nhờ CascadeType.ALL
+	}
+	
+	private StaffEntity toStaffEntity(UserDTO user, AccountEntity account) {
+	    StaffEntity staff = new StaffEntity();
+	    staff.setId(user.getId());
+	    staff.setName(user.getFullName());
+	    staff.setPhoneNumber(user.getPhone());
+	    staff.setAccount(account); // Gán AccountEntity thực sự từ DB
+	    return staff;
+	}
+	
+	private Beverage unwrapProduct(Product product, List<ToppingEntity> collectedToppings, Map<String, ToppingEntity> toppingCache) {
+		if (product instanceof ToppingDecorator decorator) {
+	        String tName = decorator.getToppingName();
+	        
+	        // Kiểm tra xem Topping này đã được load lên chưa
+	        ToppingEntity tEntity = toppingCache.get(tName);
+	        if (tEntity == null) {
+	            tEntity = toppingDAO.findByName(tName);
+	            if (tEntity != null) {
+	                toppingCache.put(tName, tEntity); // Lưu vào cache tạm
+	            }
+	        }
+
+	        if (tEntity != null) {
+	            collectedToppings.add(tEntity); // Add vào list (có thể add trùng đối tượng tEntity này nhiều lần)
+	        }
+
+	        return unwrapProduct(decorator.getProduct(), collectedToppings, toppingCache);
+	    } 
+	    
+	    if (product instanceof Beverage beverage) {
+	        return beverage;
+	    }
+	    return null;
 	}
 }

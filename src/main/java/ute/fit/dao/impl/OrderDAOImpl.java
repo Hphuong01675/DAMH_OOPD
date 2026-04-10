@@ -371,4 +371,20 @@ public class OrderDAOImpl implements IOrderDAO {
 			em.close();
 		}
 	}
+	
+	@Override
+	public void save(OrderEntity order) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    EntityTransaction tx = em.getTransaction();
+	    try {
+	        tx.begin();
+	        em.merge(order);  // Lưu Order, cascade sẽ xử lý OrderItem và Topping
+	        tx.commit();
+	    } catch (Exception e) {
+	        if (tx.isActive()) tx.rollback();
+	        throw e;
+	    } finally {
+	        em.close();
+	    }
+	}
 }
