@@ -2,7 +2,6 @@ package ute.fit.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import ute.fit.entity.CustomerEntity;
 import ute.fit.model.state.CancelledState;
 import ute.fit.model.state.OrderState;
 import ute.fit.model.state.PendingState;
@@ -14,7 +13,7 @@ import ute.fit.model.state.PendingState;
 public class Order {
     private Long orderId;
     private List<OrderItem> items = new ArrayList<>();
-    private CustomerEntity customer;
+    private Long customerId;
     
     // Cầu nối tới State Pattern (Trạng thái hiện tại)
     private OrderState currentState;
@@ -151,11 +150,11 @@ public class Order {
         this.cancelReason = cancelReason;
     }
 
-    public CustomerEntity getCustomer() {
-        return customer;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(CustomerEntity customer) {
-        this.customer = customer;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 }

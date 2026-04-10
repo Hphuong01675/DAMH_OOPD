@@ -26,6 +26,16 @@ public class CustomerDAOImpl implements ICustomerDAO {
     }
 
     @Override
+    public CustomerEntity findById(Long id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(CustomerEntity.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public CustomerEntity save(CustomerEntity customer) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction trans = em.getTransaction();

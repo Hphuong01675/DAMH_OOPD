@@ -25,13 +25,6 @@
             <span class="font-body">Live Queue</span>
         </a>
 
-        <%-- Menu Chat --%>
-        <a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all duration-200 ${currentURI.contains('/chat') ? 'bg-[#853bb5]/10 text-tertiary font-semibold active-nav-border' : 'text-on-surface/70 hover:bg-surface-container-highest'}" 
-           href="${pageContext.request.contextPath}/barista/chat">
-            <span class="material-symbols-outlined" ${currentURI.contains('/chat') ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>chat_bubble</span>
-            <span class="font-body">Chat</span>
-        </a>
-
         <a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all duration-200 ${currentURI.contains('/notifications') ? 'bg-[#853bb5]/10 text-tertiary font-semibold active-nav-border' : 'text-on-surface/70 hover:bg-surface-container-highest'}"
            href="${pageContext.request.contextPath}/barista/notifications">
             <span class="material-symbols-outlined" ${currentURI.contains('/notifications') ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>notifications</span>

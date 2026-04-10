@@ -1,9 +1,13 @@
 package ute.fit.service.payment;
 
+import ute.fit.dao.IPaymentDAO;
+import ute.fit.dao.impl.PaymentDAOImpl;
+import ute.fit.entity.PaymentEntity;
 import ute.fit.model.Payment;
 
 public class VNPAYPaymentProcessor extends PaymentProcessor {
-    private VNPayAdapter adapter;
+    private final VNPayAdapter adapter;
+    private final IPaymentDAO paymentDAO = new PaymentDAOImpl();
 
     public VNPAYPaymentProcessor() {
         this.adapter = new VNPayAdapter();
@@ -11,9 +15,19 @@ public class VNPAYPaymentProcessor extends PaymentProcessor {
 
     @Override
     protected boolean executePayment(double amount, Payment payment) {
-        System.out.println("Bắt đầu xử lý VNPay...");
-        // Gọi giao dịch thông qua Adapter pattern
-        boolean isSuccess = adapter.executePayment(amount);
-        return isSuccess;
+        System.out.println("Bat dau xu ly VNPay...");
+        // Goi giao dich thong qua Adapter pattern
+        return adapter.executePayment(amount);
+    }
+
+    @Override
+    protected void savePayment(Payment payment) {
+        PaymentEntity entity = new PaymentEntity();
+        entity.setAmount(payment.getAmount());
+        entity.setPaymentDate(payment.getPaymentDate());
+        entity.setPaymentMethod("VNPAY");
+        entity.setStatus(payment.getStatusPayment());
+        entity.setTransactionContent(payment.getTransactionID());
+        paymentDAO.save(entity);
     }
 }

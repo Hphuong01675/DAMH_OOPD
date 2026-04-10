@@ -25,7 +25,7 @@
         </div>
 
         <div id="menu" class="hidden absolute right-0 top-14 w-40 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-            <div class="px-4 py-3 text-sm text-gray-500 italic">KhÃ´ng cÃ³ tÃ¹y chá»n</div>
+            <div class="px-4 py-3 text-sm text-gray-500 italic">Không có tùy ch?n</div>
         </div>
     </div>
 

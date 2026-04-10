@@ -2,10 +2,12 @@ package ute.fit.service.impl;
 
 import ute.fit.dao.IAccountDAO;
 import ute.fit.dao.IBeverageDAO;
+import ute.fit.dao.ICustomerDAO;
 import ute.fit.dao.IOrderDAO;
 import ute.fit.dao.IToppingDAO;
 import ute.fit.dao.impl.AccountDAOImpl;
 import ute.fit.dao.impl.BeverageDAOImpl;
+import ute.fit.dao.impl.CustomerDAOImpl;
 import ute.fit.dao.impl.OrderDAOImpl;
 import ute.fit.dao.impl.ToppingDAOImpl;
 import ute.fit.service.IOrderService;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 import ute.fit.entity.AccountEntity;
 import ute.fit.entity.BeverageEntity;
+import ute.fit.entity.CustomerEntity;
 import ute.fit.entity.OrderEntity;
 import ute.fit.entity.OrderItemEntity;
 import ute.fit.entity.StaffEntity;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements IOrderService {
 	private final IOrderDAO orderDAO = new OrderDAOImpl();
 	private final IAccountDAO accountDAO = new AccountDAOImpl();
+	private final ICustomerDAO customerDAO = new CustomerDAOImpl();
 	private final IToppingDAO toppingDAO = new ToppingDAOImpl();
 	private final IBeverageDAO beverageDAO = new BeverageDAOImpl();
 
@@ -207,16 +211,18 @@ public class OrderServiceImpl implements IOrderService {
 	}
 	
 	@Override
-	public void saveOrder(Order order, UserDTO userDto) {
+	public Long saveOrder(Order order, UserDTO userDto) {
 	    // 1. Tìm Account từ DB
 	    Roles roleEnum = Roles.valueOf(userDto.getRole());
 	    AccountEntity account = accountDAO.findActiveAccountByUsernameAndRole(userDto.getUsername(), roleEnum);
 
 	    if (account == null) throw new RuntimeException("Tài khoản không hợp lệ");
+	    if (order == null) throw new RuntimeException("Order không hợp lệ");
 
 	    // 2. Khởi tạo OrderEntity với trạng thái PENDING
 	    OrderEntity orderEntity = new OrderEntity();
-	    orderEntity.setOrderID(order.getOrderId() != null ? order.getOrderId() : System.currentTimeMillis());
+	    Long orderId = order.getOrderId() != null ? order.getOrderId() : System.currentTimeMillis();
+	    orderEntity.setOrderID(orderId);
 	    orderEntity.setOrderDate(java.time.LocalDateTime.now());
 	    orderEntity.setTotalAmount(order.calculateTotal());
 	    
@@ -224,6 +230,11 @@ public class OrderServiceImpl implements IOrderService {
 	    orderEntity.setStateName("PENDING"); 
 	    orderEntity.setStatusPayment(StatusPayment.PENDING); 
 	    orderEntity.setStaff(toStaffEntity(userDto, account));
+
+	    if (order.getCustomerId() != null) {
+	        CustomerEntity customer = customerDAO.findById(order.getCustomerId());
+	        orderEntity.setCustomer(customer);
+	    }
 
 	    // 3. Xử lý danh sách Item (Giải mã Decorator)
 	    List<OrderItemEntity> itemEntities = new ArrayList<>();
@@ -258,6 +269,34 @@ public class OrderServiceImpl implements IOrderService {
 	    
 	    orderEntity.setItems(itemEntities);
 	    orderDAO.save(orderEntity); // Lưu toàn bộ nhờ CascadeType.ALL
+	    order.setOrderId(orderId);
+	    return orderId;
+	}
+
+	@Override
+	public void handlePostPayment(Long orderId, Long customerId, String promoCode, StatusPayment paymentStatus, String orderStateName) {
+		if (orderId == null) {
+			return;
+		}
+
+		OrderEntity orderEntity = orderDAO.findById(orderId);
+		if (orderEntity == null) {
+			return;
+		}
+
+		orderEntity.setStatusPayment(paymentStatus != null ? paymentStatus : StatusPayment.PENDING);
+		if (orderStateName != null && !orderStateName.isBlank()) {
+			orderEntity.setStateName(orderStateName);
+		}
+
+		if (customerId != null) {
+			CustomerEntity customer = customerDAO.findById(customerId);
+			if (customer != null) {
+				orderEntity.setCustomer(customer);
+			}
+		}
+
+		orderDAO.update(orderEntity);
 	}
 	
 	private StaffEntity toStaffEntity(UserDTO user, AccountEntity account) {

@@ -9,52 +9,38 @@ import java.util.UUID;
 
 public abstract class PaymentProcessor {
 
-    // Template Method Pattern
+    /**
+     * Template Method: Dinh nghia thuat toan thanh toan co dinh
+     */
     public final Payment processPayment(Order order) {
-        // Khởi tạo Payment
-        Payment payment = new Payment();
-        payment.setTransactionID(UUID.randomUUID().toString());
-        payment.setPaymentDate(LocalDateTime.now());
-        payment.setStatusPayment(StatusPayment.PENDING);
-
-        // Tính toán tổng số tiền
         double amount = createPayment(order);
 
-        // Thực thi thanh toán qua abstract method
+        Payment payment = new Payment();
+        payment.setTransactionID("TXN-" + UUID.randomUUID().toString().substring(0, 8));
+        payment.setPaymentDate(LocalDateTime.now());
+        payment.setStatusPayment(StatusPayment.PENDING);
+        payment.setAmount(amount);
+
         boolean result = executePayment(amount, payment);
-
-        // Cập nhật trạng thái
         updateStatus(payment, result);
-
-        // Ghi lại giao dịch
         savePayment(payment);
 
-        // Trả về Payment hoàn chỉnh
         return buildResult(payment);
     }
 
     protected double createPayment(Order order) {
-        // Thực tế có thể trừ đi mã giảm giá trước. Ở góc độ class này chỉ đơn thuần gọi get total
-        return order.calculateTotal(); 
+        return order.calculateTotal();
     }
 
     protected abstract boolean executePayment(double amount, Payment payment);
 
     protected void updateStatus(Payment payment, boolean result) {
-        if (result) {
-            payment.setStatusPayment(StatusPayment.SUCCESS);
-        } else {
-            payment.setStatusPayment(StatusPayment.FAILED);
-        }
+        payment.setStatusPayment(result ? StatusPayment.SUCCESS : StatusPayment.FAILED);
     }
 
-    protected void savePayment(Payment payment) {
-        // Theo yêu cầu "toàn bộ phải thực tế", chúng ta sẽ có thao tác giả định lưu xuống entity ở đây
-        System.out.println("[Database] Saving payment transaction " + payment.getTransactionID() + " with status: " + payment.getStatusPayment());
-    }
+    protected abstract void savePayment(Payment payment);
 
     protected Payment buildResult(Payment payment) {
-        // Xây dựng, xác nhận và bảo vệ dữ liệu cuối cùng trước khi trả về
         return payment;
     }
 }
