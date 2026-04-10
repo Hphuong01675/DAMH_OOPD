@@ -19,12 +19,6 @@
     </div>
 
     <div class="flex items-center gap-4 relative">
-        <a href="${pageContext.request.contextPath}/barista/orders" 
-           class="bg-[#C8F2D0] px-5 py-2 rounded-full text-green-700 font-medium flex items-center gap-2 hover:bg-green/80 transition shadow-sm">
-            <span class="w-2 h-2 bg-green-700 rounded-full animate-pulse"></span>
-            Live Queue: ${pendingOrders}
-        </a>
-
         <div onclick="toggleMenu()"
              class="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:scale-105 transition-transform bg-[#EADDE0] flex items-center justify-center text-primary font-bold">
             ${sessionScope.user.fullName.substring(0,1).toUpperCase()}

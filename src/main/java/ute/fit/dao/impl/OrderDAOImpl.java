@@ -267,25 +267,48 @@ public class OrderDAOImpl implements IOrderDAO {
 	}
 
 	@Override
-	public List<Object[]> findPendingOrdersDataToday() {
-		EntityManager em = JPAUtil.getEntityManager();
-		try {
-			LocalDate today = LocalDate.now();
-			LocalDateTime start = today.atStartOfDay();
-			LocalDateTime end = today.plusDays(1).atStartOfDay();
-			return em.createQuery("""
-					    SELECT o.orderID, o.orderDate, c.name, o.totalAmount
-					    FROM OrderEntity o
-					    LEFT JOIN o.customer c
-					    WHERE o.orderDate >= :start
-					    AND o.orderDate < :end
-					    AND o.stateName = :pendingState
-					""").setParameter("start", start).setParameter("end", end)
-					.setParameter("pendingState", new PendingState().getStateName()) // Dùng động thay vì 'PENDING'
-					.getResultList();
-		} finally {
-			em.close();
-		}
+	public List<OrderEntity> findPendingAndPaidOrdersToday() {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    try {
+	        LocalDate today = LocalDate.now();
+	        LocalDateTime start = today.atStartOfDay();
+	        LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+	        // Thêm DISTINCT để tránh duplicate dữ liệu khi fetch
+	        List<OrderEntity> orders = em.createQuery("""
+	            SELECT DISTINCT o FROM OrderEntity o
+	            WHERE o.orderDate >= :start AND o.orderDate < :end
+	            AND o.stateName = 'PENDING'
+	            AND o.statusPayment = :paymentStatus
+	            ORDER BY o.orderDate ASC
+	        """, OrderEntity.class)
+	        .setParameter("start", start)
+	        .setParameter("end", end)
+	        .setParameter("paymentStatus", ute.fit.model.StatusPayment.SUCCESS)
+	        .getResultList();
+
+	        // KHẮC PHỤC LỖI LAZY INITIALIZATION TẠI ĐÂY
+	        // Kích hoạt (Initialize) các proxy data trước khi đóng session
+	        for (OrderEntity order : orders) {
+	            // 1. Kích hoạt list Items
+	            order.getItems().size(); 
+	            
+	            for (ute.fit.entity.OrderItemEntity item : order.getItems()) {
+	                // 2. Kích hoạt thông tin Nước uống (Beverage)
+	                if (item.getBeverage() != null) {
+	                    item.getBeverage().getName(); 
+	                }
+	                // 3. Kích hoạt list Toppings
+	                if (item.getToppings() != null) {
+	                    item.getToppings().size();
+	                }
+	            }
+	        }
+
+	        return orders;
+	    } finally {
+	        em.close();
+	    }
 	}
 
 	@Override

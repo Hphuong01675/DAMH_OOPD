@@ -48,54 +48,59 @@ public class OrderServiceImpl implements IOrderService {
 		return stats;
 	}
 
-	@Override
-	public void processOrder(Long orderId) {
-		// Gọi updateState với hành động mặc định là COMPLETE
-		updateState(orderId, "COMPLETE", null);
-	}
+	// Trong file: OrderServiceImpl.java
 
-	@Override
-	public void updateState(Long orderId, String action, String reason) {
-		OrderEntity entity = orderDAO.findById(orderId);
-		if (entity == null)
-			return;
-
-		try {
-			Order order = new Order();
-
-			// Dùng Reflection đọc trường "orderID" và "stateName"
-			Field idField = OrderEntity.class.getDeclaredField("orderID");
-			idField.setAccessible(true);
-			order.setOrderId((Long) idField.get(entity));
-
-			Field stateField = OrderEntity.class.getDeclaredField("stateName");
-			stateField.setAccessible(true);
-			String currentStateName = (String) stateField.get(entity);
-
-			// Khởi tạo trạng thái từ Model Factory
-			order.setState(OrderStateFactory.getState(currentStateName));
-
-			// Thực thi logic State Pattern
-			// ĐOẠN CẬP NHẬT (Rất sạch)
-			if ("COMPLETE".equalsIgnoreCase(action)) {
-				order.proceed();
-			} else if ("CANCEL".equalsIgnoreCase(action)) {
-				order.cancel(reason);
-			}
-
-			// Đồng bộ trạng thái xử lý
-			stateField.set(entity, order.getCurrentState().getStateName());
-
-			// Đồng bộ trạng thái thanh toán (Lấy từ Model sau khi đã proceed/cancel)
-			Field paymentField = OrderEntity.class.getDeclaredField("statusPayment");
-			paymentField.setAccessible(true);
-			paymentField.set(entity, order.getPaymentStatus());
-
-			orderDAO.update(entity);
-		} catch (Exception e) {
-			e.printStackTrace();
+		@Override
+		public void processOrder(Long orderId, Long baristaId) {
+			// Truyền baristaId xuống hàm updateState
+			updateState(orderId, "COMPLETE", null, baristaId);
 		}
-	}
+
+		@Override
+		public void updateState(Long orderId, String action, String reason, Long baristaId) {
+		    OrderEntity entity = orderDAO.findById(orderId);
+		    if (entity == null) return;
+
+		    try {
+		        // Logic State Pattern để xử lý StateName
+		        Order order = new Order();
+		        
+		        // Lấy state hiện tại từ Entity gán vào Model
+		        Field stateField = OrderEntity.class.getDeclaredField("stateName");
+		        stateField.setAccessible(true);
+		        String currentStateName = (String) stateField.get(entity);
+		        order.setState(ute.fit.model.state.OrderStateFactory.getState(currentStateName));
+
+		        if ("COMPLETE".equalsIgnoreCase(action)) {
+		                   order.proceed(); 
+		            
+		            // CẬP NHẬT BARISTA: Dùng Setter trực tiếp của Lombok
+		            if (baristaId != null) {
+		                ute.fit.entity.BaristaEntity barista = new ute.fit.entity.BaristaEntity();
+		                barista.setId(baristaId);
+		                entity.setBarista(barista); 
+		            }
+		            
+		            // Cập nhật StateName vào Entity
+		            stateField.set(entity, order.getCurrentState().getStateName());
+		            
+		        } else if ("CANCEL".equalsIgnoreCase(action)) {
+		            order.cancel(reason);
+		            stateField.set(entity, order.getCurrentState().getStateName());
+		            
+		            // Chỉ khi Cancel mới có thể cập nhật trạng thái thanh toán nếu cần
+		            Field paymentField = OrderEntity.class.getDeclaredField("statusPayment");
+		            paymentField.setAccessible(true);
+		            paymentField.set(entity, order.getPaymentStatus());
+		        }
+
+		        // Thực hiện update xuống Database
+		        orderDAO.update(entity);
+		        
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		}
 
 	@Override
 	public List<OrderEntity> getPendingOrdersToday() {
@@ -120,9 +125,10 @@ public class OrderServiceImpl implements IOrderService {
 		}).collect(Collectors.toList());
 	}
 
+	// Trong OrderServiceImpl.java
 	@Override
-	public List<Object[]> getPendingOrdersDataToday() {
-		return orderDAO.findPendingOrdersDataToday();
+	public List<OrderEntity> getPendingAndPaidOrdersToday() {
+	    return orderDAO.findPendingAndPaidOrdersToday();
 	}
 
 	@Override

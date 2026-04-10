@@ -16,7 +16,7 @@ public interface IOrderDAO {
     OrderEntity findById(Long id);
     void update(OrderEntity entity);
     List<OrderEntity> findAll();
-    List<Object[]> findPendingOrdersDataToday();
+    List<OrderEntity> findPendingAndPaidOrdersToday();
     
     Object[] getBaristaStatsToday(String username);
     List<Object[]> getOrdersByBaristaUsernameToday(String username);
