@@ -10,10 +10,10 @@ import java.util.List;
 public interface IOrderService {
     Map<String, Object> getStaffDailyStats(Long staffId);
     
-    void processOrder(Long orderId);
-    void updateState(Long orderId, String action, String reason);
+    void processOrder(Long orderId, Long baristaId);
+    void updateState(Long orderId, String action, String reason, Long baristaId);
     List<OrderEntity> getPendingOrdersToday();
-    List<Object[]> getPendingOrdersDataToday();
+    List<OrderEntity> getPendingAndPaidOrdersToday();
     
     Object[] getBaristaStatsToday(String username);
     List<Object[]> getOrdersByBaristaUsernameToday(String username);
