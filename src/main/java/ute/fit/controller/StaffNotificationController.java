@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ute.fit.entity.NotificationEntity;
+import ute.fit.model.Notification;
 import ute.fit.model.UserDTO;
 import ute.fit.service.impl.NotificationServiceImpl;
 
@@ -27,7 +27,7 @@ public class StaffNotificationController extends HttpServlet {
             return;
         }
 
-        List<NotificationEntity> notifications = notificationService.getNotificationsForUser(user.getUsername());
+        List<Notification> notifications = notificationService.getNotificationsForUser(user.getUsername());
         req.setAttribute("notifications", notifications);
         
         req.getRequestDispatcher("/WEB-INF/views/staff/staff-notifications.jsp").forward(req, resp);

@@ -11,6 +11,7 @@ import ute.fit.dao.IBeverageDAO;
 import ute.fit.dao.impl.BeverageDAOImpl;
 import ute.fit.model.BeverageBuilder;
 import ute.fit.model.BeverageDTO;
+import ute.fit.mapper.BeverageMapper;
 //import ute.fit.model.OrderItemDTO;
 
 import java.io.File;
@@ -31,26 +32,6 @@ public class BeverageServiceImpl implements IBeverageService {
 	    return cloudinary;
 	}
 	
-	private BeverageDTO toDTO(BeverageEntity e) {
-        BeverageDTO dto = new BeverageDTO();
-        dto.setProductID(e.getProductID());
-        dto.setName(e.getName());
-        dto.setBasePrice(e.getBasePrice());
-        dto.setImgUrl(e.getImgUrl());
-        dto.setSellable(e.isSellable());
-        return dto;
-    }
-
-    private BeverageEntity toEntity(BeverageDTO dto) {
-        BeverageEntity e = new BeverageEntity();
-        e.setProductID(dto.getProductID());
-        e.setName(dto.getName());
-        e.setBasePrice(dto.getBasePrice());
-        e.setImgUrl(dto.getImgUrl());
-        e.setSellable(dto.getSellable());
-        return e;
-    }
-	
     @Override
     public List<BeverageDTO> getAllBeverages(String keyword) {
         List<BeverageEntity> list =
@@ -58,20 +39,20 @@ public class BeverageServiceImpl implements IBeverageService {
                         ? dao.searchByName(keyword)
                         : dao.findAll();
 
-        return list.stream().map(this::toDTO).collect(Collectors.toList());
+        return list.stream().map(BeverageMapper::toDTO).collect(Collectors.toList());
     }
     
     @Override
     public List<BeverageDTO> findAll() {
     	return dao.findAll()
     			.stream()
-    			.map(this::toDTO)
+    			.map(BeverageMapper::toDTO)
     			.collect(Collectors.toList());
     }
 
 	@Override
     public BeverageDTO getById(int id) {
-        return toDTO(dao.findById(id));
+        return BeverageMapper.toDTO(dao.findById(id));
     }
 
 	@Override

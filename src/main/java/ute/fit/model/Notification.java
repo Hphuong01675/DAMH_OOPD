@@ -1,17 +1,19 @@
 package ute.fit.model;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
-    private int notificationID;
+    private Integer notificationID;
     private String content;
     private LocalDateTime sentDate;
-
-    // Phương thức đúng như trong sơ đồ lớp
+    
     public void makeNewNotification() {
         this.sentDate = LocalDateTime.now();
-        // Bạn có thể thêm logic tiền xử lý nội dung ở đây nếu cần
     }
 }

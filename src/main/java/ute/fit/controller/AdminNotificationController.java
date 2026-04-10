@@ -8,13 +8,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ute.fit.model.UserDTO;
+import ute.fit.service.INotificationService;
 import ute.fit.service.impl.NotificationServiceImpl;
 
 @WebServlet("/admin/notifications")
 public class AdminNotificationController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private final NotificationServiceImpl notificationService = new NotificationServiceImpl();
+    private final INotificationService notificationService = new NotificationServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -45,8 +46,8 @@ public class AdminNotificationController extends HttpServlet {
         UserDTO currentUser = (UserDTO) req.getSession().getAttribute("user");
 
         try {
-            int recipients = notificationService.broadcastToRole(subject + ": " + body, group, currentUser);
-            req.setAttribute("success", "send message to " + recipients + " accounts in group " + group + ".");
+            notificationService.broadcastToRole(subject + ": " + body, group, currentUser);
+            req.setAttribute("success", "Notification sent successfully to group: " + group);
             req.setAttribute("subject", "");
             req.setAttribute("body", "");
         } catch (Exception e) {
