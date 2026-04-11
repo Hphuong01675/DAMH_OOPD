@@ -80,7 +80,7 @@
                     <div class="bg-surface-container-lowest rounded-[2rem] p-8 editorial-shadow border border-outline-variant/10 hover:border-tertiary/30 transition-all group relative overflow-hidden">
                         <div class="flex justify-between items-start mb-6">
                             <div>
-                                <%-- Truy cập orderID qua Key của Map (Vượt lỗi thiếu Getter) --%>
+                                <%-- Truy c?p orderID qua Key c?a Map (Vu?t l?i thi?u Getter) --%>
                                 <p class="text-[10px] font-black text-on-surface/30 uppercase tracking-widest">Order #<c:out value="${order.orderID}" /></p>
                                 <h4 class="text-xl font-headline font-bold text-on-surface mt-1">
                                     <c:out value="${order.customer != null ? order.customer.name : 'Guest'}" />
@@ -98,7 +98,7 @@
                                     <div>
                                         <p class="text-sm font-bold text-on-surface">${item.beverage.name}</p>
                                         <p class="text-[11px] text-on-surface-variant opacity-70 italic mt-0.5">
-                                            Size ${item.size} • ${item.sugar} Sugar • ${item.ice} Ice
+                                            Size ${item.size} � ${item.sugar} Sugar � ${item.ice} Ice
                                         </p>
                                         <div class="mt-2 flex flex-wrap gap-1">
                                             <c:forEach var="topping" items="${item.toppings}">

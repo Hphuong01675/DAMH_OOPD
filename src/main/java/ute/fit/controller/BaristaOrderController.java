@@ -25,14 +25,14 @@ public class BaristaOrderController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // 1. Lấy dữ liệu thô (Object[]) từ Service
+        // 1. L?y d? li?u th� (Object[]) t? Service
     	List<Object[]> rawData = orderService.getPendingOrdersDataToday();
 
     	List<Map<String, Object>> uiOrders = rawData.stream().map(row -> {
     	    Map<String, Object> map = new HashMap<>();
     	    map.put("orderID", row[0]);
     	    map.put("orderDate", row[1]);
-    	    map.put("customerName", row[2]); // Đây là c.name từ database
+    	    map.put("customerName", row[2]); // ��y l� c.name t? database
     	    map.put("totalAmount", row[3]);
     	    return map;
     	}).collect(Collectors.toList());
@@ -53,13 +53,13 @@ public class BaristaOrderController extends HttpServlet {
             if (idRaw != null && "COMPLETE".equals(action)) {
                 Long orderId = Long.parseLong(idRaw);
                 
-                // CHUẨN: Gọi phương thức xử lý đơn hàng thay vì update chuỗi
+                // CHU?N: G?i phuong th?c x? l� don h�ng thay v� update chu?i
                 orderService.processOrder(orderId); 
                 
-                session.setAttribute("message", "Đơn hàng #" + orderId + " đã pha chế xong và ghi nhận doanh thu!");
+                session.setAttribute("message", "�on h�ng #" + orderId + " d� pha ch? xong v� ghi nh?n doanh thu!");
             }
         } catch (Exception e) {
-            session.setAttribute("error", "Lỗi xử lý đơn hàng.");
+            session.setAttribute("error", "L?i x? l� don h�ng.");
         }
         response.sendRedirect(request.getContextPath() + "/barista/orders");
     }
