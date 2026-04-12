@@ -29,14 +29,66 @@
     </script>
 
     <style>
-        html, body { height: 100%; margin: 0; background-color: #fef8f3; }
-        header { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 100 !important; }
-        aside { position: fixed !important; top: 0 !important; left: 0 !important; height: 100vh !important; width: 16rem !important; z-index: 50 !important; padding-top: 5rem !important; }
-        .flex.min-h-screen { margin-left: 16rem !important; padding-top: 5rem !important; }
-        .silk-gradient { background: linear-gradient(135deg, #6F4E37 0%, #A67B5B 100%); }
-        body { font-family: 'Be Vietnam Pro', sans-serif; }
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-active { display: flex; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: #fef8f3;
+        }
+
+        header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 100 !important;
+        }
+
+        aside {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            width: 16rem !important;
+            z-index: 50 !important;
+            padding-top: 5rem !important;
+        }
+
+        .flex.min-h-screen {
+            margin-left: 16rem !important;
+            padding-top: 5rem !important;
+        }
+
+        .silk-gradient {
+            background: linear-gradient(135deg, #6F4E37 0%, #A67B5B 100%);
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-active {
+            display: flex;
+        }
+
+        /* Class để làm mờ mã giảm điểm */
+        .promo-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(1);
+            background-color: #f3f4f6 !important;
+            cursor: not-allowed !important;
+        }
     </style>
 </head>
 
@@ -121,15 +173,20 @@
                         </label>
 
                         <c:forEach var="promo" items="${promotions}">
-                            <label class="group relative bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-primary/50 transition-all cursor-pointer">
+                            <label id="label-${promo.id}"
+                                class="group relative bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-primary/50 transition-all cursor-pointer">
                                 <div class="flex justify-between items-start mb-4">
                                     <div class="bg-primary-container/30 p-2 rounded-xl text-primary">
                                         <span class="material-symbols-outlined">confirmation_number</span>
                                     </div>
-                                    <input type="radio" name="promoStrategy" value="${promo.id}" onclick="handlePromoCheck(this)" class="w-5 h-5 text-primary focus:ring-primary">
+                                    <input type="radio" name="promoStrategy" value="${promo.id}"
+                                        data-strategy-type="${promo.strategyType}"
+                                        onclick="handlePromoCheck(this)"
+                                        class="w-5 h-5 text-primary focus:ring-primary">
                                 </div>
                                 <h4 class="font-bold text-lg mb-1">${promo.title}</h4>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Type: ${promo.strategyName}</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Type:
+                                    ${promo.strategyName}</p>
                             </label>
                         </c:forEach>
                     </div>
@@ -171,8 +228,8 @@
 
                     <div id="paymentSimulationPanel" class="space-y-3 mb-6">
                         <div id="cashPanel" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4">
-                            <p class="text-sm font-bold text-amber-700 mb-2">Cash Simulation</p>
-                            <p class="text-xs text-amber-700 mb-3">Nhan vien nhan tien mat tai quay va tra lai tien thua.</p>
+                            <p class="text-sm font-bold text-amber-700 mb-2">Cash Payment</p>
+                            <p class="text-xs text-amber-700 mb-3">Thanh toán bằng tiền mặt tại quầy.</p>
                             <label class="text-xs text-gray-500 font-semibold">Customer Paid (VND)</label>
                             <input id="cashReceivedInput" type="number" min="0" placeholder="Nhap so tien khach dua"
                                    class="w-full mt-1 border-gray-200 rounded-xl focus:ring-primary focus:border-primary px-3 py-2"
@@ -181,8 +238,8 @@
                         </div>
 
                         <div id="cardPanel" class="hidden bg-blue-50 border border-blue-200 rounded-2xl p-4">
-                            <p class="text-sm font-bold text-blue-700 mb-2">Card Simulation</p>
-                            <p class="text-xs text-blue-700 mb-3">Mo phong quet the qua POS terminal.</p>
+                            <p class="text-sm font-bold text-blue-700 mb-2">Card Payment</p>
+                            <p class="text-xs text-blue-700 mb-3">Thanh toán bằng thẻ qua thiết bị POS.</p>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-500 font-semibold">Bank</label>
@@ -204,8 +261,8 @@
                         </div>
 
                         <div id="vnpayPanel" class="hidden bg-green-50 border border-green-200 rounded-2xl p-4">
-                            <p class="text-sm font-bold text-green-700 mb-2">VNPay Simulation (Adapter)</p>
-                            <p class="text-xs text-green-700 mb-3">Mo phong redirect/QR den VNPay qua Adapter.</p>
+                            <p class="text-sm font-bold text-green-700 mb-2">VNPay Payment</p>
+                            <p class="text-xs text-green-700 mb-3">Thanh toán qua cổng VNPay.</p>
                             <div class="flex items-center gap-3">
                                 <div class="w-16 h-16 rounded-xl border-2 border-dashed border-green-400 flex items-center justify-center">
                                     <span class="material-symbols-outlined text-3xl text-green-600">qr_code_2</span>
@@ -231,6 +288,28 @@
         const SUB_TOTAL = Number('${subtotal}') || 0;
         let currentFinalTotal = SUB_TOTAL;
 
+        // CẬP NHẬT TRẠNG THÁI MÃ GIẢM ĐIỂM (LÀM MỜ / MỞ KHÓA)
+        function refreshVoucherStatus(points) {
+            const customerId = document.getElementById('hiddenCustomerId').value;
+            const vouchers = document.querySelectorAll('input[name="promoStrategy"]');
+
+            vouchers.forEach(input => {
+                const type = input.getAttribute('data-strategy-type');
+                const label = document.getElementById('label-' + input.value);
+                
+                if (type === 'POINT_REDEEM') {
+                    // Nếu không có khách hàng hoặc khách hàng có ít hơn 30 điểm thì Vô hiệu hóa
+                    if (!customerId || customerId === "" || points < 30) {
+                        input.disabled = true;
+                        if (label) label.classList.add('promo-disabled');
+                    } else {
+                        input.disabled = false;
+                        if (label) label.classList.remove('promo-disabled');
+                    }
+                }
+            });
+        }
+
         async function processCustomerLookup() {
             const phone = document.getElementById('phoneInput').value;
             if (!phone) {
@@ -250,6 +329,7 @@
                     openRegisterModal();
                 }
             } catch (error) {
+                console.error("Search Error:", error);
                 updateSmallStatus('Connection error', 'red');
             }
         }
@@ -286,9 +366,12 @@
             document.getElementById('customerCard').classList.remove('hidden');
             document.getElementById('noCustomerMsg').classList.add('hidden');
 
+            // KHI TÌM ĐƯỢC KHÁCH HÀNG: Cập nhật lại UI các thẻ mã giảm điểm
+            refreshVoucherStatus(cust.loyaltyPoints);
+
             const selectedPromo = document.querySelector('input[name="promoStrategy"]:checked');
-            if (selectedPromo) {
-                handlePromoCheck(selectedPromo);
+            if (selectedPromo && selectedPromo.value !== 'NONE') {
+                handlePromoCheck(selectedPromo); 
             }
         }
 
@@ -306,6 +389,20 @@
 
         async function handlePromoCheck(radioBtn) {
             const promoCode = radioBtn.value;
+            const strategyType = radioBtn.getAttribute('data-strategy-type'); 
+            const customerId = document.getElementById('hiddenCustomerId').value;
+            const customerPoints = parseInt(document.getElementById('displayCustPoints').innerText) || 0;
+
+            // KIỂM TRA ĐIỀU KIỆN - Sửa lỗi vòng lặp/cú pháp dư thừa
+            if (strategyType === 'POINT_REDEEM') {
+                if (!customerId || customerId === "" || customerPoints < 30) {
+                    alert("Khách hàng không đủ 30 điểm hoặc chưa chọn khách hàng!");
+                    document.querySelector('input[name="promoStrategy"][value="NONE"]').checked = true;
+                    calculateFinalTotal(0);
+                    return;
+                }
+            }
+
             if (promoCode === 'NONE') {
                 calculateFinalTotal(0);
                 return;
@@ -395,8 +492,11 @@
         function closeModal(id) { document.getElementById(id).classList.remove('modal-active'); }
         function handleCheckout() { document.getElementById('checkout-form').submit(); }
 
-        document.addEventListener('DOMContentLoaded', initPaymentMethodSimulation);
+        // Khởi tạo trang: Mặc định làm mờ mã khi load (vì ban đầu điểm = 0 và chưa có khách hàng)
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshVoucherStatus(0);
+            initPaymentMethodSimulation();
+        });
     </script>
 </body>
 </html>
-

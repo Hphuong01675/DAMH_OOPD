@@ -52,4 +52,25 @@ public class CustomerDAOImpl implements ICustomerDAO {
             em.close();
         }
     }
+    @Override
+    public void update(CustomerEntity customer) {
+        // Giả sử bạn đang dùng một class Utility để lấy EntityManager
+    	EntityManager em = JPAUtil.getEntityManager(); 
+        EntityTransaction trans = em.getTransaction();
+        
+        try {
+            trans.begin();
+            // Sử dụng MERGE thay vì PERSIST để cập nhật đối tượng đã có ID
+            em.merge(customer); 
+            trans.commit();
+        } catch (Exception e) {
+            if (trans.isActive()) {
+                trans.rollback();
+            }
+            e.printStackTrace();
+            throw e; 
+        } finally {
+            em.close();
+        }
+    }
 }

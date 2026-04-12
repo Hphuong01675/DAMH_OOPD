@@ -33,4 +33,21 @@ public class CustomerServiceImpl implements ICustomerService {
                 customer.getLoyaltyPoints()
         );
     }
+    @Override
+    public boolean deductCustomerPoints(Long customerId, int pointsToDeduct) {
+        if (customerId == null) return false;
+        
+        // Tìm khách hàng từ Database
+        CustomerEntity customer = customerDAO.findById(customerId); 
+        
+        if (customer != null && customer.getLoyaltyPoints() >= pointsToDeduct) {
+            // Trừ điểm
+            customer.setLoyaltyPoints(customer.getLoyaltyPoints() - pointsToDeduct);
+            
+            // GỌI HÀM UPDATE VỪA TẠO
+            customerDAO.update(customer); 
+            return true;
+        }
+        return false;
+    }
 }

@@ -10,8 +10,10 @@ import ute.fit.model.Order;
 import ute.fit.model.Payment;
 import ute.fit.model.PaymentResultDTO;
 import ute.fit.model.UserDTO;
+import ute.fit.service.ICustomerService;
 import ute.fit.service.IDiscountService;
 import ute.fit.service.IOrderService;
+import ute.fit.service.impl.CustomerServiceImpl;
 import ute.fit.service.impl.DiscountServiceImpl;
 import ute.fit.service.impl.OrderServiceImpl;
 import ute.fit.service.payment.CardPaymentProcessor;
@@ -28,7 +30,7 @@ public class PaymentController extends HttpServlet {
 
     private final IDiscountService discountService = new DiscountServiceImpl();
     private final IOrderService orderService = new OrderServiceImpl();
-
+    private final ICustomerService customerService = new CustomerServiceImpl();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
@@ -114,7 +116,19 @@ public class PaymentController extends HttpServlet {
 
         order.setPaymentStatus(paymentResult.getStatusPayment());
         order.getCurrentState().handlePayment(order, paymentResult.getStatusPayment());
+        
+        boolean isPaymentSuccess = paymentResult.getStatusPayment() != null 
+                && ("SUCCESS".equalsIgnoreCase(paymentResult.getStatusPayment().name()) 
+                 || "PAID".equalsIgnoreCase(paymentResult.getStatusPayment().name()));
 
+        if (isPaymentSuccess && customerId != null) {
+            // Nhờ Service kiểm tra xem mã này có phải loại trừ điểm không (không dùng Entity ở đây)
+            if (discountService.isPointRedeemVoucher(promo)) {
+                // Trừ 30 điểm của khách hàng
+                customerService.deductCustomerPoints(customerId, 30);
+            }
+        }
+        
         orderService.handlePostPayment(
                 order.getOrderId(),
                 customerId,
