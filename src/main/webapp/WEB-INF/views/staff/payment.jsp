@@ -268,8 +268,6 @@
                                     <span class="material-symbols-outlined text-3xl text-green-600">qr_code_2</span>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-semibold text-gray-700">Flow:</p>
-                                    <p class="text-xs text-gray-600">PaymentProcessor -> VNPayAdapter -> IVNPayService</p>
                                     <p class="text-xs text-gray-600">Status: Waiting for confirm click</p>
                                 </div>
                             </div>
@@ -334,6 +332,7 @@
             }
         }
 
+     // Thay thế hàm saveNewCustomer cũ bằng hàm gọi POST
         async function saveNewCustomer() {
             const phone = document.getElementById('phoneInput').value;
             const name = document.getElementById('newNameInput').value;
@@ -344,18 +343,61 @@
             }
 
             try {
-                const response = await fetch(`${pageContext.request.contextPath}/api/customer/process?phone=` + phone + '&name=' + encodeURIComponent(name));
+                const response = await fetch(`${pageContext.request.contextPath}/api/customer/process`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ phone: phone, name: name })
+                });
+                
                 const data = await response.json();
 
                 if (data.success) {
                     closeModal('registerModal');
                     updateSmallStatus('New customer created successfully', 'green');
                     renderCustomerInfo(data.customer);
+                } else {
+                    // Hiển thị lỗi ra UI thay vì nuốt lỗi
+                    alert(data.message || 'Failed to create customer in Database');
+                    updateSmallStatus('Creation failed', 'red');
                 }
             } catch (error) {
-                alert('Error saving customer');
+                alert('Server connection error while saving.');
             }
         }
+
+        // Hàm chuẩn hóa lại tác vụ quẹt thẻ
+        function verifyCardPayment() {
+            const last4 = document.getElementById('cardLast4Input').value.replace(/\D/g, '');
+            const bank = document.getElementById('cardBankSelect').value;
+            const hint = document.getElementById('cardHint');
+
+            if (last4.length < 4) {
+                hint.innerText = 'Please insert or swipe card...';
+                hint.className = 'text-xs font-semibold text-gray-600 mt-2';
+                return;
+            }
+
+            hint.innerText = 'Card Verified: ' + bank + ' ****' + last4;
+            hint.className = 'text-xs font-semibold text-green-700 mt-2';
+        }
+
+        // Đổi tên initPaymentMethodSimulation thành initPaymentMethods
+        function initPaymentMethods() {
+            const radios = document.querySelectorAll('input[name="paymentMethod"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => showPaymentPanel(e.target.value));
+            });
+            const selected = document.querySelector('input[name="paymentMethod"]:checked');
+            showPaymentPanel(selected ? selected.value : 'cash');
+            updateCashChange();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshVoucherStatus(0);
+            initPaymentMethods(); // Gọi tên hàm mới
+        });
 
         function renderCustomerInfo(cust) {
             document.getElementById('displayCustName').innerText = cust.name;

@@ -1,17 +1,18 @@
 package ute.fit.service.payment;
 
-public class VNPayAdapter {
+public class VNPayAdapter implements IVNPayGateway {
     private IVNPayService vnPay;
 
-    public boolean executePayment(double amount) {
-        // Khoi tao adaptee cu the voi tham so tu flow hien tai
-        String transactionId = "TXN" + System.currentTimeMillis();
-        this.vnPay = new VNPaySimulator(amount, transactionId);
-
-        // Goi ham cua giao dien cu ma Adapter dong goi
-        this.vnPay.processVNPayPayment();
-
-        // Mo phong ket qua gateway thanh cong
-        return true;
+    @Override
+    public boolean executePayment(double amount, String transactionId) {
+        try {
+            // Adapter chuyen doi from target API -> adaptee API
+            this.vnPay = new VNPaySimulator(amount, transactionId);
+            this.vnPay.processVNPayPayment();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 }

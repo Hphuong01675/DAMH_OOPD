@@ -55,8 +55,38 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
                 </div>
 
                 <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Order ID</span>
+                    <span class="font-semibold">#${paymentResult.orderId}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
                     <span class="text-gray-500">Transaction ID</span>
                     <span class="font-semibold">${paymentResult.transactionId}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Customer</span>
+                    <span class="font-semibold">${paymentResult.customerName}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Customer ID</span>
+                    <span class="font-semibold">${paymentResult.customerId != null ? paymentResult.customerId : 'N/A'}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Customer Phone</span>
+                    <span class="font-semibold">${paymentResult.customerPhone}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Staff</span>
+                    <span class="font-semibold">${paymentResult.staffName}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Staff ID</span>
+                    <span class="font-semibold">${paymentResult.staffId != null ? paymentResult.staffId : 'N/A'}</span>
                 </div>
 
                 <div class="flex justify-between items-center pt-2">

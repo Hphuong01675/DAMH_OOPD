@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import ute.fit.model.Order;
 import ute.fit.model.Payment;
 import ute.fit.model.PaymentResultDTO;
+import ute.fit.model.CustomerSummaryDTO;
 import ute.fit.model.UserDTO;
 import ute.fit.service.ICustomerService;
 import ute.fit.service.IDiscountService;
@@ -81,6 +82,7 @@ public class PaymentController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/staff/order");
             return;
         }
+        UserDTO staffUser = (UserDTO) session.getAttribute("user");
 
         Order order = (Order) session.getAttribute("order");
         if (order == null || order.getItems().isEmpty()) {
@@ -113,7 +115,6 @@ public class PaymentController extends HttpServlet {
         }
 
         Payment paymentResult = processor.processPayment(order);
-
         order.setPaymentStatus(paymentResult.getStatusPayment());
         order.getCurrentState().handlePayment(order, paymentResult.getStatusPayment());
         
@@ -137,11 +138,24 @@ public class PaymentController extends HttpServlet {
                 order.getCurrentState().getStateName()
         );
 
+     
+        Map<String, String> customerInfo = customerService.getCustomerDataMap(customerId);
+       
         PaymentResultDTO resultDTO = new PaymentResultDTO(
+                order.getOrderId(),
                 paymentResult.getTransactionID(),
                 order.getPaymentStatus().name(),
                 order.getCurrentState().getStateName(),
                 method,
+                
+                // --- BẮT ĐẦU ĐOẠN ĐƯỢC CẬP NHẬT TỪ MAP ---
+                customerInfo != null && customerInfo.get("id") != null ? Long.parseLong(customerInfo.get("id")) : null,
+                customerInfo != null && customerInfo.get("name") != null ? customerInfo.get("name") : "Walk-in Customer",
+                customerInfo != null && customerInfo.get("phone") != null ? customerInfo.get("phone") : "N/A",
+                // --- KẾT THÚC ĐOẠN ĐƯỢC CẬP NHẬT ---
+                
+                staffUser != null ? staffUser.getId() : null,
+                staffUser != null ? staffUser.getFullName() : "N/A",
                 (promo == null || promo.isBlank()) ? "NONE" : promo,
                 subtotal,
                 discountAmount,

@@ -23,7 +23,7 @@ public abstract class PaymentProcessor {
 
         boolean result = executePayment(amount, payment);
         updateStatus(payment, result);
-        savePayment(payment);
+        savePayment(payment, order);
 
         return buildResult(payment);
     }
@@ -38,7 +38,7 @@ public abstract class PaymentProcessor {
         payment.setStatusPayment(result ? StatusPayment.SUCCESS : StatusPayment.FAILED);
     }
 
-    protected abstract void savePayment(Payment payment);
+    protected abstract void savePayment(Payment payment, Order order);
 
     protected Payment buildResult(Payment payment) {
         return payment;
