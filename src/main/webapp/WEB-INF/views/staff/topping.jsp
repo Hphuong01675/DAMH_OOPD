@@ -223,9 +223,9 @@
 								<select name="sugar" style="width:100%; padding:10px;">
 								    <option value="S0">0%</option>
 								    <option value="S25">25%</option>
-								    <option value="S50" selected>50%</option>
+								    <option value="S50">50%</option>
 								    <option value="S75">75%</option>
-								    <option value="S100">100%</option>
+								    <option value="S100" selected>100%</option>
 								</select>
 
 								</div>
