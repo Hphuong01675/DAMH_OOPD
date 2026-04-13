@@ -1,5 +1,7 @@
 package ute.fit.dao.impl;
 
+import java.util.List;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import ute.fit.config.JPAUtil;
@@ -11,22 +13,6 @@ import ute.fit.model.Roles;
 
 
 public class AccountDAOImpl implements IAccountDAO {
-
-	@Override
-	public AccountEntity findActiveAccount(String identifier, Roles role) {
-	    EntityManager em = JPAUtil.getEntityManager();
-	    try {
-	        String jpql = "SELECT a FROM AccountEntity a WHERE a.username = :id AND a.role = :role AND a.state = true";
-	        return em.createQuery(jpql, AccountEntity.class)
-	                 .setParameter("id", identifier)
-	                 .setParameter("role", role)
-	                 .getSingleResult();
-	    } catch (NoResultException e) {
-	        return null;
-	    } finally {
-	        em.close();
-	    }
-	}
 
 	@Override
 	public StaffEntity findStaffByUsername(String username) {
@@ -57,4 +43,26 @@ public class AccountDAOImpl implements IAccountDAO {
 	        em.close();
 	    }
 	}
+	
+	@Override
+    public AccountEntity findActiveAccountByUsernameAndRole(String username, Roles role) {
+        try (EntityManager em = JPAUtil.getEntityManager()) {
+            String normalizedUsername = username == null ? "" : username.trim().toLowerCase();
+            String jpql = """
+                    SELECT a
+                    FROM AccountEntity a
+                    WHERE a.state = true
+                      AND a.role = :role
+                      AND lower(a.username) = :username
+                    """;
+
+            List<AccountEntity> accounts = em.createQuery(jpql, AccountEntity.class)
+                    .setParameter("role", role)
+                    .setParameter("username", normalizedUsername)
+                    .setMaxResults(1)
+                    .getResultList();
+
+            return accounts.isEmpty() ? null : accounts.get(0);
+        }
+    }
 }

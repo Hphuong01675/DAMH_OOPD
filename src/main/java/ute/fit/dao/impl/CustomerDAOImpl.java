@@ -26,6 +26,16 @@ public class CustomerDAOImpl implements ICustomerDAO {
     }
 
     @Override
+    public CustomerEntity findById(Long id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(CustomerEntity.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public CustomerEntity save(CustomerEntity customer) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction trans = em.getTransaction();
@@ -38,6 +48,27 @@ public class CustomerDAOImpl implements ICustomerDAO {
         } catch (Exception e) {
             if (trans.isActive()) trans.rollback();
             throw e;
+        } finally {
+            em.close();
+        }
+    }
+    @Override
+    public void update(CustomerEntity customer) {
+        // Giả sử bạn đang dùng một class Utility để lấy EntityManager
+    	EntityManager em = JPAUtil.getEntityManager(); 
+        EntityTransaction trans = em.getTransaction();
+        
+        try {
+            trans.begin();
+            // Sử dụng MERGE thay vì PERSIST để cập nhật đối tượng đã có ID
+            em.merge(customer); 
+            trans.commit();
+        } catch (Exception e) {
+            if (trans.isActive()) {
+                trans.rollback();
+            }
+            e.printStackTrace();
+            throw e; 
         } finally {
             em.close();
         }

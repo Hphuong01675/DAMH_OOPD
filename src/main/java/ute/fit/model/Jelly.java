@@ -7,7 +7,7 @@ public class Jelly extends ToppingDecorator {
 
 	@Override
 	public String getDescription() {
-		return product.getDescription() + " + Pearl";
+		return product.getDescription() + " + Jelly";
 	}
 
 	@Override

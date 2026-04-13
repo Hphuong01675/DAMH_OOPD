@@ -27,4 +27,28 @@ public class Beverage implements Product {
     public String getDescription() {
         return String.format("%s (Size: %s, Đường: %s, Đá: %s)", name, size, sugar, ice);
     }
+
+	public String getName() {
+		return name;
+	}
+
+
+	public double getBasePrice() {
+		return basePrice;
+	}
+
+
+	public Size getSize() {
+		return size;
+	}
+
+
+	public SugarLevel getSugar() {
+		return sugar;
+	}
+
+
+	public IceLevel getIce() {
+		return ice;
+	}
 }

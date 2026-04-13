@@ -6,6 +6,7 @@ public class Payment {
     private String transactionID;
     private StatusPayment statusPayment;
     private LocalDateTime paymentDate;
+    private double amount;
 
     public Payment() {
     }
@@ -38,5 +39,13 @@ public class Payment {
 
     public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 }

@@ -11,7 +11,7 @@ import ute.fit.service.impl.BeverageServiceImpl;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/order"})
+@WebServlet(urlPatterns = {"/staff/order"})
 public class OrderController extends HttpServlet {
     
     /**

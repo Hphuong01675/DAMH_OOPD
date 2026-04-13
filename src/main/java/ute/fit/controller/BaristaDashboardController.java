@@ -82,4 +82,3 @@ public class BaristaDashboardController extends HttpServlet {
         return null;
     }
 }
-

@@ -4,7 +4,13 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import ute.fit.model.StatusPayment;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Payments")
 public class PaymentEntity {

@@ -18,7 +18,7 @@ public class AuthServiceImpl implements IAuthService {
         if (role == null) return null;
 
         // 1. Gọi DAO lấy Account
-        AccountEntity account = accountDAO.findActiveAccount(identifier, role);
+        AccountEntity account = accountDAO.findActiveAccountByUsernameAndRole(identifier, role);
         
         // 2. Kiểm tra mật khẩu
         if (account == null || !account.getPassword().equals(password)) {

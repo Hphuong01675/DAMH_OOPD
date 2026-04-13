@@ -114,9 +114,12 @@
     
     <div class="hidden md:flex flex-col items-start max-w-md">
         <div class="relative mb-12">
-            <img alt="Chip3Chip Management Team" class="w-full h-[500px] object-cover rounded-lg shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700" 
-                 src="${pageContext.request.contextPath}/assets/img/team.jpg" 
-                 onerror="this.src='https://lh3.googleusercontent.com/aida/ADBb0uibvKinWFfd_8tNCZW8U0ZIdCUbcfXZ9VoPdCX9kKbuHoeUZKiGWV_MctKuHAw18rC9j0CA1hz-4uoWSt9lTdfsjyjoQdMwWUW82rVQ_5t2BCLmSv3EsCb4QUOYPELXr5JZ9uPfobujoPqwxedL0z2qOLBiurvFmPLkyuzLd2eI-wh1niQIuQt8zjY7pdzSeDourxZGSUqlzwdbVq9RGRDDiPh4ooM11B8ReCrFxbkWam02GShKBUf0LvFIDOAZDvUUIxUOatua8w'">
+           <img
+                alt="Chip3Chip Management Team"
+                class="w-full h-[500px] object-cover rounded-lg shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700"
+                src="https://res.cloudinary.com/dluherpa2/image/upload/f_auto,q_auto/Nhom_03_axg2ny"
+                onerror="this.onerror=null;this.src='https://placehold.co/800x1000?text=Chip3Chip+Team';"
+>
             <div class="absolute -bottom-6 -left-6 editorial-gradient p-8 rounded-lg text-on-primary">
                 <p class="font-headline text-4xl font-extrabold tracking-tighter leading-none">GROUP 3.</p>
             </div>

@@ -3,10 +3,13 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+<<<<<<< HEAD
 template.html
 CLAUDE.md
 application.properties
 persistence.xml
+=======
+>>>>>>> origin/Receive_Notification
 
 ### STS ###
 .apt_generated

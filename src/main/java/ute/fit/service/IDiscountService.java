@@ -12,4 +12,6 @@ public interface IDiscountService {
     
     boolean canApplyPointPromotion(CustomerEntity customer, String promotionCode);
     double calculateDiscountAmount(double originalPrice, String promotionCode);
+    
+    boolean isPointRedeemVoucher(String promotionCode);
 }

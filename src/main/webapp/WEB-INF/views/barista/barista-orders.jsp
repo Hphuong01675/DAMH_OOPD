@@ -60,7 +60,6 @@
                 </div>
                 <h2 class="text-4xl md:text-5xl font-headline font-extrabold text-on-background tracking-tighter">Fulfillment Station</h2>
             </div>
-
         </section>
 
         <div class="space-y-6">
@@ -77,59 +76,63 @@
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
 
                 <c:forEach var="order" items="${pendingOrders}">
-                    <div class="bg-surface-container-lowest rounded-[2rem] p-8 editorial-shadow border border-outline-variant/10 hover:border-tertiary/30 transition-all group relative overflow-hidden">
-                        <div class="flex justify-between items-start mb-6">
+                    <div class="bg-surface-container-lowest rounded-[2rem] p-6 editorial-shadow border border-outline-variant/10 hover:border-tertiary/30 transition-all group relative overflow-hidden">
+                        
+                        <div class="flex justify-between items-start cursor-pointer select-none" onclick="toggleOrderDetails('${order.orderID}')">
                             <div>
-                                <%-- Truy cập orderID qua Key của Map (Vượt lỗi thiếu Getter) --%>
-                                <p class="text-[10px] font-black text-on-surface/30 uppercase tracking-widest">Order #<c:out value="${order.orderID}" /></p>
+                                <p class="text-[10px] font-black text-on-surface/30 uppercase tracking-widest">Order #${order.orderID}</p>
                                 <h4 class="text-xl font-headline font-bold text-on-surface mt-1">
-                                    <c:out value="${order.customer != null ? order.customer.name : 'Guest'}" />
+                                    <c:out value="${order.customer != null ? order.customer.name : 'Khách vãng lai'}" />
                                 </h4>
                             </div>
-                            <span class="text-[10px] font-bold bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full uppercase">Paid</span>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-[10px] font-bold bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full uppercase">Paid</span>
+                                <span class="text-xs text-tertiary underline" id="toggle-text-${order.orderID}">Xem chi tiết</span>
+                            </div>
                         </div>
 
-                        <div class="space-y-4 mb-8">
-                            <c:forEach var="item" items="${order.items}">
-                                <div class="flex items-start gap-4 p-3 rounded-2xl bg-surface-container-low/50 border border-outline-variant/5">
-                                    <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 font-bold text-tertiary shadow-sm">
-                                        ${item.quantity}x
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-on-surface">${item.beverage.name}</p>
-                                        <p class="text-[11px] text-on-surface-variant opacity-70 italic mt-0.5">
-                                            Size ${item.size} • ${item.sugar} Sugar • ${item.ice} Ice
-                                        </p>
-                                        <div class="mt-2 flex flex-wrap gap-1">
-                                            <c:forEach var="topping" items="${item.toppings}">
-                                                <span class="text-[9px] font-bold bg-tertiary/5 text-tertiary px-2 py-0.5 rounded-md border border-tertiary/10 uppercase tracking-tighter">
-                                                    + ${topping.name}
-                                                </span>
-                                            </c:forEach>
+                        <div id="details-${order.orderID}" class="hidden mt-6 border-t border-outline-variant/10 pt-4">
+                            <div class="space-y-4 mb-6">
+                                <c:forEach var="item" items="${order.items}">
+                                    <div class="flex items-start gap-4 p-3 rounded-2xl bg-surface-container-low/50 border border-outline-variant/5">
+                                        <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shrink-0 font-bold text-tertiary shadow-sm">
+                                            ${item.quantity}x
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-on-surface">${item.beverage.name}</p>
+                                            <p class="text-[11px] text-on-surface-variant opacity-70 italic mt-0.5">
+                                                Size ${item.size} • ${item.sugar} Sugar • ${item.ice} Ice
+                                            </p>
+                                            <div class="mt-2 flex flex-wrap gap-1">
+                                                <c:forEach var="topping" items="${item.toppings}">
+                                                    <span class="text-[9px] font-bold bg-tertiary/5 text-tertiary px-2 py-0.5 rounded-md border border-tertiary/10 uppercase tracking-tighter">
+                                                        + ${topping.name}
+                                                    </span>
+                                                </c:forEach>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </c:forEach>
-                        </div>
+                                </c:forEach>
+                            </div>
 
-                        <form action="${pageContext.request.contextPath}/barista/orders" method="POST">
-                            <input type="hidden" name="orderId" value="${order.orderID}">
-                            <input type="hidden" name="action" value="COMPLETE">
-                            <button type="submit" class="w-full py-4 bg-tertiary text-white font-headline font-bold text-sm rounded-full shadow-lg shadow-tertiary/20 hover:bg-tertiary-dim active:scale-95 transition-all flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                                Mark Done
-                            </button>
-                        </form>
+                            <form action="${pageContext.request.contextPath}/barista/orders" method="POST">
+                                <input type="hidden" name="orderId" value="${order.orderID}">
+                                <input type="hidden" name="action" value="COMPLETE">
+                                <button type="submit" class="w-full py-4 bg-tertiary text-white font-headline font-bold text-sm rounded-full shadow-lg shadow-tertiary/20 hover:bg-tertiary-dim active:scale-95 transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                    Mark Done
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </c:forEach>
 
                 <c:if test="${empty pendingOrders}">
                     <div class="col-span-full py-24 flex flex-col items-center justify-center text-center opacity-40 bg-white/50 rounded-[2rem] border-2 border-dashed border-outline-variant/20">
                         <span class="material-symbols-outlined text-6xl mb-4 text-on-surface/40">coffee_maker</span>
-						<h3 class="font-headline font-bold text-xl">Queue is empty</h3>
-						<p class="text-sm">All beverages have been successfully
-							prepared.</p>
-					</div>
+                        <h3 class="font-headline font-bold text-xl">Queue is empty</h3>
+                        <p class="text-sm">All beverages have been successfully prepared.</p>
+                    </div>
                 </c:if>
 
             </div>
@@ -155,5 +158,20 @@
             <span class="text-[10px]">History</span>
         </button>
     </nav>
+
+    <script>
+        function toggleOrderDetails(orderId) {
+            const detailsDiv = document.getElementById('details-' + orderId);
+            const toggleText = document.getElementById('toggle-text-' + orderId);
+            
+            if (detailsDiv.classList.contains('hidden')) {
+                detailsDiv.classList.remove('hidden');
+                toggleText.innerText = "Thu gọn";
+            } else {
+                detailsDiv.classList.add('hidden');
+                toggleText.innerText = "Xem chi tiết";
+            }
+        }
+    </script>
 </body>
 </html>

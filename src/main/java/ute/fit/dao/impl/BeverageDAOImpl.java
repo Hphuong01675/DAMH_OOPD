@@ -1,6 +1,7 @@
 package ute.fit.dao.impl;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import ute.fit.config.JPAUtil;
 import ute.fit.dao.IBeverageDAO;
 import ute.fit.entity.BeverageEntity;
@@ -25,6 +26,20 @@ public class BeverageDAOImpl implements IBeverageDAO {
             em.close();
         }
     }
+	
+	@Override
+	public BeverageEntity findByName(String name) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    try {
+	        return em.createQuery("SELECT b FROM BeverageEntity b WHERE b.name = :name", BeverageEntity.class)
+	                 .setParameter("name", name)
+	                 .getSingleResult();
+	    } catch (NoResultException e) {
+	        return null;
+	    } finally {
+	        em.close();
+	    }
+	}
 	
 	@Override
     public List<BeverageEntity> searchByName(String keyword) {

@@ -16,7 +16,7 @@ public interface IOrderDAO {
     OrderEntity findById(Long id);
     void update(OrderEntity entity);
     List<OrderEntity> findAll();
-    List<Object[]> findPendingOrdersDataToday();
+    List<OrderEntity> findPendingAndPaidOrdersToday();
     
     Object[] getBaristaStatsToday(String username);
     List<Object[]> getOrdersByBaristaUsernameToday(String username);
@@ -24,6 +24,8 @@ public interface IOrderDAO {
     // THÊM: 2 Hàm mới phục vụ Dashboard
     List<Object[]> getTopDrinksByBaristaToday(String username);
     List<LocalDateTime> getOrderDatesByBaristaToday(String username);
+    
+    void save(OrderEntity order);
 }
 //package ute.fit.dao;
 //

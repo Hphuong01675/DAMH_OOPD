@@ -5,7 +5,14 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import ute.fit.model.StatusPayment;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Orders")
 public class OrderEntity {
@@ -33,4 +40,6 @@ public class OrderEntity {
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItemEntity> items;
+    
+    public List<OrderItemEntity> getOrderItems() {return this.items;}
 }

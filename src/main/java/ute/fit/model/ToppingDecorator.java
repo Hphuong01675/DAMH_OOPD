@@ -20,4 +20,16 @@ public abstract class ToppingDecorator implements Product {
     public String getDescription() {
         return product.getDescription() + " + " + toppingName;
     }
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public String getToppingName() {
+		return toppingName;
+	}
+
+	public double getToppingPrice() {
+		return toppingPrice;
+	}
 }

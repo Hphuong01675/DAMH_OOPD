@@ -7,5 +7,6 @@ import ute.fit.model.ToppingDTO;
 
 public interface IToppingDAO {
 	List<ToppingEntity> findAll();
-	ToppingDTO findById(Long id);
+	ToppingEntity findById(int id);
+	ToppingEntity findByName(String name);
 }

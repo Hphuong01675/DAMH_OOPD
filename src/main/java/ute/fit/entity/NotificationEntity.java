@@ -17,4 +17,8 @@ public class NotificationEntity {
     private Integer notificationID;
     private String content;
     private LocalDateTime sentDate;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "username")
+    private AccountEntity receiver;
 }
