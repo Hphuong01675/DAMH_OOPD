@@ -32,7 +32,7 @@ public class BuildDrinkController extends HttpServlet {
 
 	    try {
 	        // ===== Lấy ID từ JSP =====
-	        int beverageId = Integer.parseInt(request.getParameter("productID"));
+	        int beverageId = Integer.parseInt(request.getParameter("productID")); // FIX tên param
 
 	        // ===== Lấy từ DB =====
 	        IBeverageService beverageService = new BeverageServiceImpl();
@@ -55,16 +55,16 @@ public class BuildDrinkController extends HttpServlet {
 	        String[] toppingNames = request.getParameterValues("toppingNames");
 	        String[] toppingQtys = request.getParameterValues("toppingQtys");
 
-	        if (toppingNames != null && toppingQtys != null) {
-	            for (int i = 0; i < toppingNames.length; i++) {
+			ToppingBuilder builder = new ToppingBuilder().setBase(product);
 
-	                int qty = Integer.parseInt(toppingQtys[i]);
+			if (toppingNames != null && toppingQtys != null) {
+				for (int i = 0; i < toppingNames.length; i++) {
+					int qty = Integer.parseInt(toppingQtys[i]);
+					builder.addTopping(toppingNames[i], qty);
+				}
+			}
 
-	                for (int j = 0; j < qty; j++) {
-	                    product = ToppingFactory.createTopping(toppingNames[i], product);
-	                }
-	            }
-	        }
+			product = builder.build();
 
 	        // ===== Quantity =====
 	        int quantity = Integer.parseInt(request.getParameter("quantity"));
@@ -79,10 +79,10 @@ public class BuildDrinkController extends HttpServlet {
 	        session.setAttribute("order", order);
 
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	        e.printStackTrace(); 
 	    }
+
 	    response.sendRedirect("staff/order"); 
-	    
 	}
 	
 }

@@ -467,11 +467,20 @@
         }
 
         function calculateFinalTotal(discount) {
-            const finalDiscount = Math.min(discount, SUB_TOTAL);
-            const finalTotal = Math.max(SUB_TOTAL - finalDiscount, 0);
+            // discount ở đây là SỐ TIỀN ĐƯỢC GIẢM (ví dụ: 4.600 VND)
+            const finalDiscount = Math.min(discount, SUB_TOTAL); 
+            const finalTotal = Math.max(SUB_TOTAL - finalDiscount, 0); 
+            
             currentFinalTotal = finalTotal;
-            document.getElementById('discountLabel').innerText = '- ' + finalDiscount.toLocaleString('vi-VN') + ' VND';
-            document.getElementById('finalPriceLabel').innerText = finalTotal.toLocaleString('vi-VN') + ' VND';
+
+            // Cập nhật hiển thị số tiền giảm (dòng chữ đỏ)
+            document.getElementById('discountLabel').innerText = 
+                '- ' + finalDiscount.toLocaleString('vi-VN') + ' VND';
+
+            // Cập nhật hiển thị tổng cộng cuối cùng (Grand Total)
+            document.getElementById('finalPriceLabel').innerText = 
+                finalTotal.toLocaleString('vi-VN') + ' VND';
+            
             updateCashChange();
         }
 
