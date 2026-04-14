@@ -115,14 +115,31 @@
                                 </c:forEach>
                             </div>
 
-                            <form action="${pageContext.request.contextPath}/barista/orders" method="POST">
-                                <input type="hidden" name="orderId" value="${order.orderID}">
-                                <input type="hidden" name="action" value="COMPLETE">
-                                <button type="submit" class="w-full py-4 bg-tertiary text-white font-headline font-bold text-sm rounded-full shadow-lg shadow-tertiary/20 hover:bg-tertiary-dim active:scale-95 transition-all flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                                    Mark Done
-                                </button>
-                            </form>
+                            <div class="space-y-3">
+    <form action="${pageContext.request.contextPath}/barista/orders" method="POST">
+        <input type="hidden" name="orderId" value="${order.orderID}">
+        <input type="hidden" name="action" value="COMPLETE">
+        <button type="submit" class="w-full py-4 bg-tertiary text-white font-headline font-bold text-sm rounded-full shadow-lg shadow-tertiary/20 hover:bg-[#6c3094] active:scale-95 transition-all flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            Mark Done
+        </button>
+    </form>
+
+    <form action="${pageContext.request.contextPath}/barista/orders" method="POST" 
+          class="flex items-center gap-2" 
+          onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+        <input type="hidden" name="orderId" value="${order.orderID}">
+        <input type="hidden" name="action" value="CANCEL">
+        
+        <input type="text" name="reason" placeholder="Lý do hủy (VD: Hết món)..." required
+               class="flex-1 py-3 px-4 bg-red-50 text-red-900 placeholder-red-300 text-sm rounded-full border border-red-100 focus:outline-none focus:ring-2 focus:ring-red-300 transition-all">
+               
+        <button type="submit" class="px-5 py-3 bg-white text-red-500 border border-red-200 font-headline font-bold text-sm rounded-full hover:bg-red-50 active:scale-95 transition-all flex items-center justify-center gap-1 shadow-sm">
+            <span class="material-symbols-outlined text-[20px]">cancel</span>
+            Hủy
+        </button>
+    </form>
+</div>
                         </div>
                     </div>
                 </c:forEach>
