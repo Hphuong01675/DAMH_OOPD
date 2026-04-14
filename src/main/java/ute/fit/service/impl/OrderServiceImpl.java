@@ -60,6 +60,10 @@ public class OrderServiceImpl implements IOrderService {
 		public void processOrder(Long orderId, Long baristaId) {
 			updateState(orderId, "COMPLETE", null, baristaId);
 		}
+		@Override
+		public void cancelOrder(Long orderId, String reason, Long baristaId) {
+		    updateState(orderId, "CANCEL", reason, baristaId);
+		}
 
 		@Override
 		public void updateState(Long orderId, String action, String reason, Long baristaId) {
