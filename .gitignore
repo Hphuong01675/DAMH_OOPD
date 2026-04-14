@@ -5,8 +5,7 @@ target/
 !**/src/test/**/target/
 template.html
 CLAUDE.md
-application.properties
-src/main/resources/META-INF/persistence.xml
+Khai báo các biến môi trường.txt
 
 ### STS ###
 .apt_generated

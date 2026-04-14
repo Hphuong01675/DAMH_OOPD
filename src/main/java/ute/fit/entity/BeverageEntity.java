@@ -15,7 +15,7 @@ public class BeverageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productID;
     
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(nullable = false)
     private String name;
     
     @Column(nullable = false)
@@ -23,6 +23,6 @@ public class BeverageEntity {
     
     private String imgUrl;
     
-    @Column(name = "isSellable", nullable = false, columnDefinition = "BIT DEFAULT 1")
+    @Column(name = "isSellable", nullable = false)
     private boolean isSellable = true;
 }

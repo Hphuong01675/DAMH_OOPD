@@ -55,6 +55,13 @@
 			<version>12.4.2.jre11</version>
 		</dependency>
 
+		<!--PostgreSQL-->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.2</version>
+		</dependency>
+
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -102,6 +109,14 @@
 
 	<build>
 		<finalName>DrinkStoreManagement</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.2</version>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>
