@@ -32,7 +32,7 @@ public class BuildDrinkController extends HttpServlet {
 
 	    try {
 	        // ===== Lấy ID từ JSP =====
-	        int beverageId = Integer.parseInt(request.getParameter("productID")); // FIX tên param
+	        int beverageId = Integer.parseInt(request.getParameter("productID"));
 
 	        // ===== Lấy từ DB =====
 	        IBeverageService beverageService = new BeverageServiceImpl();
@@ -79,11 +79,10 @@ public class BuildDrinkController extends HttpServlet {
 	        session.setAttribute("order", order);
 
 	    } catch (Exception e) {
-	        e.printStackTrace(); // debug
+	        e.printStackTrace();
 	    }
-
-	    // ===== Redirect chuẩn MVC =====
-	    response.sendRedirect("staff/order"); // ✅ FIX QUAN TRỌNG
+	    response.sendRedirect("staff/order"); 
+	    
 	}
 	
 }

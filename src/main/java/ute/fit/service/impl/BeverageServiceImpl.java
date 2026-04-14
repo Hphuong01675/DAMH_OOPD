@@ -68,7 +68,6 @@ public class BeverageServiceImpl implements IBeverageService {
         bev.setName(dto.getName());
         bev.setBasePrice(dto.getBasePrice());
 
-        // upload ảnh
         if (filePart != null && filePart.getSize() > 0) {
             File tempFile = File.createTempFile("upload_", "_" + filePart.getSubmittedFileName());
             try (InputStream is = filePart.getInputStream();
@@ -81,7 +80,7 @@ public class BeverageServiceImpl implements IBeverageService {
             tempFile.delete();
         }
 
-        // giữ trạng thái cũ nếu edit
+
         if (dto.getProductID() != null && dto.getProductID() > 0) {
             dao.update(bev);
         } else {

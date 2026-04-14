@@ -47,7 +47,7 @@ public class ProductController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8"); // Đảm bảo nhận dữ liệu tiếng Việt từ form
+        req.setCharacterEncoding("UTF-8"); 
         try {
             BeverageDTO dto = new BeverageDTO();
 

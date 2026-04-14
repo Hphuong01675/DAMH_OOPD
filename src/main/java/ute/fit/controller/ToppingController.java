@@ -41,13 +41,4 @@ public class ToppingController extends HttpServlet {
     	   .forward(req, resp);
     }
 
-//    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-//            throws ServletException, IOException {
-//        List<ToppingDTO> toppings = ToppingFactory.getAllToppings();
-//
-//        req.setAttribute("toppings", toppings);
-//
-//        req.getRequestDispatcher("/WEB-INF/views/staff/topping.jsp")
-//                .forward(req, resp);
-//    }
 }

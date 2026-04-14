@@ -12,8 +12,6 @@ import ute.fit.service.impl.DashboardServiceImpl;
 
 import java.io.IOException;
 import java.util.Map;
-
-// 🔥 thêm Gson để convert JSON
 import com.google.gson.Gson;
 
 @WebServlet("/admin/dashboard")
@@ -33,11 +31,10 @@ public class AdminDashboardController extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            // 1. DATA (Lấy các giá trị nguyên thủy và Map từ Service)
+            // 1. DATA
             double totalRevenue = dashboardService.getTodayRevenue();
             long totalOrders = dashboardService.getTodayOrders();
-            
-            // Controller nhận Map, không phải BeverageEntity
+
             Map<String, Object> bestSeller = dashboardService.getBestSellerInfo();
 
             Map<String, Double> revenueByWeek = dashboardService.getRevenueByWeek();

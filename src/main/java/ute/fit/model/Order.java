@@ -2,6 +2,8 @@ package ute.fit.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ute.fit.dao.IOrderDAO;
 import ute.fit.model.state.CancelledState;
 import ute.fit.model.state.OrderState;
 import ute.fit.model.state.PendingState;
@@ -15,13 +17,13 @@ public class Order {
     private List<OrderItem> items = new ArrayList<>();
     private Long customerId;
     
-    // Cầu nối tới State Pattern (Trạng thái hiện tại)
+    // Cầu nối tới State Pattern
     private OrderState currentState;
 
-    // Cầu nối tới Payment (Enum trạng thái thanh toán)
+    // Cầu nối tới Payment
     private StatusPayment paymentStatus;
     
-    // Lý do hủy đơn (Dùng cho CancelledState)
+    // Lý do hủy đơn
     private String cancelReason;
 
     public Order() {
@@ -29,28 +31,8 @@ public class Order {
         this.currentState = new PendingState();
         this.paymentStatus = StatusPayment.PENDING;
     }
-
-    // --- LOGIC NGHIỆP VỤ CHÍNH ---
-    /**
-     * Hành động đẩy đơn hàng sang hàng đợi của Barista.
-     * Được gọi khi chuyển sang PendingState.
-     */
-    public void sendToBaristaQueue() {
-        // Logic thực tế: Insert vào bảng BaristaQueue hoặc gửi thông báo WebSocket
-        System.out.println("HÀNH ĐỘNG: Đơn hàng #" + orderId + " đã được gửi tới Barista.");
-    }
-    /**
-     * Hành động ghi nhận doanh thu.
-     * Được gọi khi Barista hoàn thành đơn (CompletedState).
-     */
-    public void recordRevenue(double amount) {
-        // Logic thực tế: Update bảng doanh thu trong DB
-        System.out.println("HÀNH ĐỘNG: Ghi nhận doanh thu +" + amount);
-    }
-    public void updateDatabase() {
-        // Logic thực tế: Gọi OrderDAO.update(this)
-        System.out.println("HÀNH ĐỘNG: Cập nhật trạng thái " + (currentState != null ? currentState.getStateName() : "NULL") + " vào DB.");
-    }
+    
+    
     public void addItem(OrderItem item) {
         // Chỉ cho phép thêm món khi đơn hàng đang ở trạng thái chờ (Pending)
         if (currentState instanceof PendingState) {
@@ -65,46 +47,27 @@ public class Order {
         return items.stream().mapToDouble(OrderItem::getSubTotal).sum();
     }
 
-    // --- CÁC HÀNH ĐỘNG CHUYỂN TRẠNG THÁI (STATE PATTERN) ---
-
-//    /**
-//     * Chuyển sang trạng thái tiếp theo (Xử lý đơn hàng)
-//     */
-//    public void proceed() {
-//        // Ủy thác (delegate) việc xử lý cho đối tượng State hiện tại
-//        currentState.handleRequest(this);
-//    }
-//
-//    /**
-//     * Hủy đơn hàng với lý do cụ thể
-//     * @param reason Lý do hủy đơn
-//     */
-//    public void cancel(String reason) {
-//        this.cancelReason = reason;
-//        // Ủy thác việc hủy cho đối tượng State hiện tại
-//        currentState.cancel(this, reason);
-//    }
     
     /**
      * Xử lý bước tiếp theo của đơn hàng (Barista bấm hoàn thành).
      */
-    public void proceed() {
+    public void proceed(IOrderDAO orderDAO) {
         if (currentState != null) {
-            currentState.handleRequest(this);
+            // Truyền orderDAO xuống cho State hiện tại tự xử lý
+            currentState.handleRequest(this, orderDAO);
         }
     }
 
     /**
      * Hủy đơn hàng.
      */
-    public void cancel(String reason) {
+    public void cancel(String reason, IOrderDAO orderDAO) {
         this.cancelReason = reason;
         if (currentState != null) {
-            currentState.cancel(this, reason);
+            currentState.cancel(this, reason, orderDAO);
         } else {
-            // Nếu chưa có state (đang thanh toán mà fail), chuyển thẳng sang Cancel
+            // Nếu chưa có state, chuyển thẳng sang CancelledState
             this.setState(new CancelledState());
-            this.updateDatabase();
         }
     }
 

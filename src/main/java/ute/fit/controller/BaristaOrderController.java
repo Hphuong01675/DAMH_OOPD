@@ -41,24 +41,18 @@ public class BaristaOrderController extends HttpServlet {
             if (idRaw != null && "COMPLETE".equals(action)) {
                 Long orderId = Long.parseLong(idRaw);
                 
-                // 1. LẤY ID BARISTA TỪ SESSION THEO CHUẨN CỦA BẠN
+                // 1. LẤY ID BARISTA TỪ SESSION
                 Long baristaId = null;
-                
-                // Lấy attribute "user" giống hệt cách bạn gọi ${sessionScope.user} trong JSP
                 Object sessionObj = session.getAttribute("user"); 
                 
                 if (sessionObj != null) {
-                    // Ép kiểu về UserDTO để lấy ID
                     ute.fit.model.UserDTO currentUser = (ute.fit.model.UserDTO) sessionObj;
                     baristaId = currentUser.getId(); 
-                    
-                    System.out.println(">>> Đã lấy được ID Barista từ session: " + baristaId);
                 } else {
                     System.err.println(">>> Không tìm thấy 'user' trong session!");
                 }
 
                 // 2. LƯU XUỐNG DATABASE
-                // Gọi tới OrderServiceImpl -> updateState -> update baristaId
                 orderService.processOrder(orderId, baristaId); 
                 
                 session.setAttribute("message", "Đơn hàng #" + orderId + " đã hoàn thành!");

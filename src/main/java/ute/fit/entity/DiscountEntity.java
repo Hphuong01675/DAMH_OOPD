@@ -10,13 +10,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Discounts")
 public class DiscountEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//    private String code;
-//    private String strategyType; // PERCENT, FIXED, POINT_REDEEM
-//    private double discountValue;
-//}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -29,7 +23,6 @@ public class DiscountEntity {
 	private String strategyType; // Kiểu chiến lược ("PERCENT", "FIXED", "POINT_REDEEM")
 	private double discountValue;// Giá trị giảm (10, 50000, 10)
 
-// BẮT BUỘC: Constructor rỗng để JPA/Hibernate khởi tạo object
 	public DiscountEntity() {
 	}
 

@@ -23,7 +23,6 @@ public class OrderDAOImpl implements IOrderDAO {
 			LocalDateTime startOfDay = date.atStartOfDay();
 			LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
-			// Sử dụng tham số :status và hằng số SUCCESS từ Enum của bạn
 			String jpql = "SELECT SUM(o.totalAmount) FROM OrderEntity o " + "WHERE o.staff.id = :staffId "
 					+ "AND o.orderDate BETWEEN :start AND :end " + "AND o.statusPayment = :status";
 
@@ -32,7 +31,6 @@ public class OrderDAOImpl implements IOrderDAO {
 			query.setParameter("start", startOfDay);
 			query.setParameter("end", endOfDay);
 
-			// Sửa tại đây: dùng StatusPayment.SUCCESS
 			query.setParameter("status", ute.fit.model.StatusPayment.SUCCESS);
 
 			Double result = query.getSingleResult();
@@ -65,103 +63,6 @@ public class OrderDAOImpl implements IOrderDAO {
 			em.close();
 		}
 	}
-//package ute.fit.dao.impl;
-//
-//import java.time.LocalDate;
-//import java.time.LocalDateTime;
-//import java.util.List;
-//
-//import jakarta.persistence.EntityManager;
-//import ute.fit.config.JPAUtil;
-//import ute.fit.dao.IOrderDAO;
-//
-//public class OrderDAOImpl implements IOrderDAO {
-//
-//	@Override
-//	public Double getTodayRevenue() {
-//
-//	    EntityManager em = JPAUtil.getEntityManager();
-//
-//	    try {
-//	        LocalDate today = LocalDate.now();
-//
-//	        LocalDateTime start = today.atStartOfDay();
-//	        LocalDateTime end = today.plusDays(1).atStartOfDay();
-//
-//	        Double result = (Double) em.createQuery("""
-//	            SELECT SUM(o.totalAmount)
-//	            FROM OrderEntity o
-//	            WHERE o.statusPayment = :status
-//	            AND o.orderDate >= :start
-//	            AND o.orderDate < :end
-//	        """)
-//	        .setParameter("status", ute.fit.model.StatusPayment.SUCCESS)
-//	        .setParameter("start", start)
-//	        .setParameter("end", end)
-//	        .getSingleResult();
-//
-//	        return result != null ? result : 0.0;
-//
-//	    } finally {
-//	        em.close();
-//	    }
-//	}
-//
-//	@Override
-//	public Long countTodayOrders() {
-//
-//	    EntityManager em = JPAUtil.getEntityManager();
-//
-//	    try {
-//	        LocalDate today = LocalDate.now();
-//
-//	        LocalDateTime start = today.atStartOfDay();
-//	        LocalDateTime end = today.plusDays(1).atStartOfDay();
-//
-//	        return (Long) em.createQuery("""
-//	            SELECT COUNT(o)
-//	            FROM OrderEntity o
-//	            WHERE o.orderDate >= :start
-//	            AND o.orderDate < :end
-//	        """)
-//	        .setParameter("start", start)
-//	        .setParameter("end", end)
-//	        .getSingleResult();
-//
-//	    } finally {
-//	        em.close();
-//	    }
-//	}
-//	@Override
-//	public List<Object[]> getRevenueByWeek() {
-//
-//	    EntityManager em = JPAUtil.getEntityManager();
-//
-//	    try {
-//	        LocalDate today = LocalDate.now();
-//
-//	        LocalDate startOfWeek = today.with(java.time.DayOfWeek.MONDAY);
-//	        LocalDateTime start = startOfWeek.atStartOfDay();
-//	        LocalDateTime end = start.plusDays(7);
-//
-//	        return em.createQuery("""
-//	            SELECT o.orderDate, SUM(o.totalAmount)
-//	            FROM OrderEntity o
-//	            WHERE o.statusPayment = :status
-//	            AND o.orderDate >= :start
-//	            AND o.orderDate < :end
-//	            GROUP BY o.orderDate
-//	        """)
-//	        .setParameter("status", ute.fit.model.StatusPayment.SUCCESS)
-//	        .setParameter("start", start)
-//	        .setParameter("end", end)
-//	        .getResultList();
-//
-//	    } finally {
-//	        em.close();
-//	    }
-//	}
-//}
 
 	@Override
 	public OrderEntity findById(Long id) {
@@ -180,7 +81,7 @@ public class OrderDAOImpl implements IOrderDAO {
 		EntityTransaction trans = em.getTransaction();
 		try {
 			trans.begin();
-			em.merge(entity); // Cập nhật các thay đổi về StateName, StatusPayment...
+			em.merge(entity); 
 			trans.commit();
 		} catch (Exception e) {
 			if (trans.isActive())
@@ -287,7 +188,6 @@ public class OrderDAOImpl implements IOrderDAO {
 	        .setParameter("paymentStatus", ute.fit.model.StatusPayment.SUCCESS)
 	        .getResultList();
 
-	        // KHẮC PHỤC LỖI LAZY INITIALIZATION TẠI ĐÂY
 	        // Kích hoạt (Initialize) các proxy data trước khi đóng session
 	        for (OrderEntity order : orders) {
 	            // 1. Kích hoạt list Items
@@ -354,7 +254,7 @@ public class OrderDAOImpl implements IOrderDAO {
 		}
 	}
 
-	// --- HÀM MỚI CHO TOP DRINKS ---
+
 	@Override
 	public List<Object[]> getTopDrinksByBaristaToday(String username) {
 		EntityManager em = JPAUtil.getEntityManager();
@@ -376,7 +276,6 @@ public class OrderDAOImpl implements IOrderDAO {
 		}
 	}
 
-	// --- HÀM MỚI CHO CHART (Lấy mốc thời gian của đơn hàng) ---
 	@Override
 	public List<LocalDateTime> getOrderDatesByBaristaToday(String username) {
 		EntityManager em = JPAUtil.getEntityManager();

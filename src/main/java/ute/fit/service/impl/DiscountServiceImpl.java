@@ -49,7 +49,7 @@ public class DiscountServiceImpl implements IDiscountService {
                 "id", entity.getCode(),
                 "title", entity.getTitle(),
                 "strategyName", entity.getStrategyName(),
-                "strategyType", entity.getStrategyType() // Bắt buộc phải có dòng này
+                "strategyType", entity.getStrategyType() 
             ));
         }
         return promotionsList;
@@ -57,12 +57,12 @@ public class DiscountServiceImpl implements IDiscountService {
     
     @Override
     public boolean canApplyPointPromotion(CustomerEntity customer, String promotionCode) {
-        // Nếu không có khách hàng hoặc không có mã thì không thể áp dụng
+
         if (customer == null || promotionCode == null) return false;
         
         DiscountEntity voucher = discountDAO.findByCode(promotionCode);
         
-        // Kiểm tra nếu là chiến lược đổi điểm (POINT_REDEEM hoặc dựa trên strategyName)
+        // Kiểm tra nếu là chiến lược đổi điểm 
         if (voucher != null && ("POINT_REDEEM".equalsIgnoreCase(voucher.getStrategyType()) 
             || "PointRedeem".equalsIgnoreCase(voucher.getStrategyName()))) {
             
