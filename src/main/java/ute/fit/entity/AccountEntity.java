@@ -10,7 +10,7 @@ import ute.fit.model.Roles;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Accounts")
+@Table(name = "\"Accounts\"")
 public class AccountEntity {
     @Id
     private String username;
