@@ -12,6 +12,7 @@ public interface IOrderService {
     Map<String, Object> getStaffDailyStats(Long staffId);
     
     void processOrder(Long orderId, Long baristaId);
+    void cancelOrder(Long orderId, String reason, Long baristaId);
     void updateState(Long orderId, String action, String reason, Long baristaId);
     List<OrderEntity> getPendingOrdersToday();
     List<OrderEntity> getPendingAndPaidOrdersToday();
