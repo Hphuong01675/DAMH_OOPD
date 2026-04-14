@@ -19,13 +19,12 @@ public class CustomerProcessController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String phone = req.getParameter("phone");
-        // Bỏ nhận param "name" ở doGet vì GET giờ chỉ dùng để tìm kiếm
         
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         try {
-            // Gọi trực tiếp hàm trả về JSON từ Service
+
             String jsonResult = customerService.findCustomerJson(phone);
 
             if (jsonResult != null) {
@@ -49,7 +48,7 @@ public class CustomerProcessController extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         try {
-            // POST dùng để tạo mới
+
             String jsonResult = customerService.createCustomerJson(phone, name);
             if (jsonResult != null) {
                 resp.getWriter().write(jsonResult);

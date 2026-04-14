@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 public class NotificationDAOImpl implements INotificationDAO {
 
-	// Hàm này giúp Service không còn phải xử lý vòng lặp hay Entity
 	public void insertForRoles(String content, Set<Roles> roles) {
 		EntityManager em = JPAUtil.getEntityManager();
 		EntityTransaction trans = em.getTransaction();
@@ -25,7 +24,7 @@ public class NotificationDAOImpl implements INotificationDAO {
 			List<AccountEntity> accounts = em.createQuery(jpql, AccountEntity.class).setParameter("roles", roles)
 					.getResultList();
 
-			// 2. Lưu thông báo cho từng người trong 1 Transaction (Bulk Insert)
+			// 2. Lưu thông báo cho từng người trong 1 Transaction
 			LocalDateTime now = LocalDateTime.now();
 			for (AccountEntity account : accounts) {
 				NotificationEntity entity = new NotificationEntity();

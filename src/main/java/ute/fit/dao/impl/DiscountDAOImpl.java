@@ -31,7 +31,7 @@ public class DiscountDAOImpl implements IDiscountDAO {
             return em.createQuery("SELECT d FROM DiscountEntity d", DiscountEntity.class).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-            return List.of(); // Trả về list rỗng nếu có lỗi để không làm sập giao diện
+            return List.of();
         }
     }
 }

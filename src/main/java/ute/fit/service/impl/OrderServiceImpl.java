@@ -52,57 +52,39 @@ public class OrderServiceImpl implements IOrderService {
 		return stats;
 	}
 
-	// Trong file: OrderServiceImpl.java
 
 		@Override
 		public void processOrder(Long orderId, Long baristaId) {
-			// Truyền baristaId xuống hàm updateState
 			updateState(orderId, "COMPLETE", null, baristaId);
 		}
 
 		@Override
 		public void updateState(Long orderId, String action, String reason, Long baristaId) {
+		    // 1. Lấy dữ liệu thô từ Database
 		    OrderEntity entity = orderDAO.findById(orderId);
 		    if (entity == null) return;
 
-		    try {
-		        // Logic State Pattern để xử lý StateName
-		        Order order = new Order();
-		        
-		        // Lấy state hiện tại từ Entity gán vào Model
-		        Field stateField = OrderEntity.class.getDeclaredField("stateName");
-		        stateField.setAccessible(true);
-		        String currentStateName = (String) stateField.get(entity);
-		        order.setState(ute.fit.model.state.OrderStateFactory.getState(currentStateName));
-
-		        if ("COMPLETE".equalsIgnoreCase(action)) {
-		                   order.proceed(); 
-		            
-		            // CẬP NHẬT BARISTA: Dùng Setter trực tiếp của Lombok
-		            if (baristaId != null) {
-		                ute.fit.entity.BaristaEntity barista = new ute.fit.entity.BaristaEntity();
-		                barista.setId(baristaId);
-		                entity.setBarista(barista); 
-		            }
-		            
-		            // Cập nhật StateName vào Entity
-		            stateField.set(entity, order.getCurrentState().getStateName());
-		            
-		        } else if ("CANCEL".equalsIgnoreCase(action)) {
-		            order.cancel(reason);
-		            stateField.set(entity, order.getCurrentState().getStateName());
-		            
-		            // Chỉ khi Cancel mới có thể cập nhật trạng thái thanh toán nếu cần
-		            Field paymentField = OrderEntity.class.getDeclaredField("statusPayment");
-		            paymentField.setAccessible(true);
-		            paymentField.set(entity, order.getPaymentStatus());
-		        }
-
-		        // Thực hiện update xuống Database
+		    // 2. Ghi nhận Barista tiếp nhận đơn (Thực hiện trước khi chuyển State)
+		    if (baristaId != null) {
+		        ute.fit.entity.BaristaEntity barista = new ute.fit.entity.BaristaEntity();
+		        barista.setId(baristaId);
+		        entity.setBarista(barista);
 		        orderDAO.update(entity);
-		        
-		    } catch (Exception e) {
-		        e.printStackTrace();
+		    }
+
+		    // 3. Chuẩn bị Context
+		    Order order = new Order();
+		    order.setOrderId(entity.getOrderID());
+		    order.setPaymentStatus(entity.getStatusPayment());
+		    
+		    order.setState(ute.fit.model.state.OrderStateFactory.getState(entity.getStateName()));
+
+		    // 4. Kích hoạt State Pattern
+		    if ("COMPLETE".equalsIgnoreCase(action)) {
+		        order.proceed(this.orderDAO); 
+		    } 
+		    else if ("CANCEL".equalsIgnoreCase(action)) {
+		        order.cancel(reason, this.orderDAO);
 		    }
 		}
 
@@ -129,7 +111,6 @@ public class OrderServiceImpl implements IOrderService {
 		}).collect(Collectors.toList());
 	}
 
-	// Trong OrderServiceImpl.java
 	@Override
 	public List<OrderEntity> getPendingAndPaidOrdersToday() {
 	    return orderDAO.findPendingAndPaidOrdersToday();
@@ -165,7 +146,6 @@ public class OrderServiceImpl implements IOrderService {
 
 		List<LocalDateTime> dates = orderDAO.getOrderDatesByBaristaToday(username);
 
-		// Tạo 6 nhóm (Đại diện cho 6 cột trên JSP - 6 giờ làm việc gần nhất)
 		int[] hourlyCounts = new int[6];
 		LocalDateTime now = LocalDateTime.now();
 		int maxCount = 0;
@@ -177,8 +157,6 @@ public class OrderServiceImpl implements IOrderService {
 
 				// Nếu đơn nằm trong phạm vi 6 tiếng vừa qua
 				if (hoursBetween >= 0 && hoursBetween < 6) {
-					// hoursBetween = 0 (giờ hiện tại) -> Nằm ở cột cuối cùng (index 5)
-					// hoursBetween = 5 (5 giờ trước) -> Nằm ở cột đầu tiên (index 0)
 					int index = 5 - (int) hoursBetween;
 					hourlyCounts[index]++;
 					if (hourlyCounts[index] > maxCount) {
@@ -188,21 +166,21 @@ public class OrderServiceImpl implements IOrderService {
 			}
 		}
 
-		// Đóng gói thành danh sách Map để View (JSP) có thể vẽ dễ dàng
+		// Đóng gói thành danh sách Map để View
 		List<Map<String, Object>> chartData = new ArrayList<>();
 		for (int i = 0; i < 6; i++) {
 			Map<String, Object> bar = new HashMap<>();
 			bar.put("value", hourlyCounts[i]);
 
-			// Tính phần trăm để set chiều cao của cột (Tránh chia cho 0)
+			// Tính phần trăm để set chiều cao của cột
 			int percentage = (maxCount == 0) ? 0 : (int) Math.round((double) hourlyCounts[i] / maxCount * 100);
 
 			if (hourlyCounts[i] == 0) {
-				bar.put("percentage", 5); // Cho 5% để cột hiển thị 1 mấu nhỏ cho đẹp UI
+				bar.put("percentage", 5); 
 				bar.put("isMax", false);
 			} else {
-				bar.put("percentage", Math.max(20, percentage)); // Set min 20% để hover chữ vào không bị lỗi
-				bar.put("isMax", hourlyCounts[i] == maxCount); // Để đổi màu cột cao nhất
+				bar.put("percentage", Math.max(20, percentage)); 
+				bar.put("isMax", hourlyCounts[i] == maxCount);
 			}
 			chartData.add(bar);
 		}
@@ -226,7 +204,7 @@ public class OrderServiceImpl implements IOrderService {
 	    orderEntity.setOrderDate(java.time.LocalDateTime.now());
 	    orderEntity.setTotalAmount(order.calculateTotal());
 	    
-	    // Gán trạng thái từ State Pattern và Enum StatusPayment
+	    // Gán trạng thái từ State Pattern và Enum StatusPaymen
 	    orderEntity.setStateName("PENDING"); 
 	    orderEntity.setStatusPayment(StatusPayment.PENDING); 
 	    orderEntity.setStaff(toStaffEntity(userDto, account));
@@ -236,13 +214,12 @@ public class OrderServiceImpl implements IOrderService {
 	        orderEntity.setCustomer(customer);
 	    }
 
-	    // 3. Xử lý danh sách Item (Giải mã Decorator)
+	    // 3. Xử lý danh sách Item
 	    List<OrderItemEntity> itemEntities = new ArrayList<>();
 	    for (OrderItem modelItem : order.getItems()) {
 	        OrderItemEntity itemEntity = new OrderItemEntity();
 	        itemEntity.setOrder(orderEntity);
-	        
-	        // Giải mã Product (Decorator) để lấy Beverage và Toppings
+
 	        List<ToppingEntity> collectedToppings = new ArrayList<>();
 	        Map<String, ToppingEntity> toppingCache = new HashMap<>();
 	        Beverage baseBeverage = unwrapProduct(modelItem.getProduct(), collectedToppings, toppingCache);
@@ -268,7 +245,7 @@ public class OrderServiceImpl implements IOrderService {
 	    }
 	    
 	    orderEntity.setItems(itemEntities);
-	    orderDAO.save(orderEntity); // Lưu toàn bộ nhờ CascadeType.ALL
+	    orderDAO.save(orderEntity);
 	    order.setOrderId(orderId);
 	    return orderId;
 	}
@@ -304,7 +281,7 @@ public class OrderServiceImpl implements IOrderService {
 	    staff.setId(user.getId());
 	    staff.setName(user.getFullName());
 	    staff.setPhoneNumber(user.getPhone());
-	    staff.setAccount(account); // Gán AccountEntity thực sự từ DB
+	    staff.setAccount(account); 
 	    return staff;
 	}
 	
@@ -312,17 +289,17 @@ public class OrderServiceImpl implements IOrderService {
 		if (product instanceof ToppingDecorator decorator) {
 	        String tName = decorator.getToppingName();
 	        
-	        // Kiểm tra xem Topping này đã được load lên chưa
+	        
 	        ToppingEntity tEntity = toppingCache.get(tName);
 	        if (tEntity == null) {
 	            tEntity = toppingDAO.findByName(tName);
 	            if (tEntity != null) {
-	                toppingCache.put(tName, tEntity); // Lưu vào cache tạm
+	                toppingCache.put(tName, tEntity); 
 	            }
 	        }
 
 	        if (tEntity != null) {
-	            collectedToppings.add(tEntity); // Add vào list (có thể add trùng đối tượng tEntity này nhiều lần)
+	            collectedToppings.add(tEntity); 
 	        }
 
 	        return unwrapProduct(decorator.getProduct(), collectedToppings, toppingCache);

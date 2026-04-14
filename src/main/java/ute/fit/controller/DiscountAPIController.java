@@ -26,13 +26,11 @@ public class DiscountAPIController extends HttpServlet {
             String promoCode = req.getParameter("code");
             String totalStr = req.getParameter("total");
 
-            // Kiểm tra đầu vào cơ bản
             if (promoCode == null || totalStr == null || totalStr.isEmpty() || "NONE".equals(promoCode)) {
                 out.print("{\"discountAmount\": 0}");
                 return;
             }
 
-            // Parse số an toàn
             double originalPrice = Double.parseDouble(totalStr.replaceAll("[^0-9.]", ""));
 
             // Gọi Service thực thi Strategy Pattern
@@ -47,7 +45,7 @@ public class DiscountAPIController extends HttpServlet {
             out.print("{\"discountAmount\": " + discountAmount + "}");
 
         } catch (Exception e) {
-            e.printStackTrace(); // Xem lỗi tại console server
+            e.printStackTrace(); 
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\": \"Server Error: " + e.getMessage() + "\"}");
         } finally {

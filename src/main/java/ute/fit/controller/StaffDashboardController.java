@@ -21,7 +21,7 @@ public class StaffDashboardController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	HttpSession session = req.getSession(false);
         
-        // Ép kiểu về UserDTO (đúng kiến trúc)
+        // Ép kiểu về UserDTO
         UserDTO user = (session != null) ? (UserDTO) session.getAttribute("user") : null;
 
         if (user == null) {

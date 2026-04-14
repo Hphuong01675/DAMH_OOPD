@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import ute.fit.model.Order;
 import ute.fit.model.Payment;
 import ute.fit.model.PaymentResultDTO;
+import ute.fit.dao.IOrderDAO;
+import ute.fit.dao.impl.OrderDAOImpl;
 import ute.fit.model.CustomerSummaryDTO;
 import ute.fit.model.UserDTO;
 import ute.fit.service.ICustomerService;
@@ -113,17 +115,18 @@ public class PaymentController extends HttpServlet {
             method = "cash";
             processor = new CashPaymentProcessor();
         }
-
+        
+        IOrderDAO orderDAO = new OrderDAOImpl();
         Payment paymentResult = processor.processPayment(order);
         order.setPaymentStatus(paymentResult.getStatusPayment());
-        order.getCurrentState().handlePayment(order, paymentResult.getStatusPayment());
+        order.getCurrentState().handlePayment(order, paymentResult.getStatusPayment(), orderDAO);
         
         boolean isPaymentSuccess = paymentResult.getStatusPayment() != null 
                 && ("SUCCESS".equalsIgnoreCase(paymentResult.getStatusPayment().name()) 
                  || "PAID".equalsIgnoreCase(paymentResult.getStatusPayment().name()));
 
         if (isPaymentSuccess && customerId != null) {
-            // Nhờ Service kiểm tra xem mã này có phải loại trừ điểm không (không dùng Entity ở đây)
+            // Nhờ Service kiểm tra xem mã này có phải loại trừ điểm không
             if (discountService.isPointRedeemVoucher(promo)) {
                 // Trừ 30 điểm của khách hàng
                 customerService.deductCustomerPoints(customerId, 30);
@@ -147,12 +150,11 @@ public class PaymentController extends HttpServlet {
                 order.getPaymentStatus().name(),
                 order.getCurrentState().getStateName(),
                 method,
-                
-                // --- BẮT ĐẦU ĐOẠN ĐƯỢC CẬP NHẬT TỪ MAP ---
+
                 customerInfo != null && customerInfo.get("id") != null ? Long.parseLong(customerInfo.get("id")) : null,
                 customerInfo != null && customerInfo.get("name") != null ? customerInfo.get("name") : "Walk-in Customer",
                 customerInfo != null && customerInfo.get("phone") != null ? customerInfo.get("phone") : "N/A",
-                // --- KẾT THÚC ĐOẠN ĐƯỢC CẬP NHẬT ---
+
                 
                 staffUser != null ? staffUser.getId() : null,
                 staffUser != null ? staffUser.getFullName() : "N/A",

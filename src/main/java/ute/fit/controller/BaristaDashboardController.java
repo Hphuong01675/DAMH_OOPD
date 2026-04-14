@@ -53,10 +53,9 @@ public class BaristaDashboardController extends HttpServlet {
             }
         }
 
-        // 3. Lấy dữ liệu cho Biểu đồ (Performance Chart)
+        // 3. Lấy dữ liệu cho Biểu đồ
         List<Map<String, Object>> chartData = orderService.getBaristaChartDataToday(username);
 
-        // Đẩy toàn bộ lên View
         request.setAttribute("totalRevenue", String.format("%.2f", totalRevenue));
         request.setAttribute("totalOrders", totalOrders);
         request.setAttribute("pendingOrders", pendingOrders);
@@ -69,12 +68,10 @@ public class BaristaDashboardController extends HttpServlet {
     private String getUsernameFromSession(Object accountObj) {
         if (accountObj == null) return null;
 
-        // 1. Nếu session lưu dưới dạng Map
         if (accountObj instanceof Map) {
             return (String) ((Map<?, ?>) accountObj).get("username");
         }
 
-        // 2. Ép kiểu trực tiếp về UserDTO (Thay thế cho Reflection lỗi)
         if (accountObj instanceof ute.fit.model.UserDTO) {
             return ((ute.fit.model.UserDTO) accountObj).getUsername();
         }

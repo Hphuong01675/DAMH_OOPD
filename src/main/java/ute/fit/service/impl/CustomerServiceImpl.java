@@ -38,7 +38,6 @@ public class CustomerServiceImpl implements ICustomerService {
         return formatCustomerToJson(customer);
     }
 
-    // BỔ SUNG HÀM NÀY ĐỂ XỬ LÝ TÌM THEO ID
     @Override
     public String findCustomerByIdJson(Long id) {
         if (id == null) return null;
@@ -61,7 +60,6 @@ public class CustomerServiceImpl implements ICustomerService {
         return false;
     }
 
-    // Hàm tiện ích format JSON nội bộ
     private String formatCustomerToJson(CustomerEntity customer) {
         return String.format(
             "{\"success\": true, \"customer\": {\"id\": %d, \"name\": \"%s\", \"phoneNumber\": \"%s\", \"loyaltyPoints\": %d}}",

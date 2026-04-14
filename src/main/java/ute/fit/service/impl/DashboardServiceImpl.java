@@ -56,7 +56,7 @@ public class DashboardServiceImpl implements IDashboardService {
 
     @Override
     public Map<String, Object> getBestSellerInfo() {
-        List<Object[]> list = orderItemDAO.findBestSeller(); // Trả về [BeverageEntity, quantity] [cite: 12]
+        List<Object[]> list = orderItemDAO.findBestSeller(); 
         if (list.isEmpty()) return null;
 
         Object[] result = list.get(0);
@@ -64,7 +64,7 @@ public class DashboardServiceImpl implements IDashboardService {
         
         Map<String, Object> info = new HashMap<>();
         try {
-            // Dùng Reflection lấy dữ liệu từ trường private [cite: 13, 14]
+           
             java.lang.reflect.Field nameField = entity.getClass().getDeclaredField("name");
             nameField.setAccessible(true);
             info.put("name", nameField.get(entity));
