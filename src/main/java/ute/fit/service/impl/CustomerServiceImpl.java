@@ -81,4 +81,14 @@ public class CustomerServiceImpl implements ICustomerService {
         map.put("phone", customer.getPhoneNumber());
         return map;
     }
+    
+    @Override
+    public void addCustomerPoints(Long customerId, int pointsToAdd) {
+        if (customerId == null || pointsToAdd <= 0) return;
+        CustomerEntity customer = customerDAO.findById(customerId);
+        if (customer != null) {
+            customer.setLoyaltyPoints(customer.getLoyaltyPoints() + pointsToAdd);
+            customerDAO.update(customer);
+        }
+    }
 }

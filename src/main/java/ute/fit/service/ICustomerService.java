@@ -17,4 +17,6 @@ public interface ICustomerService {
     boolean deductCustomerPoints(Long customerId, int pointsToDeduct);
     
     Map<String, String> getCustomerDataMap(Long id);
+
+    void addCustomerPoints(Long customerId, int pointsToAdd);
 }
