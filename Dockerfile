@@ -7,4 +7,9 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Copy file war vào
 COPY target/DAMH_OOPD.war /usr/local/tomcat/webapps/ROOT.war
 
+# Khai báo các biến môi trường cho Cloudinary
+ENV CLOUDINARY_NAME=""
+ENV CLOUDINARY_API_KEY=""
+ENV CLOUDINARY_API_SECRET=""
+
 EXPOSE 8080
