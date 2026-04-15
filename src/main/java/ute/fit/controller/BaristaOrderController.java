@@ -35,10 +35,12 @@ public class BaristaOrderController extends HttpServlet {
         
         HttpSession session = request.getSession();
         try {
+            // Lấy các tham số từ Form gửi lên
             String action = request.getParameter("action");
             String idRaw = request.getParameter("orderId");
+            String reason = request.getParameter("reason"); // Thêm dòng này để lấy lý do hủy
 
-            if (idRaw != null && "COMPLETE".equals(action)) {
+            if (idRaw != null && action != null) {
                 Long orderId = Long.parseLong(idRaw);
                 
                 // 1. LẤY ID BARISTA TỪ SESSION
@@ -52,15 +54,25 @@ public class BaristaOrderController extends HttpServlet {
                     System.err.println(">>> Không tìm thấy 'user' trong session!");
                 }
 
-                // 2. LƯU XUỐNG DATABASE
-                orderService.processOrder(orderId, baristaId); 
-                
-                session.setAttribute("message", "Đơn hàng #" + orderId + " đã hoàn thành!");
+                // 2. GỌI SERVICE ĐỂ XỬ LÝ THEO STATE PATTERN
+                // Dùng updateState thay vì processOrder để hỗ trợ đa dạng action (COMPLETE, CANCEL)
+                if ("COMPLETE".equalsIgnoreCase(action) || "CANCEL".equalsIgnoreCase(action)) {
+                    orderService.updateState(orderId, action, reason, baristaId);
+                    
+                    // Set thông báo trả về giao diện tùy theo hành động
+                    if ("COMPLETE".equalsIgnoreCase(action)) {
+                        session.setAttribute("message", "Đơn hàng #" + orderId + " đã hoàn thành!");
+                    } else {
+                        session.setAttribute("message", "Đơn hàng #" + orderId + " đã được hủy thành công!");
+                    }
+                }
             }
         } catch (Exception e) {
             session.setAttribute("error", "Lỗi xử lý đơn hàng: " + e.getMessage());
             e.printStackTrace();
         }
+        
+        // Load lại trang danh sách đơn
         response.sendRedirect(request.getContextPath() + "/barista/orders");
     }
 }

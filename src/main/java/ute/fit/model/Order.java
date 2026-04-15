@@ -7,6 +7,7 @@ import ute.fit.dao.IOrderDAO;
 import ute.fit.model.state.CancelledState;
 import ute.fit.model.state.OrderState;
 import ute.fit.model.state.PendingState;
+import ute.fit.service.IDiscountService;
 
 /**
  * Lớp Order đóng vai trò là Context trong State Pattern.
@@ -25,6 +26,8 @@ public class Order {
     
     // Lý do hủy đơn
     private String cancelReason;
+    
+    private String discountCode;
 
     public Order() {
         // Mặc định khi tạo mới là trạng thái Chờ (Pending)
@@ -32,6 +35,21 @@ public class Order {
         this.paymentStatus = StatusPayment.PENDING;
     }
     
+    public double getTotalPrice() {
+        return items.stream().mapToDouble(OrderItem::getSubTotal).sum();
+    }
+
+    public double getFinalPrice(IDiscountService discountService) {
+        double total = this.getTotalPrice(); 
+        
+        if (this.discountCode == null || "NONE".equals(this.discountCode) || this.discountCode.isEmpty()) {
+            return total;
+        }
+        
+        double finalPrice = discountService.getPriceWithVoucher(total, this.discountCode);
+        
+        return Math.max(0, finalPrice);
+    }
     
     public void addItem(OrderItem item) {
         // Chỉ cho phép thêm món khi đơn hàng đang ở trạng thái chờ (Pending)
@@ -70,6 +88,8 @@ public class Order {
             this.setState(new CancelledState());
         }
     }
+    
+    
 
     // --- GETTERS & SETTERS ---
     
@@ -119,5 +139,12 @@ public class Order {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+    public void setDiscountCode(String discountCode) {
+        this.discountCode = discountCode;
+    }
+
+    public String getDiscountCode() {
+        return discountCode;
     }
 }

@@ -23,6 +23,7 @@ import ute.fit.entity.OrderItemEntity;
 import ute.fit.entity.StaffEntity;
 import ute.fit.entity.ToppingEntity;
 import ute.fit.model.*;
+import ute.fit.service.ICustomerService;
 import ute.fit.model.state.OrderStateFactory;
 
 import java.lang.reflect.Field;
@@ -39,6 +40,8 @@ public class OrderServiceImpl implements IOrderService {
 	private final IToppingDAO toppingDAO = new ToppingDAOImpl();
 	private final IBeverageDAO beverageDAO = new BeverageDAOImpl();
 
+	
+	private final ICustomerService customerService = new CustomerServiceImpl();
 	@Override
 	public Map<String, Object> getStaffDailyStats(Long staffId) {
 		LocalDate today = LocalDate.now();
@@ -56,6 +59,10 @@ public class OrderServiceImpl implements IOrderService {
 		@Override
 		public void processOrder(Long orderId, Long baristaId) {
 			updateState(orderId, "COMPLETE", null, baristaId);
+		}
+		@Override
+		public void cancelOrder(Long orderId, String reason, Long baristaId) {
+		    updateState(orderId, "CANCEL", reason, baristaId);
 		}
 
 		@Override
@@ -252,28 +259,37 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Override
 	public void handlePostPayment(Long orderId, Long customerId, String promoCode, StatusPayment paymentStatus, String orderStateName) {
-		if (orderId == null) {
-			return;
-		}
+	    if (orderId == null) return;
 
-		OrderEntity orderEntity = orderDAO.findById(orderId);
-		if (orderEntity == null) {
-			return;
-		}
+	    OrderEntity orderEntity = orderDAO.findById(orderId);
+	    if (orderEntity == null) return;
 
-		orderEntity.setStatusPayment(paymentStatus != null ? paymentStatus : StatusPayment.PENDING);
-		if (orderStateName != null && !orderStateName.isBlank()) {
-			orderEntity.setStateName(orderStateName);
-		}
+	    // Cập nhật trạng thái
+	    orderEntity.setStatusPayment(paymentStatus != null ? paymentStatus : StatusPayment.PENDING);
+	    if (orderStateName != null && !orderStateName.isBlank()) {
+	        orderEntity.setStateName(orderStateName);
+	    }
 
-		if (customerId != null) {
-			CustomerEntity customer = customerDAO.findById(customerId);
-			if (customer != null) {
-				orderEntity.setCustomer(customer);
-			}
-		}
-
-		orderDAO.update(orderEntity);
+	    if (customerId != null) {
+	        CustomerEntity customer = customerDAO.findById(customerId);
+	        if (customer != null) {
+	            orderEntity.setCustomer(customer);
+	            
+	            // Logic cộng điểm khi thanh toán thành công
+	            boolean isSuccess = paymentStatus != null && 
+	                ("SUCCESS".equalsIgnoreCase(paymentStatus.name()) || "PAID".equalsIgnoreCase(paymentStatus.name()));
+	            
+	            if (isSuccess) {
+	                double finalAmount = orderEntity.getTotalAmount(); 
+	                
+	                int earnedPoints = (int) (finalAmount / 10000);
+	                if (earnedPoints > 0) {
+	                    customerService.addCustomerPoints(customerId, earnedPoints);
+	                }
+	            }
+	        }
+	    }
+	    orderDAO.update(orderEntity);
 	}
 	
 	private StaffEntity toStaffEntity(UserDTO user, AccountEntity account) {
