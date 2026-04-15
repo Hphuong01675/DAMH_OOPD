@@ -3,7 +3,6 @@
   <persistence-unit name="LTWebPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <!-- Entities -->
     <class>ute.fit.entity.AccountEntity</class>
     <class>ute.fit.entity.BaristaEntity</class>
     <class>ute.fit.entity.BeverageEntity</class>
@@ -18,18 +17,20 @@
     <class>ute.fit.entity.ToppingEntity</class>
 
     <properties>
-            <property name="jakarta.persistence.jdbc.url"
-                value="jdbc:sqlserver://HOAIPHUONG\\SQLEXPRESS01:1433;databaseName=MilkTeaKiosk1;encrypt=true;trustServerCertificate=true;" />
-            <property name="jakarta.persistence.jdbc.driver"
-                value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-            <property name="jakarta.persistence.jdbc.user" value="sa" />
-            <property name="jakarta.persistence.jdbc.password" value="123" />
-            
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
-            <property name="hibernate.hbm2ddl.auto" value="update" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
-        </properties>
+        <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
+
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/MilkTeaKiosk" />
+        <property name="jakarta.persistence.jdbc.user" value="postgres" />
+        <property name="jakarta.persistence.jdbc.password" value="your_password" />
+        
+        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+        <property name="hibernate.hbm2ddl.auto" value="update" />
+        
+        <property name="hibernate.show_sql" value="true" />
+        <property name="hibernate.format_sql" value="true" />
+        
+        <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
+    </properties>
   </persistence-unit>
 </persistence>
